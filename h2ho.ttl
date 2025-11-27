@@ -1,0 +1,329 @@
+@prefix h2ho:    <https://w3id.org/jochumsson/h2ho#> .
+@prefix ho61508: <https://w3id.org/jochumsson/ho61508#> .
+@prefix gufo:    <https://purl.org/nemo/gufo#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+
+<https://w3id.org/jochumsson/h2ho>
+    rdf:type owl:Ontology ;
+    owl:imports <https://w3id.org/jochumsson/ho61508> ;
+    owl:imports <https://purl.org/nemo/gufo> ;
+    rdfs:comment """Hydrogen Safety Ontology (H2HO).
+A domain-specific extension of HO61508 following the modular structure
+described in 'A Modular Hazard Ontology Based on IEC 61508'.""" .
+
+
+#################################################################
+# H2HO ho61508:HazardSource specialisations
+#################################################################
+
+h2ho:StorageVessel rdf:type owl:Class ;
+    rdfs:subClassOf ho61508:HazardSource ;
+    rdfs:comment "Component or system whose main function is to store hydrogen or related media (gas or liquid)." .
+
+h2ho:LH2Storage rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:StorageVessel ;
+    rdfs:comment "Cryogenic tank or containment system storing liquid hydrogen (LH2)." .
+
+h2ho:HighPressureH2Storage rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:StorageVessel ;
+    rdfs:comment "Storage vessel containing hydrogen at elevated pressure." .
+
+h2ho:Piping rdf:type owl:Class ;
+    rdfs:subClassOf ho61508:HazardSource ;
+    rdfs:comment "Piping or pipework used to transport hydrogen between system components." .
+
+h2ho:ProcessEquipment rdf:type owl:Class ;
+    rdfs:subClassOf ho61508:HazardSource ;
+    rdfs:comment "Equipment that processes, conditions, or uses hydrogen (for example compressors, valves, reformers, fuel cells)." .
+
+h2ho:EnvironmentalConfinement rdf:type owl:Class ;
+    rdfs:subClassOf ho61508:HazardSource ;
+    rdfs:comment "Structures or surroundings that confine hydrogen or combustion products, such as buildings, enclosures, or congested layouts." .
+
+h2ho:PressurizedHydrogenSystem rdf:type owl:Class ;
+    rdfs:subClassOf ho61508:HazardSource ;
+    rdfs:comment "System or component containing hydrogen at elevated pressure, including vessels, piping, and associated equipment." .
+
+
+#################################################################
+# H2HO ho61508:Hazard specialisations
+#################################################################
+
+h2ho:CombustionHazard rdf:type owl:Class ;
+    rdfs:subClassOf ho61508:Hazard ;
+    rdfs:comment "Disposition to produce harmful combustion phenomena (fires, deflagrations, detonations) in hydrogen accidents." .
+
+h2ho:JetFireHazard rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:CombustionHazard ;
+    rdfs:comment "Hazard whose manifestation is a jet fire." .
+
+h2ho:FireballHazard rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:CombustionHazard ;
+    rdfs:comment "Hazard whose manifestation is a fireball." .
+
+h2ho:PoolFireHazard rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:CombustionHazard ;
+    rdfs:comment "Hazard whose manifestation is a pool fire involving hydrogen or hydrogen containing liquids." .
+
+h2ho:DeflagrationHazard rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:CombustionHazard ;
+    rdfs:comment "Hazard whose manifestation is a deflagration (slow or fast)." .
+
+h2ho:DetonationHazard rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:CombustionHazard ;
+    rdfs:comment "Hazard whose manifestation is a detonation." .
+
+h2ho:OxygenDeficiencyHazard rdf:type owl:Class ;
+    rdfs:subClassOf ho61508:Hazard ;
+    rdfs:comment "Disposition for an atmosphere to become oxygen deficient, for example by displacement with hydrogen, leading to asphyxiation risk." .
+
+h2ho:ThermalHazard rdf:type owl:Class ;
+    rdfs:subClassOf ho61508:Hazard ;
+    rdfs:comment "Disposition to cause harmful thermal exposure (heat flux, high temperature) to people or structures." .
+
+h2ho:PressureHazard rdf:type owl:Class ;
+    rdfs:subClassOf ho61508:Hazard ;
+    rdfs:comment "Disposition to cause harmful overpressure or pressure waves, for example from explosions or detonations." .
+
+h2ho:ElectricalPowerHazard rdf:type owl:Class ;
+    rdfs:subClassOf ho61508:Hazard ;
+    rdfs:comment "Disposition associated with electrical power that may result in electrical shock, arcing, or ignition of hydrogen." .
+
+h2ho:ToxicityHazard rdf:type owl:Class ;
+    rdfs:subClassOf ho61508:Hazard ;
+    rdfs:comment "Disposition to cause harm through exposure to toxic substances, such as ammonia in hydrogen energy systems." .
+
+
+#################################################################
+# H2HO ho61508:HazardousEvent specialisations
+#################################################################
+
+h2ho:LossOfFunction rdf:type owl:Class ;
+    rdfs:subClassOf ho61508:HazardousEvent ;
+    rdfs:comment "Deviation from required functional capability. First abstraction level in the modular IEC 61508 event structure." .
+
+h2ho:LossOfContainment rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:LossOfFunction ;
+    rdfs:comment "Loss of physical containment of hydrogen. A specialisation of LossOfFunction." .
+
+h2ho:HydrogenRelease rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:LossOfContainment ;
+    rdfs:comment "Uncontrolled hydrogen release following containment failure." .
+
+h2ho:HighPressureRelease rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:HydrogenRelease ;
+    rdfs:comment "Hydrogen release from a high pressure vessel or piping." .
+
+h2ho:Rupture rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:HighPressureRelease ;
+    rdfs:comment "Sudden or catastrophic failure of containment (rupture), typically initiating a rapid hydrogen release." .
+
+h2ho:LowPressureRelease rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:HydrogenRelease ;
+    rdfs:comment "Hydrogen release from a low pressure source." .
+
+h2ho:LH2Release rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:HydrogenRelease ;
+    rdfs:comment "Release of liquid hydrogen (LH2), potentially forming cryogenic and flammable hazards." .
+
+h2ho:Ignition rdf:type owl:Class ;
+    rdfs:subClassOf ho61508:HazardousEvent ;
+    rdfs:comment "Ignition of a hydrogen-air mixture." .
+
+h2ho:EarlyIgnition rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:Ignition ;
+    rdfs:comment "Ignition occurs shortly after release, before major dispersion." .
+
+h2ho:LateIgnition rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:Ignition ;
+    rdfs:comment "Ignition occurs after significant dispersion, potentially forming a fireball." .
+
+h2ho:ExternalEvent rdf:type owl:Class ;
+    rdfs:subClassOf ho61508:HazardousEvent ;
+    rdfs:comment "Hazardous event external to the hydrogen system (for example impact, earthquake, lightning) that may initiate or escalate an accident scenario." .
+
+h2ho:FlameAcceleration rdf:type owl:Class ;
+    rdfs:subClassOf ho61508:HazardousEvent ;
+    rdfs:comment "Intermediate event where flame speed increases due to confinement, congestion, or turbulence." .
+
+h2ho:DDT rdf:type owl:Class ;
+    rdfs:subClassOf ho61508:HazardousEvent ;
+    rdfs:comment "Deflagration to Detonation Transition event." .
+
+
+#################################################################
+# H2HO ho61508:HazardousSituation specialisations
+#################################################################
+
+h2ho:ExplosiveAtmosphere rdf:type owl:Class ;
+    rdfs:subClassOf ho61508:HazardousSituation ;
+    rdfs:comment "Hazardous situation where a hydrogen-air mixture is within flammability limits." .
+
+h2ho:ExposureSituation rdf:type owl:Class ;
+    rdfs:subClassOf ho61508:HazardousSituation ;
+    rdfs:comment "Hazardous situation in which exposed entities are subject to harmful energy or substances (thermal, cryogenic, toxic)." .
+
+h2ho:Contamination rdf:type owl:Class ;
+    rdfs:subClassOf ho61508:HazardousSituation ;
+    rdfs:comment "Hazardous situation in which hydrogen or related substances contaminate an area, medium, or equipment." .
+
+h2ho:Overpressure rdf:type owl:Class ;
+    rdfs:subClassOf ho61508:HazardousSituation ;
+    rdfs:comment "Hazardous situation characterised by elevated pressure levels that may threaten structures or people." .
+
+h2ho:MaterialDegradation rdf:type owl:Class ;
+    rdfs:subClassOf ho61508:HazardousSituation ;
+    rdfs:comment "Hazardous situation in which materials or components have degraded (for example due to hydrogen embrittlement) increasing the likelihood of failure." .
+
+
+#################################################################
+# H2HO ho61508:HarmfulEvent specialisations
+#################################################################
+
+### Combustion (fire-type harmful events)
+h2ho:Combustion rdf:type owl:Class ;
+    rdfs:subClassOf ho61508:HarmfulEvent ;
+    rdfs:comment "Harmful combustion event (jet fire, fireball, pool fire, deflagration)." .
+
+h2ho:JetFire rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:Combustion ;
+    rdfs:comment "Directional flame from hydrogen jet ignition." .
+
+h2ho:Fireball rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:Combustion ;
+    rdfs:comment "Spherical flame cloud formed by delayed ignition of a dispersed hydrogen cloud." .
+
+h2ho:PoolFire rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:Combustion ;
+    rdfs:comment "Fire burning on a released pool of liquid hydrogen." .
+
+h2ho:Deflagration rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:Combustion ;
+    rdfs:comment "Deflagration, a subsonic combustion wave in a hydrogen-air mixture." .
+
+h2ho:SlowDeflagration rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:Deflagration ;
+    rdfs:comment "Deflagration with limited flame acceleration." .
+
+h2ho:FastDeflagration rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:Deflagration ;
+    rdfs:comment "Accelerated deflagration that may develop into detonation under certain conditions." .
+
+### Pressure wave harmful events
+h2ho:PressureWave rdf:type owl:Class ;
+    rdfs:subClassOf ho61508:HarmfulEvent ;
+    rdfs:comment "Harmful event dominated by overpressure or shock wave." .
+
+h2ho:Detonation rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:PressureWave ;
+    rdfs:comment "Supersonic explosion producing a shock wave and extreme overpressure." .
+
+### Electrical shock
+h2ho:ElectricalShock rdf:type owl:Class ;
+    rdfs:subClassOf ho61508:HarmfulEvent ;
+    rdfs:comment "Harmful event in which a person is subjected to electric current or electrical discharge." .
+
+### Exposure harmful events
+h2ho:ExposureEvent rdf:type owl:Class ;
+    rdfs:subClassOf ho61508:HarmfulEvent ;
+    rdfs:comment "Harmful event where an entity is exposed to hazardous energy or substances (thermal, cryogenic, toxic)." .
+
+h2ho:HeatExposureEvent rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:ExposureEvent ;
+    rdfs:comment "Exposure to high temperature or thermal radiation." .
+
+h2ho:CryogenicExposureEvent rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:ExposureEvent ;
+    rdfs:comment "Exposure to cryogenic temperatures, producing frostbite or cold burns." .
+
+h2ho:ToxicExposureEvent rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:ExposureEvent ;
+    rdfs:comment "Exposure to a toxic substance producing harm." .
+
+h2ho:AmmoniaExposureEvent rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:ToxicExposureEvent ;
+    rdfs:comment "Exposure to ammonia (NH3), for example due to leakage from cracking systems or storage." .
+
+
+#################################################################
+# H2HO ho61508:Harm specialisations
+#################################################################
+
+h2ho:Damage rdf:type owl:Class ;
+    rdfs:subClassOf ho61508:Harm ;
+    rdfs:comment "Damage to property or the environment." .
+
+h2ho:Injury rdf:type owl:Class ;
+    rdfs:subClassOf ho61508:Harm ;
+    rdfs:comment "Non fatal harm to a person." .
+
+h2ho:CryoBurn rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:Injury ;
+    rdfs:comment "Cold injury to a person caused by cryogenic exposure." .
+
+h2ho:Asphyxiation rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:Injury ;
+    rdfs:comment "Non fatal oxygen deprivation due to displacement of air by hydrogen or other gases." .
+
+h2ho:Death rdf:type owl:Class ;
+    rdfs:subClassOf ho61508:Harm ;
+    rdfs:comment "Fatal harm (loss of life)." .
+
+
+#################################################################
+# H2HO Restrictions (causal and manifestation links)
+#################################################################
+
+# Hydrogen release results in an explosive atmosphere
+h2ho:HydrogenRelease rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty ho61508:resultsIn ;
+    owl:someValuesFrom h2ho:ExplosiveAtmosphere
+] .
+
+# Explosive atmosphere enables ignition
+h2ho:ExplosiveAtmosphere rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty ho61508:enables ;
+    owl:someValuesFrom h2ho:Ignition
+] .
+
+# Hazards manifest in harmful events
+h2ho:JetFireHazard rdfs:subClassOf [
+  a owl:Restriction ;
+  owl:onProperty ho61508:manifestsIn ;
+  owl:someValuesFrom h2ho:JetFire
+] .
+
+h2ho:FireballHazard rdfs:subClassOf [
+  a owl:Restriction ;
+  owl:onProperty ho61508:manifestsIn ;
+  owl:someValuesFrom h2ho:Fireball
+] .
+
+h2ho:PoolFireHazard rdfs:subClassOf [
+  a owl:Restriction ;
+  owl:onProperty ho61508:manifestsIn ;
+  owl:someValuesFrom h2ho:PoolFire
+] .
+
+h2ho:DeflagrationHazard rdfs:subClassOf [
+  a owl:Restriction ;
+  owl:onProperty ho61508:manifestsIn ;
+  owl:someValuesFrom h2ho:Deflagration
+] .
+
+h2ho:DetonationHazard rdfs:subClassOf [
+  a owl:Restriction ;
+  owl:onProperty ho61508:manifestsIn ;
+  owl:someValuesFrom h2ho:Detonation
+] .
+
+# Combustion hazard inheres in pressurised hydrogen systems
+h2ho:CombustionHazard rdfs:subClassOf [
+  a owl:Restriction ;
+  owl:onProperty ho61508:inheresIn ;
+  owl:someValuesFrom h2ho:PressurizedHydrogenSystem
+] .
