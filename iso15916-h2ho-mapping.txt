@@ -1,10 +1,6 @@
 Introduction:
 This document provides a mapping from the ISO15916 hazard concept towards the H2HO hazards and provides reasoning why there are terminological differences.
 
-
-Combustion hazard - 6.2.1
-
-
 Liquied hydrogen leakage - 6.2.3
 Leaks of air, nitrogen, or other gases into direct exposure with liquid hydrogen can lead to several hazards. The solidified gases can plug pipes and orifices and jam valves. In a process known as cryopumping, the reduction in volume of the condensing gases could create a vacuum that can draw in even more gas. Should the leak persist for long periods, large quantities of material can accumulate displacing the liquid hydrogen. At some point, should the system be warmed for maintenance, these frozen materials will re-gasify possibly resulting in high pressures of reactive mixtures. On the other hand, these other gases might also carry heat into the liquid hydrogen and cause enhanced evaporation or pressure rise.
 
@@ -59,3 +55,49 @@ Scenario B — Cryopumping → blockage → rupture → explosion: h2ho:Cryopump
 Scenario C — Frozen material warms → pressure rise → rupture: h2ho:CryogenicMaterialDegradation enables h2ho:Overpressure enables h2ho:LossOfContainment resultsIn h2ho:Rupture resultsIn h2ho:HydrogenRelease enables h2ho:ExplosiveAtmosphere enables h2ho:Ignition manifestsIn h2ho:FastDeflagration .
 Scenario D — Oxygen enrichment on cold surface → ignition: h2ho:OxygenEnrichment involves h2ho:FlammabilityHazard enables h2ho:Ignition manifestsIn h2ho:PoolFire .
 
+
+
+
+6.3.1 Aspects of combustion
+The principal hazard presented by hydrogen systems is the uncontrolled combustion of accidentally released hydrogen. This holds true because of the high potential for leaks and formation of combustible
+mixtures, the ease of ignition of these mixtures under favourable circumstances, and the potential for high-energy releases that can occur as a fire or an explosion. For hydrogen to combust, two additional elements need to be present: an oxidizer such as air and a source of ignition. Each of the factors necessary for combustion (a fuel, an oxidizer, and an ignition source) can be represented on one of the three sides of a triangle, a concept known as a fire triangle. A fire is possible only when all three sides of the triangle are there. Mixtures of hydrogen and oxidizers are flammable over a wide range of concentrations, pressures, and temperatures. Mixtures near stoichiometry are particularly ignitable. A variety of common physical processes (open flames, hot surfaces, friction, etc.) can act as sources of ignition, including static sparks that are below the threshold of human sensation. Even ignition without an artificially provided energy source is possible under certain conditions of sudden release into an oxidizing atmosphere (unplanned ignition of sudden hydrogen release into piping with air could occur at storage pressures as low as 0,2 to 0,3 MPa). Because of the ease of ignition of hydrogen/oxidizer mixtures, most methods for the reduction in risk of hydrogen combustion rely on separation of hydrogen from the oxidizers (primary explosion protection measure: prevent the formation of reactive mixtures). There are several modes of hydrogen combustion: non-premixed combustion (fire) at a point source, deflagration, and detonation. Each can present hazards, and they are dependent on the circumstances of how the hydrogen is exposed to an oxidizer. In standard terrestrial applications, air is an omnipresent oxidizer. Electrolysers and some fuel-cell systems have the potential to mix oxygen with hydrogen in case of malfunction.
+
+ho61508:HazardSource
+	- h2ho:Electrolyser
+	- h2ho:FuelCell
+
+ho61508:Hazard
+	- h2ho:FlammabilityHazard
+
+ho61508:HazardousEvent
+	- h2ho:HydrogenRelease
+	- h2ho:Ignition
+		- h2ho:FlameIgnition
+		- h2ho:HotSurfaceIgnition
+		- h2ho:FrictionIgnition
+		- h2ho:StaticSparkIgnition
+	- h2ho:Mallfunction (e.g. fuel cell or electrolyser mixing air and hydrogen)
+	
+ho61508:HazardousSituation
+	- h2ho:ExplosiveAtmosphare
+	
+ho61508:HarmfulEvent
+	- h2ho:Combustion
+		- h2ho:Fire
+			- h2ho:Fireball
+			- h2ho:JetFire
+			- h2ho:PoolFire		
+		- h2ho:Explosion
+			- h2ho:Deflagation
+			- h2ho:Detonation
+
+DDT scenario:
+→ HydrogenRelease         (HazardousEvent)
+→ ExplosiveAtmosphere     (HazardousSituation)
+→ Ignition                (HazardousEvent)
+→ FlammabilityHazard      (Hazard)
+→ Deflagration            (HarmfulEvent)
+→ Overpressure            (HazardousSituation)
+→ FlameAcceleration       (HazardousEvent)
+→ FlammabilityHazard      (Hazard)
+→ Detonation              (HarmfulEvent)

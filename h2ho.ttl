@@ -42,6 +42,15 @@ h2ho:Valve rdf:type owl:Class ;
     rdfs:subClassOf h2ho:ProcessEquipment ;
     rdfs:comment "A flow-control component within hydrogen systems. Valves may jam or malfunction under cryogenic conditions, enabling LossOfFunction events such as ValveJam." .
 
+h2ho:Electrolyser rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:ProcessEquipment ;
+    rdfs:comment "Equipment that produces hydrogen through electrolysis. Can play the role ho61508:HazardSource when participating in accident scenarios." .
+
+h2ho:FuelCell rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:ProcessEquipment ;
+    rdfs:comment "Equipment that converts hydrogen into electricity. Can play the role ho61508:HazardSource when participating in accident scenarios." .
+
+
 h2ho:EnvironmentalConfinement rdf:type owl:Class ;
     rdfs:subClassOf ho61508:HazardSource ;
     rdfs:comment "Structures or surroundings that confine hydrogen or combustion products, such as buildings, enclosures, or congested layouts." .
@@ -49,7 +58,6 @@ h2ho:EnvironmentalConfinement rdf:type owl:Class ;
 h2ho:PressurizedHydrogenSystem rdf:type owl:Class ;
     rdfs:subClassOf ho61508:HazardSource ;
     rdfs:comment "System or component containing hydrogen at elevated pressure, including vessels, piping, and associated equipment." .
-
 
 #################################################################
 # H2HO ho61508:Hazard specialisations
@@ -104,6 +112,10 @@ h2ho:ToxicityHazard rdf:type owl:Class ;
 # H2HO ho61508:HazardousEvent specialisations
 #################################################################
 
+h2ho:Malfunction rdf:type owl:Class ;
+    rdfs:subClassOf ho61508:HazardousEvent ;
+    rdfs:comment "HazardousEvent where a system or component performs an unintended or unsafe function while still operating (e.g., electrolyser or fuel cell mixing hydrogen with oxygen). Distinguished from LossOfFunction, which represents absence of intended functionality." .
+
 h2ho:LossOfFunction rdf:type owl:Class ;
     rdfs:subClassOf ho61508:HazardousEvent ;
     rdfs:comment "Deviation from required functional capability. First abstraction level in the modular IEC 61508 event structure." .
@@ -135,6 +147,14 @@ h2ho:LeakOfAir rdf:type owl:Class ;
           owl:someValuesFrom h2ho:CryogenicMaterialDegradation
         ] ;
     rdfs:comment "A LossOfFunction event in which air, nitrogen, or other ambient gases leak into a liquid hydrogen system. Such ingress can lead to freezing, plugging, cryopumping, or oxygen enrichment." .
+
+h2ho:AirLeakage rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:LossOfFunction ,
+        [ rdf:type owl:Restriction ;
+          owl:onProperty ho61508:enables ;
+          owl:someValuesFrom h2ho:CryogenicMaterialDegradation
+        ] ;
+    rdfs:comment "LossOfFunction event where air, nitrogen, or other ambient gases leak into liquid hydrogen equipment, enabling freezing, oxygen enrichment, cryopumping and subsequent degradation." .
 
 h2ho:Cryopumping rdf:type owl:Class ;
     rdfs:subClassOf h2ho:LossOfFunction ,
@@ -172,13 +192,22 @@ h2ho:Ignition rdf:type owl:Class ;
     rdfs:subClassOf ho61508:HazardousEvent ;
     rdfs:comment "Ignition of a hydrogen-air mixture." .
 
-h2ho:EarlyIgnition rdf:type owl:Class ;
+h2ho:FlameIgnition rdf:type owl:Class ;
     rdfs:subClassOf h2ho:Ignition ;
-    rdfs:comment "Ignition occurs shortly after release, before major dispersion." .
+    rdfs:comment "Ignition caused by an open flame (e.g., burner flame, torch, flare, welding flame)." .
 
-h2ho:LateIgnition rdf:type owl:Class ;
+h2ho:HotSurfaceIgnition rdf:type owl:Class ;
     rdfs:subClassOf h2ho:Ignition ;
-    rdfs:comment "Ignition occurs after significant dispersion, potentially forming a fireball." .
+    rdfs:comment "Ignition caused by a sufficiently hot surface in contact with a hydrogen–air mixture." .
+
+h2ho:FrictionIgnition rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:Ignition ;
+    rdfs:comment "Ignition caused by friction heating between components (bearings, misaligned parts, worn equipment)." .
+
+h2ho:StaticSparkIgnition rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:Ignition ;
+    rdfs:comment "Ignition caused by electrostatic discharge (ESD), even below human perception threshold." .
+
 
 h2ho:ExternalEvent rdf:type owl:Class ;
     rdfs:subClassOf ho61508:HazardousEvent ;
@@ -253,26 +282,33 @@ h2ho:Property rdf:type owl:Class ;
 # H2HO ho61508:HarmfulEvent specialisations
 #################################################################
 
-### Combustion (fire-type harmful events)
 h2ho:Combustion rdf:type owl:Class ;
     rdfs:subClassOf ho61508:HarmfulEvent ;
-    rdfs:comment "Harmful combustion event (jet fire, fireball, pool fire, deflagration)." .
+    rdfs:comment "Generic harmful combustion event involving hydrogen. Has two primary modes: Fire (non-premixed) and Explosion (premixed)." .
+
+h2ho:Fire rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:Combustion ;
+    rdfs:comment "Non-premixed combustion where hydrogen burns immediately at the release point. Includes jet fires, pool fires, and fireballs." .
 
 h2ho:JetFire rdf:type owl:Class ;
-    rdfs:subClassOf h2ho:Combustion ;
-    rdfs:comment "Directional flame from hydrogen jet ignition." .
-
-h2ho:Fireball rdf:type owl:Class ;
-    rdfs:subClassOf h2ho:Combustion ;
-    rdfs:comment "Spherical flame cloud formed by delayed ignition of a dispersed hydrogen cloud." .
+    rdfs:subClassOf h2ho:Fire ;
+    rdfs:comment "Directional flame caused by ignition of a high-velocity hydrogen jet." .
 
 h2ho:PoolFire rdf:type owl:Class ;
-    rdfs:subClassOf h2ho:Combustion ;
+    rdfs:subClassOf h2ho:Fire ;
     rdfs:comment "Fire burning on a released pool of liquid hydrogen." .
 
-h2ho:Deflagration rdf:type owl:Class ;
+h2ho:Fireball rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:Fire ;
+    rdfs:comment "Spherical flame cloud resulting from delayed ignition of a dispersed hydrogen-air mixture." .
+
+h2ho:Explosion rdf:type owl:Class ;
     rdfs:subClassOf h2ho:Combustion ;
-    rdfs:comment "Deflagration, a subsonic combustion wave in a hydrogen-air mixture." .
+    rdfs:comment "Premixed combustion event occurring within a hydrogen-air mixture. Includes deflagrations and detonations." .
+
+h2ho:Deflagration rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:Explosion ;
+    rdfs:comment "Subsonic premixed combustion wave in hydrogen-air mixtures." .
 
 h2ho:SlowDeflagration rdf:type owl:Class ;
     rdfs:subClassOf h2ho:Deflagration ;
@@ -280,23 +316,16 @@ h2ho:SlowDeflagration rdf:type owl:Class ;
 
 h2ho:FastDeflagration rdf:type owl:Class ;
     rdfs:subClassOf h2ho:Deflagration ;
-    rdfs:comment "Accelerated deflagration that may develop into detonation under certain conditions." .
-
-### Pressure wave harmful events
-h2ho:PressureWave rdf:type owl:Class ;
-    rdfs:subClassOf ho61508:HarmfulEvent ;
-    rdfs:comment "Harmful event dominated by overpressure or shock wave." .
+    rdfs:comment "Accelerated deflagration that may transition to detonation (DDT)." .
 
 h2ho:Detonation rdf:type owl:Class ;
-    rdfs:subClassOf h2ho:PressureWave ;
-    rdfs:comment "Supersonic explosion producing a shock wave and extreme overpressure." .
+    rdfs:subClassOf h2ho:Explosion ;
+    rdfs:comment "Supersonic premixed combustion characterized by a shock-induced explosion wave." .
 
-### Electrical shock
 h2ho:ElectricalShock rdf:type owl:Class ;
     rdfs:subClassOf ho61508:HarmfulEvent ;
     rdfs:comment "Harmful event in which a person is subjected to electric current or electrical discharge." .
 
-### Exposure harmful events
 h2ho:ExposureEvent rdf:type owl:Class ;
     rdfs:subClassOf ho61508:HarmfulEvent ;
     rdfs:comment "Harmful event where an entity is exposed to hazardous energy or substances (thermal, cryogenic, toxic)." .
@@ -316,7 +345,6 @@ h2ho:ToxicExposureEvent rdf:type owl:Class ;
 h2ho:AmmoniaExposureEvent rdf:type owl:Class ;
     rdfs:subClassOf h2ho:ToxicExposureEvent ;
     rdfs:comment "Exposure to ammonia (NH3), for example due to leakage from cracking systems or storage." .
-
 
 #################################################################
 # H2HO ho61508:Harm specialisations
