@@ -1,0 +1,61 @@
+Introduction:
+This document provides a mapping from the ISO15916 hazard concept towards the H2HO hazards and provides reasoning why there are terminological differences.
+
+
+Combustion hazard - 6.2.1
+
+
+Liquied hydrogen leakage - 6.2.3
+Leaks of air, nitrogen, or other gases into direct exposure with liquid hydrogen can lead to several hazards. The solidified gases can plug pipes and orifices and jam valves. In a process known as cryopumping, the reduction in volume of the condensing gases could create a vacuum that can draw in even more gas. Should the leak persist for long periods, large quantities of material can accumulate displacing the liquid hydrogen. At some point, should the system be warmed for maintenance, these frozen materials will re-gasify possibly resulting in high pressures of reactive mixtures. On the other hand, these other gases might also carry heat into the liquid hydrogen and cause enhanced evaporation or pressure rise.
+
+Outside of the liquid hydrogen system, un-insulated pipes and vessels containing liquid hydrogen can condense gases such as air into solid and liquid forms on their outer surfaces. The liquid condensate flows and looks like liquid water. Since oxygen has a higher boiling point (90 K) than nitrogen (77 K), oxygen enrichment is possible. Should the oxygen component within liquid air come in contact with combustible materials, combustion hazards can occur even with materials which are commonly not considered as flammable.
+
+ho61508:Hazard
+	- h2ho:FlammabilityHazard
+		- h2ho:DetonationHazard
+	- h2ho:PressureHazard
+
+ho61508:HazardSource
+	- h2ho:LH2Storage
+	- h2ho:Piping
+	- h2ho:ProcessEquipment
+		- h2ho:Valve
+
+ho61508:HazardousEvent
+	- h2ho:LossOfFunction
+		- h2ho:PipePlug (caused by solidified gases and orifices)
+		- h2ho:ValveJam (caused by solidified gases and orifices)
+		- h2ho:LossOfContainment (if blockage → rupture)
+			- h2ho:HydrogenRelease
+				- h2ho:Rupture (if pressure builds)
+			- h2ho:LeakOfAir (Leaks of air, nitrogen, or other gases into direct exposure with liquid hydrogen)
+		- h2ho:Cryopumping (the reduction in volume of the condensing gases could create a vacuum)
+		- h2ho:Ignition
+
+ho61508:HazardousSituation
+	- h2ho:Overpressure
+	- h2ho:MaterialDegradation
+	- h2ho:ExposerSituation
+		- h2ho:LiquidHydrogenExposure (air, nitrogen, or other gases into direct exposure with liquid hydrogen)
+	- h2ho:Contamination
+		- h2ho:OxygenEnrichment
+
+ho61508:Exposed:
+	- h2ho:People
+	- h2ho:Property
+
+ho61508:HarmfulEvent
+	- h2ho:Detonation
+	- h2ho:PoolFire 
+	
+ho61508:Harm
+	- h2ho:Damage
+	- h2ho:Ingjury
+	- h2ho:Deth
+	
+Ontological Scenarious:
+Scenario A — Air leakage → freezing → blockage → rupture → ignition: h2ho:LeakOfAir resultsIn h2ho:LiquidHydrogenExposure enables h2ho:CryogenicMaterialDegradation enables h2ho:PipePlug enables h2ho:LossOfContainment resultsIn h2ho:HydrogenRelease enables h2ho:ExplosiveAtmosphere enables h2ho:Ignition manifestsIn h2ho:Fireball .
+Scenario B — Cryopumping → blockage → rupture → explosion: h2ho:Cryopumping resultsIn h2ho:LiquidHydrogenExposure resultsIn h2ho:CryogenicMaterialDegradation enables h2ho:ValveJam enables h2ho:LossOfContainment resultsIn h2ho:Rupture resultsIn h2ho:HydrogenRelease enables h2ho:ExplosiveAtmosphere enables h2ho:Ignition manifestsIn h2ho:Detonation .
+Scenario C — Frozen material warms → pressure rise → rupture: h2ho:CryogenicMaterialDegradation enables h2ho:Overpressure enables h2ho:LossOfContainment resultsIn h2ho:Rupture resultsIn h2ho:HydrogenRelease enables h2ho:ExplosiveAtmosphere enables h2ho:Ignition manifestsIn h2ho:FastDeflagration .
+Scenario D — Oxygen enrichment on cold surface → ignition: h2ho:OxygenEnrichment involves h2ho:FlammabilityHazard enables h2ho:Ignition manifestsIn h2ho:PoolFire .
+

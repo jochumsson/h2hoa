@@ -38,6 +38,10 @@ h2ho:ProcessEquipment rdf:type owl:Class ;
     rdfs:subClassOf ho61508:HazardSource ;
     rdfs:comment "Equipment that processes, conditions, or uses hydrogen (for example compressors, valves, reformers, fuel cells)." .
 
+h2ho:Valve rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:ProcessEquipment ;
+    rdfs:comment "A flow-control component within hydrogen systems. Valves may jam or malfunction under cryogenic conditions, enabling LossOfFunction events such as ValveJam." .
+
 h2ho:EnvironmentalConfinement rdf:type owl:Class ;
     rdfs:subClassOf ho61508:HazardSource ;
     rdfs:comment "Structures or surroundings that confine hydrogen or combustion products, such as buildings, enclosures, or congested layouts." .
@@ -51,28 +55,28 @@ h2ho:PressurizedHydrogenSystem rdf:type owl:Class ;
 # H2HO ho61508:Hazard specialisations
 #################################################################
 
-h2ho:CombustionHazard rdf:type owl:Class ;
+h2ho:FlammabilityHazard rdf:type owl:Class ;
     rdfs:subClassOf ho61508:Hazard ;
-    rdfs:comment "Disposition to produce harmful combustion phenomena (fires, deflagrations, detonations) in hydrogen accidents." .
+    rdfs:comment "Disposition for hydrogen mixtures or systems to undergo combustion phenomena (jet fire, fireball, deflagration, detonation)." .
 
 h2ho:JetFireHazard rdf:type owl:Class ;
-    rdfs:subClassOf h2ho:CombustionHazard ;
+    rdfs:subClassOf h2ho:FlammabilityHazard ;
     rdfs:comment "Hazard whose manifestation is a jet fire." .
 
 h2ho:FireballHazard rdf:type owl:Class ;
-    rdfs:subClassOf h2ho:CombustionHazard ;
+    rdfs:subClassOf h2ho:FlammabilityHazard ;
     rdfs:comment "Hazard whose manifestation is a fireball." .
 
 h2ho:PoolFireHazard rdf:type owl:Class ;
-    rdfs:subClassOf h2ho:CombustionHazard ;
-    rdfs:comment "Hazard whose manifestation is a pool fire involving hydrogen or hydrogen containing liquids." .
+    rdfs:subClassOf h2ho:FlammabilityHazard ;
+    rdfs:comment "Hazard whose manifestation is a pool fire." .
 
 h2ho:DeflagrationHazard rdf:type owl:Class ;
-    rdfs:subClassOf h2ho:CombustionHazard ;
+    rdfs:subClassOf h2ho:FlammabilityHazard ;
     rdfs:comment "Hazard whose manifestation is a deflagration (slow or fast)." .
 
 h2ho:DetonationHazard rdf:type owl:Class ;
-    rdfs:subClassOf h2ho:CombustionHazard ;
+    rdfs:subClassOf h2ho:FlammabilityHazard ;
     rdfs:comment "Hazard whose manifestation is a detonation." .
 
 h2ho:OxygenDeficiencyHazard rdf:type owl:Class ;
@@ -107,6 +111,42 @@ h2ho:LossOfFunction rdf:type owl:Class ;
 h2ho:LossOfContainment rdf:type owl:Class ;
     rdfs:subClassOf h2ho:LossOfFunction ;
     rdfs:comment "Loss of physical containment of hydrogen. A specialisation of LossOfFunction." .
+
+h2ho:PipePlug rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:LossOfFunction ,
+        [ rdf:type owl:Restriction ;
+          owl:onProperty ho61508:enables ;
+          owl:someValuesFrom h2ho:LossOfContainment
+        ] ;
+    rdfs:comment "A LossOfFunction event in which pipes or orifices become blocked due to the solidification of atmospheric gases (e.g., air or nitrogen) when exposed to liquid hydrogen temperatures. This blockage may enable or contribute to a subsequent LossOfContainment event." .
+
+h2ho:ValveJam rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:LossOfFunction ,
+        [ rdf:type owl:Restriction ;
+          owl:onProperty ho61508:enables ;
+          owl:someValuesFrom h2ho:LossOfContainment
+        ] ;
+    rdfs:comment "A LossOfFunction event in which a valve becomes stuck or jammed due to cryogenic freezing of atmospheric gases or condensate. The loss of valve operability may enable or contribute to a subsequent LossOfContainment event." .
+
+h2ho:LeakOfAir rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:LossOfFunction ,
+        [ rdf:type owl:Restriction ;
+          owl:onProperty ho61508:enables ;
+          owl:someValuesFrom h2ho:CryogenicMaterialDegradation
+        ] ;
+    rdfs:comment "A LossOfFunction event in which air, nitrogen, or other ambient gases leak into a liquid hydrogen system. Such ingress can lead to freezing, plugging, cryopumping, or oxygen enrichment." .
+
+h2ho:Cryopumping rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:LossOfFunction ,
+        [ rdf:type owl:Restriction ;
+          owl:onProperty ho61508:enables ;
+          owl:someValuesFrom h2ho:Overpressure
+        ] ,
+        [ rdf:type owl:Restriction ;
+          owl:onProperty ho61508:enables ;
+          owl:someValuesFrom h2ho:LeakOfAir
+        ] ;
+    rdfs:comment "A LossOfFunction event where condensation of gases at cryogenic temperatures reduces gas volume, creating a vacuum that draws in additional air or gas. Cryopumping may lead to further ingress, overpressure, or material degradation." .
 
 h2ho:HydrogenRelease rdf:type owl:Class ;
     rdfs:subClassOf h2ho:LossOfContainment ;
@@ -165,9 +205,17 @@ h2ho:ExposureSituation rdf:type owl:Class ;
     rdfs:subClassOf ho61508:HazardousSituation ;
     rdfs:comment "Hazardous situation in which exposed entities are subject to harmful energy or substances (thermal, cryogenic, toxic)." .
 
+h2ho:LiquidHydrogenExposure rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:ExposureSituation ;
+    rdfs:comment "Hazardous situation in which substances or components are directly exposed to liquid hydrogen, enabling freezing, solidification, and subsequent material degradation." .
+
 h2ho:Contamination rdf:type owl:Class ;
     rdfs:subClassOf ho61508:HazardousSituation ;
     rdfs:comment "Hazardous situation in which hydrogen or related substances contaminate an area, medium, or equipment." .
+	
+h2ho:OxygenEnrichment rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:Contamination ;
+    rdfs:comment "Cryogenic contamination scenario leading to oxygen-enriched liquid air. Domain-specific; not part of the HO61508 modular ontology." .
 
 h2ho:Overpressure rdf:type owl:Class ;
     rdfs:subClassOf ho61508:HazardousSituation ;
@@ -176,6 +224,29 @@ h2ho:Overpressure rdf:type owl:Class ;
 h2ho:MaterialDegradation rdf:type owl:Class ;
     rdfs:subClassOf ho61508:HazardousSituation ;
     rdfs:comment "Hazardous situation in which materials or components have degraded (for example due to hydrogen embrittlement) increasing the likelihood of failure." .
+
+h2ho:CryogenicMaterialDegradation rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:MaterialDegradation ,
+        [ rdf:type owl:Restriction ;
+          owl:onProperty ho61508:enables ;
+          owl:someValuesFrom h2ho:LossOfFunction
+        ] ;
+    rdfs:comment "HazardousSituation in which materials, components, or equipment experience degradation due to cryogenic conditions. Examples include freezing of atmospheric gases (air, nitrogen) into solid deposits, loss of ductility, brittleness, and condensate accumulation. CryogenicMaterialDegradation increases the likelihood of LossOfFunction events such as PipePlug, ValveJam, or Cryopumping, and may ultimately enable LossOfContainment or Rupture during warm-up or pressure rise. This situation corresponds to the mechanisms described in ISO 15916 §6.2.3: solidification of gases, cryopumping vacuum effects, freezing-induced blockages, and oxygen-enriched condensate formation on cold surfaces." .
+
+
+#################################################################
+# H2HO ho61508:Exposed specialisation
+#################################################################
+
+
+h2ho:Person rdf:type owl:Class ;
+    rdfs:subClassOf gufo:Endurant ;
+    rdfs:comment "A human being who may play the role of Exposed in a HazardousSituation." .
+
+h2ho:Property rdf:type owl:Class ;
+    rdfs:subClassOf gufo:Endurant ;
+    rdfs:comment "A physical object or structure that may play the role of Exposed in a HazardousSituation." .
+
 
 
 #################################################################
@@ -322,8 +393,14 @@ h2ho:DetonationHazard rdfs:subClassOf [
 ] .
 
 # Combustion hazard inheres in pressurised hydrogen systems
-h2ho:CombustionHazard rdfs:subClassOf [
+h2ho:FlammabilityHazard rdfs:subClassOf [
   a owl:Restriction ;
   owl:onProperty ho61508:inheresIn ;
   owl:someValuesFrom h2ho:PressurizedHydrogenSystem
+] .
+
+h2ho:CryogenicMaterialDegradation rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty ho61508:enables ;
+    owl:someValuesFrom h2ho:Rupture
 ] .
