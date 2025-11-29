@@ -55,10 +55,6 @@ h2ho:EnvironmentalConfinement rdf:type owl:Class ;
     rdfs:subClassOf ho61508:HazardSource ;
     rdfs:comment "Structures or surroundings that confine hydrogen or combustion products, such as buildings, enclosures, or congested layouts." .
 
-h2ho:PressurizedHydrogenSystem rdf:type owl:Class ;
-    rdfs:subClassOf ho61508:HazardSource ;
-    rdfs:comment "System or component containing hydrogen at elevated pressure, including vessels, piping, and associated equipment." .
-
 #################################################################
 # H2HO ho61508:Hazard specialisations
 #################################################################
@@ -139,14 +135,6 @@ h2ho:ValveJam rdf:type owl:Class ;
           owl:someValuesFrom h2ho:LossOfContainment
         ] ;
     rdfs:comment "A LossOfFunction event in which a valve becomes stuck or jammed due to cryogenic freezing of atmospheric gases or condensate. The loss of valve operability may enable or contribute to a subsequent LossOfContainment event." .
-
-h2ho:LeakOfAir rdf:type owl:Class ;
-    rdfs:subClassOf h2ho:LossOfFunction ,
-        [ rdf:type owl:Restriction ;
-          owl:onProperty ho61508:enables ;
-          owl:someValuesFrom h2ho:CryogenicMaterialDegradation
-        ] ;
-    rdfs:comment "A LossOfFunction event in which air, nitrogen, or other ambient gases leak into a liquid hydrogen system. Such ingress can lead to freezing, plugging, cryopumping, or oxygen enrichment." .
 
 h2ho:AirLeakage rdf:type owl:Class ;
     rdfs:subClassOf h2ho:LossOfFunction ,
@@ -243,7 +231,7 @@ h2ho:Contamination rdf:type owl:Class ;
 	
 h2ho:OxygenEnrichment rdf:type owl:Class ;
     rdfs:subClassOf h2ho:Contamination ;
-    rdfs:comment "Cryogenic contamination scenario leading to oxygen-enriched liquid air. Domain-specific; not part of the HO61508 modular ontology." .
+    rdfs:comment "Cryogenic contamination scenario leading to oxygen-enriched liquid air." .
 
 h2ho:Overpressure rdf:type owl:Class ;
     rdfs:subClassOf ho61508:HazardousSituation ;
@@ -320,6 +308,10 @@ h2ho:FastDeflagration rdf:type owl:Class ;
 h2ho:Detonation rdf:type owl:Class ;
     rdfs:subClassOf h2ho:Explosion ;
     rdfs:comment "Supersonic premixed combustion characterized by a shock-induced explosion wave." .
+
+h2ho:PressureWave rdf:type owl:Class ;
+    rdfs:subClassOf ho61508:HarmfulEvent ;
+    rdfs:comment "Harmful event in which a person or property is affected by a pressure wave, caused by combustion phenomena (deflagration, detonation) or by non-combustion sources." .
 
 h2ho:ElectricalShock rdf:type owl:Class ;
     rdfs:subClassOf ho61508:HarmfulEvent ;
@@ -417,13 +409,6 @@ h2ho:DetonationHazard rdfs:subClassOf [
   a owl:Restriction ;
   owl:onProperty ho61508:manifestsIn ;
   owl:someValuesFrom h2ho:Detonation
-] .
-
-# Combustion hazard inheres in pressurised hydrogen systems
-h2ho:FlammabilityHazard rdfs:subClassOf [
-  a owl:Restriction ;
-  owl:onProperty ho61508:inheresIn ;
-  owl:someValuesFrom h2ho:PressurizedHydrogenSystem
 ] .
 
 h2ho:CryogenicMaterialDegradation rdfs:subClassOf [
