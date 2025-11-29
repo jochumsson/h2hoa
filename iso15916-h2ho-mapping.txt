@@ -2,21 +2,18 @@ Introduction:
 This document provides a mapping from the ISO15916 hazard concept towards the H2HO hazards and provides reasoning why there are terminological differences.
 
 Liquied hydrogen leakage - 6.2.3
-Leaks of air, nitrogen, or other gases into direct exposure with liquid hydrogen can lead to several hazards. The solidified gases can plug pipes and orifices and jam valves. In a process known as cryopumping, the reduction in volume of the condensing gases could create a vacuum that can draw in even more gas. Should the leak persist for long periods, large quantities of material can accumulate displacing the liquid hydrogen. At some point, should the system be warmed for maintenance, these frozen materials will re-gasify possibly resulting in high pressures of reactive mixtures. On the other hand, these other gases might also carry heat into the liquid hydrogen and cause enhanced evaporation or pressure rise.
+<Text removed because of lisensing issues>
 
-Outside of the liquid hydrogen system, un-insulated pipes and vessels containing liquid hydrogen can condense gases such as air into solid and liquid forms on their outer surfaces. The liquid condensate flows and looks like liquid water. Since oxygen has a higher boiling point (90 K) than nitrogen (77 K), oxygen enrichment is possible. Should the oxygen component within liquid air come in contact with combustible materials, combustion hazards can occur even with materials which are commonly not considered as flammable.
-
+Ontological representation:
 ho61508:Hazard
 	- h2ho:FlammabilityHazard
 		- h2ho:DetonationHazard
 	- h2ho:PressureHazard
-
 ho61508:HazardSource
 	- h2ho:LH2Storage
 	- h2ho:Piping
 	- h2ho:ProcessEquipment
 		- h2ho:Valve
-
 ho61508:HazardousEvent
 	- h2ho:LossOfFunction
 		- h2ho:PipePlug (caused by solidified gases and orifices)
@@ -27,7 +24,6 @@ ho61508:HazardousEvent
 			- h2ho:LeakOfAir (Leaks of air, nitrogen, or other gases into direct exposure with liquid hydrogen)
 		- h2ho:Cryopumping (the reduction in volume of the condensing gases could create a vacuum)
 		- h2ho:Ignition
-
 ho61508:HazardousSituation
 	- h2ho:Overpressure
 	- h2ho:MaterialDegradation
@@ -35,15 +31,12 @@ ho61508:HazardousSituation
 		- h2ho:LiquidHydrogenExposure (air, nitrogen, or other gases into direct exposure with liquid hydrogen)
 	- h2ho:Contamination
 		- h2ho:OxygenEnrichment
-
 ho61508:Exposed:
 	- h2ho:People
 	- h2ho:Property
-
 ho61508:HarmfulEvent
 	- h2ho:Detonation
-	- h2ho:PoolFire 
-	
+	- h2ho:PoolFire
 ho61508:Harm
 	- h2ho:Damage
 	- h2ho:Ingjury
@@ -59,16 +52,14 @@ Scenario D — Oxygen enrichment on cold surface → ignition: h2ho:OxygenEnrich
 
 
 6.3.1 Aspects of combustion
-The principal hazard presented by hydrogen systems is the uncontrolled combustion of accidentally released hydrogen. This holds true because of the high potential for leaks and formation of combustible
-mixtures, the ease of ignition of these mixtures under favourable circumstances, and the potential for high-energy releases that can occur as a fire or an explosion. For hydrogen to combust, two additional elements need to be present: an oxidizer such as air and a source of ignition. Each of the factors necessary for combustion (a fuel, an oxidizer, and an ignition source) can be represented on one of the three sides of a triangle, a concept known as a fire triangle. A fire is possible only when all three sides of the triangle are there. Mixtures of hydrogen and oxidizers are flammable over a wide range of concentrations, pressures, and temperatures. Mixtures near stoichiometry are particularly ignitable. A variety of common physical processes (open flames, hot surfaces, friction, etc.) can act as sources of ignition, including static sparks that are below the threshold of human sensation. Even ignition without an artificially provided energy source is possible under certain conditions of sudden release into an oxidizing atmosphere (unplanned ignition of sudden hydrogen release into piping with air could occur at storage pressures as low as 0,2 to 0,3 MPa). Because of the ease of ignition of hydrogen/oxidizer mixtures, most methods for the reduction in risk of hydrogen combustion rely on separation of hydrogen from the oxidizers (primary explosion protection measure: prevent the formation of reactive mixtures). There are several modes of hydrogen combustion: non-premixed combustion (fire) at a point source, deflagration, and detonation. Each can present hazards, and they are dependent on the circumstances of how the hydrogen is exposed to an oxidizer. In standard terrestrial applications, air is an omnipresent oxidizer. Electrolysers and some fuel-cell systems have the potential to mix oxygen with hydrogen in case of malfunction.
+<Text removed because of lisensing issues>
 
+Onotological representation:
 ho61508:HazardSource
 	- h2ho:Electrolyser
 	- h2ho:FuelCell
-
 ho61508:Hazard
 	- h2ho:FlammabilityHazard
-
 ho61508:HazardousEvent
 	- h2ho:HydrogenRelease
 	- h2ho:Ignition
@@ -77,10 +68,8 @@ ho61508:HazardousEvent
 		- h2ho:FrictionIgnition
 		- h2ho:StaticSparkIgnition
 	- h2ho:Mallfunction (e.g. fuel cell or electrolyser mixing air and hydrogen)
-	
 ho61508:HazardousSituation
 	- h2ho:ExplosiveAtmosphare
-	
 ho61508:HarmfulEvent
 	- h2ho:Combustion
 		- h2ho:Fire
@@ -91,13 +80,186 @@ ho61508:HarmfulEvent
 			- h2ho:Deflagation
 			- h2ho:Detonation
 
+6.3.3.1 General
+<Text removed because of lisensing issues>
+
+Onotological representation:
+ho61508:HarmfulEvent
+	- h2ho:Explosion
+		- h2h0:Deflageration
+		- h2h0:Detonation
+	- h2ho:PressureWave
+
+6.3.3.2 Deflagration-to-Detonation Transition
+<Text removed because of lisensing issues>
+
 DDT scenario:
-→ HydrogenRelease         (HazardousEvent)
-→ ExplosiveAtmosphere     (HazardousSituation)
-→ Ignition                (HazardousEvent)
-→ FlammabilityHazard      (Hazard)
-→ Deflagration            (HarmfulEvent)
-→ Overpressure            (HazardousSituation)
-→ FlameAcceleration       (HazardousEvent)
-→ FlammabilityHazard      (Hazard)
-→ Detonation              (HarmfulEvent)
+→ HydrogenRelease         (HazardousEvent)		→ results in
+→ ExplosiveAtmosphere     (HazardousSituation)	→ enables
+→ Ignition                (HazardousEvent)		→ triggers
+→ DeflagrationHazard      (Hazard)				→ manifest in
+→ Deflagration            (HarmfulEvent)		→ leads to
+→ Overpressure            (HazardousSituation)	→ enables
+→ FlameAcceleration       (HazardousEvent)		→ triggers
+→ DetonationHazard        (Hazard)				→ manifest in
+→ Detonation              (HarmfulEvent)		
+
+
+6.3.3.4 Safety considerations
+<Text removed because of lisensing issues>
+
+Ontological represenation:
+
+ho61508:HazardousSituation
+	- h2ho:ExplosiveAtmosphere (hydrogen-oxidizer mixtures)
+		- h2ho:TurbulentMixture (capturing DDT excelation)
+h261508:HazardSource
+	- h2Ho:EnvironmentalConfinement (confinement and congestion)
+ho61508:Hazard
+	- h2ho:PressureHazard
+ho61508:HarmfulEvent
+	- h2ho:Combustion
+	- h2ho:PressureWave (manifestation of pressure are truncated into pressure wave, though other concepts are defined in the chapter)
+
+CHAPTER 6.4 RELEASE OF HYDROGEN
+
+ho61508:HazardSource
+h2ho:PressurizedHydrogenSystem
+h2ho:Piping
+h2ho:StorageVessel
+h2ho:ProcessEquipment
+
+ho61508:Hazard
+h2ho:FlammabilityHazard (flammable cloud formation)
+h2ho:PressureHazard (jet reaction forces, rapid expansion)
+
+ho61508:HazardousEvent
+h2ho:HydrogenRelease
+h2ho:HighPressureRelease
+h2ho:LowPressureRelease
+h2ho:LH2Release
+
+ho61508:HazardousSituation
+h2ho:ExplosiveAtmosphere
+h2ho:ExposureSituation
+h2ho:Overpressure
+
+ho61508:HarmfulEvent
+h2ho:Fire
+h2ho:Explosion
+
+Notes:
+Jet releases correspond to HighPressureRelease leading to JetFire.
+LH2Release evaporates into ExplosiveAtmosphere.
+
+CHAPTER 6.5 VENTING AND PURGING
+
+ho61508:HazardSource
+h2ho:ProcessEquipment
+h2ho:Piping
+h2ho:EnvironmentalConfinement
+
+ho61508:Hazard
+h2ho:FlammabilityHazard (incomplete purging)
+
+ho61508:HazardousEvent
+h2ho:LossOfFunction (insufficient purge flow)
+h2ho:HydrogenRelease
+h2ho:Ignition
+
+ho61508:HazardousSituation
+h2ho:ExplosiveAtmosphere
+h2ho:Contamination (oxygen ingress)
+
+ho61508:HarmfulEvent
+h2ho:Explosion
+
+Notes:
+Air in-leakage during purging is represented as LeakOfAir leading to ExplosiveAtmosphere.
+
+CHAPTER 6.6 DIFFUSION AND BUOYANCY EFFECTS
+
+ho61508:Hazard
+h2ho:FlammabilityHazard
+
+ho61508:HazardousSituation
+h2ho:ExplosiveAtmosphere
+h2ho:EnvironmentalConfinement
+
+Notes:
+No new ontology classes required. Dispersion effects feed into ExplosiveAtmosphere.
+
+CHAPTER 6.6.3 ACCUMULATION UNDER CEILINGS
+
+ho61508:HazardSource
+h2ho:EnvironmentalConfinement
+
+ho61508:HazardousSituation
+h2ho:ExplosiveAtmosphere
+
+ho61508:HazardousEvent
+h2ho:Ignition
+
+ho61508:HarmfulEvent
+h2ho:Explosion
+
+Notes:
+Ceiling accumulation is modelled entirely as ExplosiveAtmosphere plus Ignition.
+
+CHAPTER 6.6.4 JET FLAMES AND FLAME LENGTH
+
+ho61508:Hazard
+h2ho:FlammabilityHazard
+
+ho61508:HazardousEvent
+h2ho:HydrogenRelease
+h2ho:Ignition
+
+ho61508:HarmfulEvent
+h2ho:JetFire
+
+ho61508:Harm
+h2ho:Injury
+h2ho:Damage
+
+Notes:
+Jet behavior is a physical detail, not ontological. JetFire remains the harmful event.
+
+CHAPTER 6.7 HAZARDS FROM COLD HYDROGEN
+
+ho61508:HazardSource
+h2ho:LH2Storage
+h2ho:Piping
+h2ho:ProcessEquipment
+
+ho61508:Hazard
+h2ho:FlammabilityHazard
+h2ho:PressureHazard
+h2ho:ThermalHazard
+
+ho61508:HazardousEvent
+h2ho:LH2Release
+h2ho:LeakOfAir
+h2ho:Cryopumping
+h2ho:LossOfContainment
+h2ho:Rupture
+
+ho61508:HazardousSituation
+h2ho:LiquidHydrogenExposure
+h2ho:CryogenicMaterialDegradation
+h2ho:OxygenEnrichment
+h2ho:Overpressure
+
+ho61508:HarmfulEvent
+h2ho:PoolFire
+h2ho:Fireball
+h2ho:Deflagration
+h2ho:Detonation
+
+ho61508:Harm
+h2ho:CryoBurn
+h2ho:Injury
+h2ho:Damage
+
+Notes:
+All cold hydrogen phenomena are already captured within existing LH2 classes.

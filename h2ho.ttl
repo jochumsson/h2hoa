@@ -217,11 +217,6 @@ h2ho:FlameAcceleration rdf:type owl:Class ;
     rdfs:subClassOf ho61508:HazardousEvent ;
     rdfs:comment "Intermediate event where flame speed increases due to confinement, congestion, or turbulence." .
 
-h2ho:DDT rdf:type owl:Class ;
-    rdfs:subClassOf ho61508:HazardousEvent ;
-    rdfs:comment "Deflagration to Detonation Transition event." .
-
-
 #################################################################
 # H2HO ho61508:HazardousSituation specialisations
 #################################################################
@@ -229,6 +224,10 @@ h2ho:DDT rdf:type owl:Class ;
 h2ho:ExplosiveAtmosphere rdf:type owl:Class ;
     rdfs:subClassOf ho61508:HazardousSituation ;
     rdfs:comment "Hazardous situation where a hydrogen-air mixture is within flammability limits." .
+
+h2ho:TurbulentMixture rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:ExplosiveAtmosphere ;
+    rdfs:comment "HazardousSituation in which a hydrogen–air mixture is within flammability limits and exhibits turbulence. Turbulence promotes flame instability and flame acceleration, enabling the DDT process." .
 
 h2ho:ExposureSituation rdf:type owl:Class ;
     rdfs:subClassOf ho61508:HazardousSituation ;
