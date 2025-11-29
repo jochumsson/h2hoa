@@ -144,18 +144,6 @@ h2ho:AirLeakage rdf:type owl:Class ;
         ] ;
     rdfs:comment "LossOfFunction event where air, nitrogen, or other ambient gases leak into liquid hydrogen equipment, enabling freezing, oxygen enrichment, cryopumping and subsequent degradation." .
 
-h2ho:Cryopumping rdf:type owl:Class ;
-    rdfs:subClassOf h2ho:LossOfFunction ,
-        [ rdf:type owl:Restriction ;
-          owl:onProperty ho61508:enables ;
-          owl:someValuesFrom h2ho:Overpressure
-        ] ,
-        [ rdf:type owl:Restriction ;
-          owl:onProperty ho61508:enables ;
-          owl:someValuesFrom h2ho:LeakOfAir
-        ] ;
-    rdfs:comment "A LossOfFunction event where condensation of gases at cryogenic temperatures reduces gas volume, creating a vacuum that draws in additional air or gas. Cryopumping may lead to further ingress, overpressure, or material degradation." .
-
 h2ho:HydrogenRelease rdf:type owl:Class ;
     rdfs:subClassOf h2ho:LossOfContainment ;
     rdfs:comment "Uncontrolled hydrogen release following containment failure." .
