@@ -1,0 +1,99 @@
+@prefix h2ho:    <https://w3id.org/jochumsson/h2ho#> .
+@prefix ho61508: <https://w3id.org/jochumsson/ho61508#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+#################################################################
+# H2HO DOMAIN RESTRICTIONS (CAUSAL RELATIONS)
+#################################################################
+#
+# This file contains example domain-level causal and manifestation
+# rules for hydrogen safety analysis. These rules are NOT part of
+# the conceptual H2HO ontology described in the paper “A Hazard 
+# Ontology Based on IEC 61508”. 
+#
+# Instead, they belong to the application layer: scenario 
+# modelling, causal sequence construction, and risk analysis.
+#
+# They illustrate how HO61508 object properties (resultsIn, 
+# enables, manifestsIn) may be used to express domain physics. 
+#
+# The conceptual ontology (h2ho.ttl) intentionally excludes such
+# rules to remain general, reusable, and structurally aligned 
+# with IEC 61508.
+#
+#################################################################
+
+
+#################################################################
+# Fundamental hydrogen combustion chain
+#################################################################
+
+### HydrogenRelease → ExplosiveAtmosphere
+h2ho:HydrogenRelease rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty ho61508:resultsIn ;
+    owl:someValuesFrom h2ho:ExplosiveAtmosphere
+] .
+
+### ExplosiveAtmosphere → Ignition
+h2ho:ExplosiveAtmosphere rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty ho61508:enables ;
+    owl:someValuesFrom h2ho:Ignition
+] .
+
+
+#################################################################
+# Hazard manifestation rules (inherent domain physics)
+#################################################################
+
+### JetFireHazard → JetFire
+h2ho:JetFireHazard rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty ho61508:manifestsIn ;
+    owl:someValuesFrom h2ho:JetFire
+] .
+
+### FireballHazard → Fireball
+h2ho:FireballHazard rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty ho61508:manifestsIn ;
+    owl:someValuesFrom h2ho:Fireball
+] .
+
+### PoolFireHazard → PoolFire
+h2ho:PoolFireHazard rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty ho61508:manifestsIn ;
+    owl:someValuesFrom h2ho:PoolFire
+] .
+
+### DeflagrationHazard → Deflagration
+h2ho:DeflagrationHazard rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty ho61508:manifestsIn ;
+    owl:someValuesFrom h2ho:Deflagration
+] .
+
+### DetonationHazard → Detonation
+h2ho:DetonationHazard rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty ho61508:manifestsIn ;
+    owl:someValuesFrom h2ho:Detonation
+] .
+
+
+#################################################################
+# Cryogenic degradation chain (most common LH2 causal pattern)
+#################################################################
+
+### CryogenicMaterialDegradation → Rupture
+h2ho:CryogenicMaterialDegradation rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty ho61508:enables ;
+    owl:someValuesFrom h2ho:Rupture
+] .
+
+
