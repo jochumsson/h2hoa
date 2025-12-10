@@ -220,7 +220,7 @@ h2ho:ExposureSituation rdf:type owl:Class ;
     rdfs:subClassOf ho61508:HazardousSituation ;
     rdfs:comment "Hazardous situation in which exposed entities are subject to harmful energy or substances (thermal, cryogenic, toxic)." .
 
-h2ho:LiquidHydrogenExposure rdf:type owl:Class ;
+h2ho:LiquidHydrogenExposureSituation rdf:type owl:Class ;
     rdfs:subClassOf h2ho:ExposureSituation ;
     rdfs:comment "Hazardous situation in which substances or components are directly exposed to liquid hydrogen, enabling freezing, solidification, and subsequent material degradation." .
 
@@ -312,21 +312,21 @@ h2ho:ExposureEvent rdf:type owl:Class ;
     rdfs:subClassOf ho61508:HarmfulEvent ;
     rdfs:comment "Harmful event where an entity is exposed to hazardous energy or substances (thermal, cryogenic, toxic)." .
 
-h2ho:HeatExposureEvent rdf:type owl:Class ;
+h2ho:ThermalExposureEvent rdf:type owl:Class ;
     rdfs:subClassOf h2ho:ExposureEvent ;
-    rdfs:comment "Exposure to high temperature or thermal radiation." .
-
-h2ho:CryogenicExposureEvent rdf:type owl:Class ;
-    rdfs:subClassOf h2ho:ExposureEvent ;
-    rdfs:comment "Exposure to cryogenic temperatures, producing frostbite or cold burns." .
+    rdfs:comment "A harmful exposure event in which a person or object is subjected to thermal extremes, including heat or cryogenic cold. Represents the abstract manifestation of thermal hazard." .
 
 h2ho:ToxicExposureEvent rdf:type owl:Class ;
     rdfs:subClassOf h2ho:ExposureEvent ;
     rdfs:comment "Exposure to a toxic substance producing harm." .
 
-h2ho:AmmoniaExposureEvent rdf:type owl:Class ;
-    rdfs:subClassOf h2ho:ToxicExposureEvent ;
-    rdfs:comment "Exposure to ammonia (NH3), for example due to leakage from cracking systems or storage." .
+h2ho:HighPressureExposureEvent rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:ExposureEvent ;
+    rdfs:comment "A harmful event in which a person or object is exposed to damaging levels of pressure or blast loading, resulting in injury or structural harm." .
+
+h2ho:OxygenDeficiencyExposureEvent rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:ExposureEvent ;
+    rdfs:comment "A harmful exposure event in which a person is subjected to an atmosphere with insufficient oxygen, potentially leading to asphyxiation." .
 
 #################################################################
 # H2HO ho61508:Harm specialisations
