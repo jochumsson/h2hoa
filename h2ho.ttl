@@ -18,8 +18,29 @@ described in 'A Modular Hazard Ontology Based on IEC 61508'.""" .
 # H2HO ho61508:HazardSource specialisations
 #################################################################
 
-h2ho:StorageVessel rdf:type owl:Class ;
+h2ho:StorageVesselHazardSource rdf:type owl:Class ;
     rdfs:subClassOf ho61508:HazardSource ;
+    rdfs:comment "Hazard source spcification for component or system whose main function is to store hydrogen or related media (gas or liquid)." .
+
+h2ho:PipingHazardSource rdf:type owl:Class ;
+    rdfs:subClassOf ho61508:HazardSource ;
+    rdfs:comment "Hazard source role spcification for piping or pipework used to transport hydrogen between system components." .
+
+h2ho:ProcessEquipmentHazardSource rdf:type owl:Class ;
+    rdfs:subClassOf ho61508:HazardSource ;
+    rdfs:comment "Hazard source role spcification for equipment that processes, conditions, or uses hydrogen (for example compressors, valves, reformers, fuel cells)." .
+
+h2ho:EnvironmentalConfinementHazardSource rdf:type owl:Class ;
+    rdfs:subClassOf ho61508:HazardSource ;
+    rdfs:comment "Hazard source role spcification for structures or surroundings that confine hydrogen or combustion products, such as buildings, enclosures, or congested layouts." .
+
+#################################################################
+# H2HO Abstract catecoristation of endurants playing the role 
+# ho61508:HazardSource 
+#################################################################
+
+h2ho:StorageVessel rdf:type owl:Class ;
+    rdfs:subClassOf gufo:Endurant ;
     rdfs:comment "Component or system whose main function is to store hydrogen or related media (gas or liquid)." .
 
 h2ho:LH2Storage rdf:type owl:Class ;
@@ -31,11 +52,11 @@ h2ho:HighPressureH2Storage rdf:type owl:Class ;
     rdfs:comment "Storage vessel containing hydrogen at elevated pressure." .
 
 h2ho:Piping rdf:type owl:Class ;
-    rdfs:subClassOf ho61508:HazardSource ;
+    rdfs:subClassOf gufo:Endurant ;
     rdfs:comment "Piping or pipework used to transport hydrogen between system components." .
 
 h2ho:ProcessEquipment rdf:type owl:Class ;
-    rdfs:subClassOf ho61508:HazardSource ;
+    rdfs:subClassOf gufo:Endurant ;
     rdfs:comment "Equipment that processes, conditions, or uses hydrogen (for example compressors, valves, reformers, fuel cells)." .
 
 h2ho:Valve rdf:type owl:Class ;
@@ -50,9 +71,8 @@ h2ho:FuelCell rdf:type owl:Class ;
     rdfs:subClassOf h2ho:ProcessEquipment ;
     rdfs:comment "Equipment that converts hydrogen into electricity. Can play the role ho61508:HazardSource when participating in accident scenarios." .
 
-
 h2ho:EnvironmentalConfinement rdf:type owl:Class ;
-    rdfs:subClassOf ho61508:HazardSource ;
+    rdfs:subClassOf gufo:Endurant ;
     rdfs:comment "Structures or surroundings that confine hydrogen or combustion products, such as buildings, enclosures, or congested layouts." .
 
 #################################################################
