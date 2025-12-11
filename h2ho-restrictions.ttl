@@ -27,11 +27,6 @@
 #
 #################################################################
 
-
-#################################################################
-# Hazard inherence restrictions
-#################################################################
-
 #################################################################
 # Hazard inherence restrictions
 #################################################################
@@ -124,7 +119,7 @@ h2ho:ToxicityHazard rdfs:subClassOf [
 h2ho:StorageVesselHazardSource rdfs:subClassOf [
     a owl:Restriction ;
     rdfs:comment "Instances of StorageVesselHazardSource are played by StorageVessel endurants." ;
-    owl:onProperty h2ho:playedBy ;
+    owl:onProperty ho61508:carriedBy ;
     owl:someValuesFrom h2ho:StorageVessel
 ] .
 
@@ -132,7 +127,7 @@ h2ho:StorageVesselHazardSource rdfs:subClassOf [
 h2ho:PipingHazardSource rdfs:subClassOf [
     a owl:Restriction ;
     rdfs:comment "Instances of PipingHazardSource are played by Piping endurants." ;
-    owl:onProperty h2ho:playedBy ;
+    owl:onProperty ho61508:carriedBy ;
     owl:someValuesFrom h2ho:Piping
 ] .
 
@@ -140,7 +135,7 @@ h2ho:PipingHazardSource rdfs:subClassOf [
 h2ho:ProcessEquipmentHazardSource rdfs:subClassOf [
     a owl:Restriction ;
     rdfs:comment "Instances of ProcessEquipmentHazardSource are played by ProcessEquipment endurants." ;
-    owl:onProperty h2ho:playedBy ;
+    owl:onProperty ho61508:carriedBy ;
     owl:someValuesFrom h2ho:ProcessEquipment
 ] .
 
@@ -148,7 +143,7 @@ h2ho:ProcessEquipmentHazardSource rdfs:subClassOf [
 h2ho:EnvironmentalConfinementHazardSource rdfs:subClassOf [
     a owl:Restriction ;
     rdfs:comment "Instances of EnvironmentalConfinementHazardSource are played by EnvironmentalConfinement endurants." ;
-    owl:onProperty h2ho:playedBy ;
+    owl:onProperty ho61508:carriedBy ;
     owl:someValuesFrom h2ho:EnvironmentalConfinement
 ] .
 
@@ -156,20 +151,35 @@ h2ho:EnvironmentalConfinementHazardSource rdfs:subClassOf [
 # Fundamental hydrogen combustion chain
 #################################################################
 
-### HydrogenRelease → ExplosiveAtmosphere
+### HydrogenRelease → FlammableHydrogenAir
 h2ho:HydrogenRelease rdfs:subClassOf [
     a owl:Restriction ;
+    rdfs:comment "A HydrogenRelease produces a flammable hydrogen-air condition through dispersion and mixing, replacing the former ExplosiveAtmosphere notion." ;
     owl:onProperty ho61508:resultsIn ;
-    owl:someValuesFrom h2ho:ExplosiveAtmosphere
+    owl:someValuesFrom h2ho:FlammableHydrogenAir
 ] .
 
-### ExplosiveAtmosphere → Ignition
-h2ho:ExplosiveAtmosphere rdfs:subClassOf [
+### FlammableHydrogenAir → Ignition
+h2ho:FlammableHydrogenAir rdfs:subClassOf [
     a owl:Restriction ;
+    rdfs:comment "A flammable hydrogen-air condition enables Ignition when an ignition source interacts with the mixture, starting the combustion chain." ;
     owl:onProperty ho61508:enables ;
     owl:someValuesFrom h2ho:Ignition
 ] .
 
+h2ho:DetonationCondition rdfs:subClassOf [
+    a owl:Restriction ;
+    rdfs:comment "This situation kan enables flame acceleration due to turbulence-enhanced combustion." ;
+    owl:onProperty ho61508:enables ;
+    owl:someValuesFrom h2ho:FlameAcceleration
+] .
+
+h2ho:FlameAcceleration rdfs:subClassOf [
+    a owl:Restriction ;
+    rdfs:comment "Flame acceleration triggers the detonation hazard by increasing flame speed and shock formation." ;
+    owl:onProperty ho61508:triggers ;
+    owl:someValuesFrom h2ho:DetonationHazard
+] .
 
 #################################################################
 # Hazard manifestation rules 
@@ -267,6 +277,24 @@ h2ho:ThermalHazard rdfs:subClassOf [
     owl:onProperty ho61508:manifestsIn ;
     owl:someValuesFrom h2ho:ThermalExposureEvent
 ] .
+
+
+#################################################################
+# HarmfulEvent leadsTo HazardousSituation restrictions
+#################################################################
+
+h2ho:Deflagration rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty ho61508:leadsTo ;
+    owl:allValuesFrom [
+        owl:unionOf (
+            h2ho:DetonationCondition
+            h2ho:ExposureSituation
+            h2ho:DamagedEquipmentDegradation
+        )
+    ]
+] .
+
 
 #################################################################
 # Cryogenic degradation chain (most common LH2 causal pattern)

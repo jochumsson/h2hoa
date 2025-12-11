@@ -208,13 +208,34 @@ h2ho:FlameAcceleration rdf:type owl:Class ;
 # H2HO ho61508:HazardousSituation specialisations
 #################################################################
 
-h2ho:ExplosiveAtmosphere rdf:type owl:Class ;
-    rdfs:subClassOf ho61508:HazardousSituation ;
-    rdfs:comment "Hazardous situation where a hydrogen-air mixture is within flammability limits." .
+#################################################################
+# New Hazardous Situations (ISO 15916 aligned)
+#################################################################
 
-h2ho:TurbulentMixture rdf:type owl:Class ;
-    rdfs:subClassOf h2ho:ExplosiveAtmosphere ;
-    rdfs:comment "HazardousSituation in which a hydrogen–air mixture is within flammability limits and exhibits turbulence. Turbulence promotes flame instability and flame acceleration, enabling the DDT process." .
+### Generic flammable hydrogen-air condition
+h2ho:FlammableHydrogenAir rdf:type owl:Class ;
+    rdfs:subClassOf ho61508:HazardousSituation ;
+    rdfs:comment "HazardousSituation in which hydrogen and air form a flammable condition. This corresponds to what is often called an 'explosive atmosphere' in standards, but expressed in chemically neutral terms." .
+
+### Flammable vapor cloud (delayed mixing)
+h2ho:FlammableVaporCloud rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:FlammableHydrogenAir ;
+    rdfs:comment "HazardousSituation in which a dispersed hydrogen-air cloud is within flammable limits. Relevant for fireball and vapor cloud explosion scenarios." .
+
+### Deflagration-capable condition
+h2ho:DeflagrationCondition rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:FlammableHydrogenAir ;
+    rdfs:comment "HazardousSituation in which a hydrogen-air condition can support subsonic flame propagation (deflagration), based on concentration, confinement, and turbulence." .
+
+### Detonation-capable condition
+h2ho:DetonationCondition rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:FlammableHydrogenAir ;
+    rdfs:comment "HazardousSituation in which a hydrogen-air condition can support detonation, for example when mixture composition and confinement exceed detonation limits." .
+
+### Hydrogen jet situation
+h2ho:HydrogenJet rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:FlammableHydrogenAir ;
+    rdfs:comment "HazardousSituation in which hydrogen emerges as a momentum driven jet, for example after a pressurised release. Portions of the jet are within flammable limits and can produce a jet fire if ignited." .
 
 h2ho:ExposureSituation rdf:type owl:Class ;
     rdfs:subClassOf ho61508:HazardousSituation ;
@@ -243,6 +264,10 @@ h2ho:MaterialDegradation rdf:type owl:Class ;
 h2ho:CryogenicMaterialDegradation rdf:type owl:Class ;
     rdfs:subClassOf h2ho:MaterialDegradation ;
     rdfs:comment "HazardousSituation in which materials, components, or equipment experience degradation due to cryogenic conditions. Examples include freezing of atmospheric gases (air, nitrogen) into solid deposits, loss of ductility, brittleness, and condensate accumulation. CryogenicMaterialDegradation increases the likelihood of LossOfFunction events such as PipePlug, ValveJam, or Cryopumping, and may ultimately enable LossOfContainment or Rupture during warm-up or pressure rise. This situation corresponds to the mechanisms described in ISO 15916 §6.2.3: solidification of gases, cryopumping vacuum effects, freezing-induced blockages, and oxygen-enriched condensate formation on cold surfaces." .
+	
+h2ho:DamagedEquipmentDegradation rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:MaterialDegradation ;
+    rdfs:comment "HazardousSituation in which equipment is physically degraded or impaired (mechanically, thermally, electrically, or cryogenically), reducing functional integrity and potentially enabling LossOfFunction or LossOfContainment events." .
 
 #################################################################
 # H2HO ho61508:Exposed specialisation
@@ -331,14 +356,51 @@ h2ho:OxygenDeficiencyExposureEvent rdf:type owl:Class ;
 #################################################################
 # H2HO ho61508:Harm specialisations
 #################################################################
-
+	
+### Generic damage
 h2ho:Damage rdf:type owl:Class ;
     rdfs:subClassOf ho61508:Harm ;
-    rdfs:comment "Damage to property or the environment." .
+    rdfs:comment "Harm to physical property, equipment, or the environment." .
 
+### Property damage
+h2ho:PropertyDamage rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:Damage ;
+    rdfs:comment "Damage to buildings or infrastructure." .
+
+### Environmental damage
+h2ho:EnvironmentalDamage rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:Damage ;
+    rdfs:comment "Damage to the natural environment." .
+	
+### Injury (non-fatal harm)
 h2ho:Injury rdf:type owl:Class ;
     rdfs:subClassOf ho61508:Harm ;
-    rdfs:comment "Non fatal harm to a person." .
+    rdfs:comment "Non-fatal harm to a person resulting from exposure to hazardous events." .
+
+### Cryogenic cold injury
+h2ho:CryoBurn rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:Injury ;
+    rdfs:comment "Cold injury caused by cryogenic exposure (LH2 or cold gas)." .
+
+### Asphyxiation (non-fatal oxygen deprivation)
+h2ho:Asphyxiation rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:Injury ;
+    rdfs:comment "Non-fatal harm caused by insufficient oxygen concentration. Fatal outcomes are represented as Death, not Asphyxiation." .
+
+### Heat or flame burn injury
+h2ho:BurnInjury rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:Injury ;
+    rdfs:comment "Non-fatal thermal injury resulting from exposure to flames or hot surfaces." .
+
+### Blast trauma
+h2ho:BlastTrauma rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:Injury ;
+    rdfs:comment "Non-fatal injury caused by a pressure wave or explosion shock load." .
+
+### Toxic injury
+h2ho:ToxicInjury rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:Injury ;
+    rdfs:comment "Non-fatal harm due to toxic substance exposure." .
 
 h2ho:CryoBurn rdf:type owl:Class ;
     rdfs:subClassOf h2ho:Injury ;
