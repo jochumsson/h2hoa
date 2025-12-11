@@ -213,28 +213,28 @@ h2ho:FlameAcceleration rdf:type owl:Class ;
 #################################################################
 
 ### Generic flammable hydrogen-air condition
-h2ho:FlammableHydrogenAir rdf:type owl:Class ;
+h2ho:FlammableCondition rdf:type owl:Class ;
     rdfs:subClassOf ho61508:HazardousSituation ;
     rdfs:comment "HazardousSituation in which hydrogen and air form a flammable condition. This corresponds to what is often called an 'explosive atmosphere' in standards, but expressed in chemically neutral terms." .
 
 ### Flammable vapor cloud (delayed mixing)
 h2ho:FlammableVaporCloud rdf:type owl:Class ;
-    rdfs:subClassOf h2ho:FlammableHydrogenAir ;
+    rdfs:subClassOf h2ho:FlammableCondition ;
     rdfs:comment "HazardousSituation in which a dispersed hydrogen-air cloud is within flammable limits. Relevant for fireball and vapor cloud explosion scenarios." .
 
 ### Deflagration-capable condition
 h2ho:DeflagrationCondition rdf:type owl:Class ;
-    rdfs:subClassOf h2ho:FlammableHydrogenAir ;
+    rdfs:subClassOf h2ho:FlammableCondition ;
     rdfs:comment "HazardousSituation in which a hydrogen-air condition can support subsonic flame propagation (deflagration), based on concentration, confinement, and turbulence." .
 
 ### Detonation-capable condition
 h2ho:DetonationCondition rdf:type owl:Class ;
-    rdfs:subClassOf h2ho:FlammableHydrogenAir ;
+    rdfs:subClassOf h2ho:FlammableCondition ;
     rdfs:comment "HazardousSituation in which a hydrogen-air condition can support detonation, for example when mixture composition and confinement exceed detonation limits." .
 
 ### Hydrogen jet situation
 h2ho:HydrogenJet rdf:type owl:Class ;
-    rdfs:subClassOf h2ho:FlammableHydrogenAir ;
+    rdfs:subClassOf h2ho:FlammableCondition ;
     rdfs:comment "HazardousSituation in which hydrogen emerges as a momentum driven jet, for example after a pressurised release. Portions of the jet are within flammable limits and can produce a jet fire if ignited." .
 
 h2ho:ExposureSituation rdf:type owl:Class ;

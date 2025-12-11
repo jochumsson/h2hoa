@@ -5,6 +5,7 @@ https://w3id.org/jochumsson/h2ho#OxygenEnrichment,1203.0891349888966,82.79114039
 https://w3id.org/jochumsson/ho61508#HazardousEvent,570.0,62.0
 https://w3id.org/jochumsson/h2ho#ToxicityHazard,219.0,94.0
 https://w3id.org/jochumsson/h2ho#DamagedEquipmentDegradation,1193.4947017167954,293.765818534339
+https://w3id.org/jochumsson/h2ho#FlammableCondition,1395.3041884865859,164.97021732447905
 https://w3id.org/jochumsson/h2ho#ThermalExposureEvent,1082.0011102655703,923.6581962612302
 https://w3id.org/jochumsson/h2ho#SlowDeflagration,378.0,677.0
 https://w3id.org/jochumsson/h2ho#LH2Release,1380.5088152653125,-82.33486964402393
@@ -49,7 +50,6 @@ https://w3id.org/jochumsson/h2ho#LossOfContainment,977.4858237226653,-82.8337149
 https://w3id.org/jochumsson/h2ho#ElectricalShock,652.3346541511156,433.3821092553344
 https://w3id.org/jochumsson/h2ho#ProcessEquipment,186.35196266069602,-269.606502724071
 https://w3id.org/jochumsson/h2ho#Ignition,755.7556426940616,-291.7002809793775
-https://w3id.org/jochumsson/h2ho#FlammableHydrogenAir,1402.1916948092958,184.8447345139058
 https://w3id.org/jochumsson/h2ho#LH2Storage,525.1249053494525,-511.83409514076993
 https://w3id.org/jochumsson/h2ho#DeflagrationHazard,-193.88756374733782,191.53200126277693
 https://w3id.org/jochumsson/h2ho#PoolFireHazard,-168.18843641516582,149.17345377251263
