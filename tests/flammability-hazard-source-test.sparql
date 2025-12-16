@@ -1,29 +1,43 @@
 PREFIX h2ho:    <https://w3id.org/jochumsson/h2ho#>
 PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
-PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX owl:     <http://www.w3.org/2002/07/owl#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
 # Rule:
-# Hazard ⊑ ∀ inheresIn.(StorageVesselHazardSource ⊔
-#                        ProcessEquipmentHazardSource ⊔
-#                        PipingHazardSource)
+# FlammabilityHazard is constrained via ho61508:inheresIn
+# to use only FlammabilityHazardSource as its bearer.
+#
+# FlammabilityHazardSource is a constraint class defined as:
+#   StorageVesselHazardSource ⊔
+#   ProcessEquipmentHazardSource ⊔
+#   PipingHazardSource
 #
 # Violation:
-# A Hazard inheresIn something outside the allowed set
+# The constraint class FlammabilityHazardSource contains
+# a HazardSource that is not permitted to bear a
+# FlammabilityHazard, while being actively used to
+# constrain FlammabilityHazard.
 
-SELECT ?hazard ?badSource
+SELECT ?badSource
 WHERE {
-  ?hazard rdfs:subClassOf h2ho:Hazard .
+  # 1. Ensure FlammabilityHazard actually uses FlammabilityHazardSource
+  h2ho:FlammabilityHazard rdfs:subClassOf ?r .
+  ?r a owl:Restriction ;
+     owl:onProperty ho61508:inheresIn ;
+     owl:someValuesFrom h2ho:FlammabilityHazardSource .
 
-  ?hazard rdfs:subClassOf [
-    a owl:Restriction ;
-    owl:onProperty ho61508:inheresIn ;
-    owl:someValuesFrom ?badSource
-  ] .
+  # 2. Inspect the union defining FlammabilityHazardSource
+  h2ho:FlammabilityHazardSource owl:equivalentClass ?u .
+  ?u owl:unionOf ?list .
+  ?list rdf:rest*/rdf:first ?badSource .
 
-  FILTER (?badSource NOT IN (
-    h2ho:StorageVesselHazardSource,
-    h2ho:ProcessEquipmentHazardSource,
-    h2ho:PipingHazardSource
-  ))
+  # 3. Negative test
+  FILTER (
+    ?badSource NOT IN (
+      h2ho:StorageVesselHazardSource,
+      h2ho:PipingHazardSource,
+      h2ho:ProcessEquipmentHazardSource
+    )
+  )
 }
