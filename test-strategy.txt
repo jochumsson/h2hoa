@@ -1,0 +1,117 @@
+ONTOLOGICAL AUTOMATIC TEST STRATEGY
+(TBox-centric verification with reasoning-based ABox validation)
+
+This work adopts a layered ontology testing strategy that separates
+schema correctness, semantic consistency, and data completeness,
+in line with OWL’s open-world semantics.
+
+1) TBox (structural) testing using SPARQL
+
+Purpose:
+TBox structural testing verifies that the ontology contains the intended
+axioms and modelling patterns, independent of instance data. This guards
+against accidental weakening, removal, or miswiring of constraints during
+ontology evolution.
+
+What is tested:
+Structural SPARQL tests check for the presence and form of OWL axioms,
+not their runtime effects.
+
+Example (H2HO):
+
+Expected axiom (existential wiring):
+FlammabilityHazard ⊑ ∃ inheresIn.FlammabilityHazardSource
+
+SPARQL structural test:
+- Confirms that FlammabilityHazard has an owl:Restriction on
+  ho61508:inheresIn with owl:someValuesFrom FlammabilityHazardSource.
+
+Expected axiom (universal restriction):
+FlammabilityHazard ⊑ ∀ inheresIn.FlammabilityHazardSource
+
+SPARQL structural test:
+- Confirms that FlammabilityHazard has an owl:Restriction on
+  ho61508:inheresIn with owl:allValuesFrom FlammabilityHazardSource.
+
+Constraint-class integrity:
+FlammabilityHazardSource ≡
+  StorageVesselHazardSource ⊔
+  ProcessEquipmentHazardSource ⊔
+  PipingHazardSource
+
+SPARQL negative test:
+- Traverses the owl:unionOf defining FlammabilityHazardSource and fails
+  if any member is not one of the permitted hazard source classes.
+
+Outcome:
+TBox SPARQL tests ensure structural invariants of the ontology:
+- the right axioms exist,
+- they reference the right classes,
+- constraint abstractions remain intact.
+
+They do not test instance data.
+
+2) TBox testing plus automatic reasoning offloads ABox semantic validation
+
+Key insight:
+Once TBox constraints are structurally verified, OWL reasoning enforces
+them for all instance data automatically.
+
+Example:
+Given:
+FlammabilityHazard ⊑ ∀ inheresIn.FlammabilityHazardSource
+
+If a dataset asserts:
+- an individual of type FlammabilityHazard
+- that inheresIn a source that is not a FlammabilityHazardSource
+
+Then a DL reasoner will detect an inconsistency.
+
+Consequence:
+There is no need to write domain-specific ABox SPARQL tests for every
+hazard type. Semantic violations are caught generically by reasoning.
+This reduces test maintenance effort and avoids duplicated validation logic.
+
+3) What TBox testing plus reasoning cannot validate
+
+OWL operates under the Open World Assumption (OWA). As a result, neither
+TBox structural testing nor OWL reasoning can detect violations that
+depend on missing information.
+
+Example (not detected by reasoning):
+An individual asserted as FlammabilityHazard with no inheresIn relation
+is still consistent, because the reasoner assumes such a relation may
+exist but is unknown.
+
+Implication:
+The following cannot be validated by TBox testing plus reasoning alone:
+- every hazard explicitly states its source,
+- exactly one source is asserted,
+- no anonymous fillers are used.
+
+These are data-quality (completeness) constraints, not ontology semantics.
+
+When ABox testing is required:
+ABox tests (SPARQL or SHACL) are needed only if the goal includes
+closed-world validation, regulatory data conformance, or dataset
+completeness guarantees. This is orthogonal to ontology correctness and
+intentionally excluded from the core method.
+
+Framing as an automatic ontological test strategy:
+
+Ontology verification is performed through structural TBox testing using
+SPARQL, ensuring the presence and integrity of modelling constraints.
+Semantic correctness of instance data is enforced through OWL reasoning,
+eliminating the need for domain-specific ABox validation. Data completeness
+constraints are intentionally excluded, in line with the open-world
+assumption.
+
+Summary:
+
+- TBox SPARQL tests verify schema-level invariants.
+- OWL reasoning enforces semantic constraints on all data.
+- ABox tests are optional and only required for completeness, not
+  correctness.
+
+This strategy is scalable, modular, reviewer-defensible, and well suited
+for research-grade ontologies such as HO61508 and its H2HO extension.

@@ -284,28 +284,19 @@ A ToxicityHazard may inhere only in the listed hazard source types.
 
 
 #################################################################
-# HazardSource inherence restrictions
+# HazardSources are carried by abstract endurant specifications
 #################################################################
 
-### StorageVesselHazardSource must be played by a StorageVessel
-h2ho:StorageVesselHazardSource rdfs:subClassOf [
+### StorageVessel endurants must carry a StorageVesselHazardSource role
+h2ho:StorageVessel rdfs:subClassOf [
     a owl:Restriction ;
-    rdfs:comment "Instances of StorageVesselHazardSource are played by StorageVessel endurants." ;
-    owl:onProperty ho61508:carriedBy ;
-    owl:someValuesFrom h2ho:StorageVessel
+    rdfs:comment """
+Every StorageVessel carries at least one StorageVesselHazardSource role.
+DL: StorageVessel ⊑ ∃ inverse(carriedBy).StorageVesselHazardSource		
+	""" ;
+    owl:onProperty [ owl:inverseOf ho61508:carriedBy ] ;
+    owl:someValuesFrom h2ho:StorageVesselHazardSource
 ] .
-
-### StorageVessel endurants play a StorageVesselHazardSource role
-h2ho:StorageVessel
-    rdfs:subClassOf [
-        a owl:Restriction ;
-        rdfs:comment "StorageVessel endurants play at least one StorageVesselHazardSource role." ;
-        owl:onProperty [
-            a owl:ObjectProperty ;
-            owl:inverseOf ho61508:carriedBy
-        ] ;
-        owl:someValuesFrom h2ho:StorageVesselHazardSource
-    ] .
 
 ### PipingHazardSource must be played by a Piping endurant
 h2ho:PipingHazardSource rdfs:subClassOf [

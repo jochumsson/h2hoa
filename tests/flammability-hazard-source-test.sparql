@@ -13,6 +13,10 @@ PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 #   ProcessEquipmentHazardSource ⊔
 #   PipingHazardSource
 #
+# In essence it tests: 
+# FlammabilityHazard ⊑ ∃ inheresIn.FlammabilityHazardSource and
+# FlammabilityHazard ⊑ ∀ inheresIn.FlammabilityHazardSource
+#
 # Violation:
 # The constraint class FlammabilityHazardSource contains
 # a HazardSource that is not permitted to bear a
