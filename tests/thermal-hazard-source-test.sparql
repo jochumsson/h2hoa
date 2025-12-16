@@ -1,0 +1,31 @@
+PREFIX h2ho: <https://w3id.org/jochumsson/h2ho#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+############################################################
+# ThermalHazard inheres only in allowed equipment sources
+# DL axiom under test:
+#   ThermalHazard ⊑ ∃ ho61508:inheresIn.
+#     ( StorageVesselHazardSource
+#     ⊔ PipingHazardSource
+#     ⊔ ProcessEquipmentHazardSource )
+############################################################
+
+SELECT ?hazard
+WHERE {
+  ?hazard rdfs:subClassOf h2ho:ThermalHazard .
+
+  FILTER NOT EXISTS {
+    ?hazard rdfs:subClassOf [
+      a owl:Restriction ;
+      owl:onProperty ho61508:inheresIn ;
+      owl:someValuesFrom ?src
+    ] .
+    FILTER (?src IN (
+      h2ho:StorageVesselHazardSource,
+      h2ho:PipingHazardSource,
+      h2ho:ProcessEquipmentHazardSource
+    ))
+  }
+}

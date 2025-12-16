@@ -31,84 +31,256 @@
 # Hazard inherence restrictions
 #################################################################
 
-### FlammabilityHazard inherits in hydrogen system elements
-h2ho:FlammabilityHazard rdfs:subClassOf [
-    a owl:Restriction ;
-    rdfs:comment "Flammability hazards originate from any component capable of releasing combustible hydrogen mixtures, including equipment, storage, piping, and confined environments." ;
-    owl:onProperty ho61508:inheresIn ;
-    owl:someValuesFrom [
+### FlammabilityHazard inherits in a flammability source
+### This axiom is added for reasoning only and is not part of the conceptual 
+h2ho:FlammabilityHazardSource
+    a owl:Class ;
+    rdfs:subClassOf ho61508:HazardSource ;
+    rdfs:comment """
+Named set of HazardSource roles that are permitted bearers of a FlammabilityHazard.
+This class exists to make the allowed bearers explicit and queryable.
+""" ;
+    owl:equivalentClass [
+        a owl:Class ;
         owl:unionOf (
             h2ho:StorageVesselHazardSource
             h2ho:PipingHazardSource
             h2ho:ProcessEquipmentHazardSource
-            h2ho:EnvironmentalConfinementHazardSource
         )
-    ]
-] .
+    ] .
+	
+h2ho:FlammabilityHazard
+    rdfs:subClassOf
+
+        # At least one flammability hazard source is required
+        [
+            a owl:Restriction ;
+            rdfs:comment """
+DL: FlammabilityHazard ⊑ ∃ ho61508:inheresIn.FlammabilityHazardSource
+Every FlammabilityHazard inheres in at least one permitted flammability hazard source.
+""" ;
+            owl:onProperty ho61508:inheresIn ;
+            owl:someValuesFrom h2ho:FlammabilityHazardSource
+        ] ,
+
+        # Only flammability hazard sources are allowed as bearers
+        [
+            a owl:Restriction ;
+            rdfs:comment """
+DL: FlammabilityHazard ⊑ ∀ ho61508:inheresIn.FlammabilityHazardSource
+A FlammabilityHazard may inhere only in flammability hazard sources.
+""" ;
+            owl:onProperty ho61508:inheresIn ;
+            owl:allValuesFrom h2ho:FlammabilityHazardSource
+        ] .
 
 
 ### OxygenDeficiencyHazard inherits in confined environments
-h2ho:OxygenDeficiencyHazard rdfs:subClassOf [
-    a owl:Restriction ;
-    rdfs:comment "Oxygen deficiency hazards occur only in confined environments where displacement of breathable air may occur." ;
-    owl:onProperty ho61508:inheresIn ;
-    owl:someValuesFrom h2ho:EnvironmentalConfinementHazardSource
-] .
+h2ho:OxygenDeficiencyHazard
+    rdfs:subClassOf
 
+        # At least one confined environment bearer is required
+        [
+            a owl:Restriction ;
+            rdfs:comment """
+DL: OxygenDeficiencyHazard ⊑ ∃ ho61508:inheresIn.EnvironmentalConfinementHazardSource
+Every OxygenDeficiencyHazard inheres in at least one environmental confinement.
+""" ;
+            owl:onProperty ho61508:inheresIn ;
+            owl:someValuesFrom h2ho:EnvironmentalConfinementHazardSource
+        ] ,
+
+        # Only confined environments are allowed as bearers
+        [
+            a owl:Restriction ;
+            rdfs:comment """
+DL: OxygenDeficiencyHazard ⊑ ∀ ho61508:inheresIn.EnvironmentalConfinementHazardSource
+An OxygenDeficiencyHazard may inhere only in environmental confinements.
+""" ;
+            owl:onProperty ho61508:inheresIn ;
+            owl:allValuesFrom h2ho:EnvironmentalConfinementHazardSource
+        ] .
 
 ### ThermalHazard inherits in equipment or storage
-h2ho:ThermalHazard rdfs:subClassOf [
-    a owl:Restriction ;
-    rdfs:comment "Thermal hazards arise from hot or cryogenic surfaces, venting, or thermal effects from equipment, piping, or storage." ;
-    owl:onProperty ho61508:inheresIn ;
-    owl:someValuesFrom [
-        owl:unionOf (
-            h2ho:StorageVesselHazardSource
-            h2ho:PipingHazardSource
-            h2ho:ProcessEquipmentHazardSource
-        )
-    ]
-] .
+h2ho:ThermalHazard
+    rdfs:subClassOf
+
+        # At least one valid equipment or storage bearer is required
+        [
+            a owl:Restriction ;
+            rdfs:comment """
+DL:
+ThermalHazard ⊑ ∃ ho61508:inheresIn.
+    ( StorageVesselHazardSource
+    ⊔ PipingHazardSource
+    ⊔ ProcessEquipmentHazardSource )
+Every ThermalHazard inheres in at least one equipment or storage related hazard source.
+""" ;
+            owl:onProperty ho61508:inheresIn ;
+            owl:someValuesFrom [
+                owl:unionOf (
+                    h2ho:StorageVesselHazardSource
+                    h2ho:PipingHazardSource
+                    h2ho:ProcessEquipmentHazardSource
+                )
+            ]
+        ] ,
+
+        # Only equipment or storage are allowed as bearers
+        [
+            a owl:Restriction ;
+            rdfs:comment """
+DL:
+ThermalHazard ⊑ ∀ ho61508:inheresIn.
+    ( StorageVesselHazardSource
+    ⊔ PipingHazardSource
+    ⊔ ProcessEquipmentHazardSource )
+A ThermalHazard may inhere only in equipment, piping, or storage hazard sources.
+""" ;
+            owl:onProperty ho61508:inheresIn ;
+            owl:allValuesFrom [
+                owl:unionOf (
+                    h2ho:StorageVesselHazardSource
+                    h2ho:PipingHazardSource
+                    h2ho:ProcessEquipmentHazardSource
+                )
+            ]
+        ] .
 
 
 ### PressureHazard inherits in pressurised hardware or confined volumes
-h2ho:PressureHazard rdfs:subClassOf [
-    a owl:Restriction ;
-    rdfs:comment "Pressure hazards may originate from storage vessels, piping systems, or confined environments where pressure buildup may occur." ;
-    owl:onProperty ho61508:inheresIn ;
-    owl:someValuesFrom [
-        owl:unionOf (
-            h2ho:StorageVesselHazardSource
-            h2ho:PipingHazardSource
-            h2ho:EnvironmentalConfinementHazardSource
-        )
-    ]
-] .
+h2ho:PressureHazard
+    rdfs:subClassOf
+
+        # At least one pressurised hardware bearer is required
+        [
+            a owl:Restriction ;
+            rdfs:comment """
+DL:
+PressureHazard ⊑ ∃ ho61508:inheresIn.
+    ( StorageVesselHazardSource
+    ⊔ PipingHazardSource
+    ⊔ ProcessEquipmentHazardSource )
+
+Every PressureHazard inheres in at least one pressurised hardware hazard source.
+""" ;
+            owl:onProperty ho61508:inheresIn ;
+            owl:someValuesFrom [
+                owl:unionOf (
+                    h2ho:StorageVesselHazardSource
+                    h2ho:PipingHazardSource
+                    h2ho:ProcessEquipmentHazardSource
+                )
+            ]
+        ] ,
+
+        # Only pressurised hardware is allowed as bearer
+        [
+            a owl:Restriction ;
+            rdfs:comment """
+DL:
+PressureHazard ⊑ ∀ ho61508:inheresIn.
+    ( StorageVesselHazardSource
+    ⊔ PipingHazardSource
+    ⊔ ProcessEquipmentHazardSource )
+
+A PressureHazard may inhere only in pressurised hardware hazard sources.
+""" ;
+            owl:onProperty ho61508:inheresIn ;
+            owl:allValuesFrom [
+                owl:unionOf (
+                    h2ho:StorageVesselHazardSource
+                    h2ho:PipingHazardSource
+                    h2ho:ProcessEquipmentHazardSource
+                )
+            ]
+        ] .
+
 
 
 ### ElectricalPowerHazard inherits in process equipment
-h2ho:ElectricalPowerHazard rdfs:subClassOf [
-    a owl:Restriction ;
-    rdfs:comment "Electrical power hazards are associated with equipment that utilizes or converts electricity, including electrolysers and fuel cells." ;
-    owl:onProperty ho61508:inheresIn ;
-    owl:someValuesFrom h2ho:ProcessEquipmentHazardSource
-] .
+h2ho:ElectricalPowerHazard
+    rdfs:subClassOf
+
+        # At least one process equipment bearer is required
+        [
+            a owl:Restriction ;
+            rdfs:comment """
+DL:
+ElectricalPowerHazard ⊑ ∃ ho61508:inheresIn.ProcessEquipmentHazardSource
+
+Every ElectricalPowerHazard inheres in at least one process equipment hazard source.
+""" ;
+            owl:onProperty ho61508:inheresIn ;
+            owl:someValuesFrom h2ho:ProcessEquipmentHazardSource
+        ] ,
+
+        # Only process equipment is allowed as bearer
+        [
+            a owl:Restriction ;
+            rdfs:comment """
+DL:
+ElectricalPowerHazard ⊑ ∀ ho61508:inheresIn.ProcessEquipmentHazardSource
+
+An ElectricalPowerHazard may inhere only in process equipment hazard sources.
+""" ;
+            owl:onProperty ho61508:inheresIn ;
+            owl:allValuesFrom h2ho:ProcessEquipmentHazardSource
+        ] .
 
 
 ### ToxicityHazard inherits in storage, process equipment, or confined volumes
-h2ho:ToxicityHazard rdfs:subClassOf [
-    a owl:Restriction ;
-    rdfs:comment "Toxicity-related hazards (including cryogenic exposure effects) may arise from storage systems, piping, process equipment, or confined spaces where harmful atmospheres may accumulate." ;
-    owl:onProperty ho61508:inheresIn ;
-    owl:someValuesFrom [
-        owl:unionOf (
-            h2ho:StorageVesselHazardSource
-            h2ho:PipingHazardSource
-            h2ho:ProcessEquipmentHazardSource
-            h2ho:EnvironmentalConfinementHazardSource
-        )
-    ]
-] .
+h2ho:ToxicityHazard
+    rdfs:subClassOf
+
+        # At least one valid bearer is required
+        [
+            a owl:Restriction ;
+            rdfs:comment """
+DL:
+ToxicityHazard ⊑ ∃ ho61508:inheresIn.
+    ( StorageVesselHazardSource
+    ⊔ PipingHazardSource
+    ⊔ ProcessEquipmentHazardSource
+    ⊔ EnvironmentalConfinementHazardSource )
+
+Every ToxicityHazard inheres in at least one hydrogen system hazard source.
+""" ;
+            owl:onProperty ho61508:inheresIn ;
+            owl:someValuesFrom [
+                owl:unionOf (
+                    h2ho:StorageVesselHazardSource
+                    h2ho:PipingHazardSource
+                    h2ho:ProcessEquipmentHazardSource
+                    h2ho:EnvironmentalConfinementHazardSource
+                )
+            ]
+        ] ,
+
+        # Only these hazard sources are allowed as bearers
+        [
+            a owl:Restriction ;
+            rdfs:comment """
+DL:
+ToxicityHazard ⊑ ∀ ho61508:inheresIn.
+    ( StorageVesselHazardSource
+    ⊔ PipingHazardSource
+    ⊔ ProcessEquipmentHazardSource
+    ⊔ EnvironmentalConfinementHazardSource )
+
+A ToxicityHazard may inhere only in the listed hazard source types.
+""" ;
+            owl:onProperty ho61508:inheresIn ;
+            owl:allValuesFrom [
+                owl:unionOf (
+                    h2ho:StorageVesselHazardSource
+                    h2ho:PipingHazardSource
+                    h2ho:ProcessEquipmentHazardSource
+                    h2ho:EnvironmentalConfinementHazardSource
+                )
+            ]
+        ] .
+
 
 
 #################################################################
@@ -123,6 +295,18 @@ h2ho:StorageVesselHazardSource rdfs:subClassOf [
     owl:someValuesFrom h2ho:StorageVessel
 ] .
 
+### StorageVessel endurants play a StorageVesselHazardSource role
+h2ho:StorageVessel
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        rdfs:comment "StorageVessel endurants play at least one StorageVesselHazardSource role." ;
+        owl:onProperty [
+            a owl:ObjectProperty ;
+            owl:inverseOf ho61508:carriedBy
+        ] ;
+        owl:someValuesFrom h2ho:StorageVesselHazardSource
+    ] .
+
 ### PipingHazardSource must be played by a Piping endurant
 h2ho:PipingHazardSource rdfs:subClassOf [
     a owl:Restriction ;
@@ -130,6 +314,18 @@ h2ho:PipingHazardSource rdfs:subClassOf [
     owl:onProperty ho61508:carriedBy ;
     owl:someValuesFrom h2ho:Piping
 ] .
+
+### Piping endurants play a PipingHazardSource role
+h2ho:Piping
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        rdfs:comment "Piping endurants play at least one PipingHazardSource role." ;
+        owl:onProperty [
+            a owl:ObjectProperty ;
+            owl:inverseOf ho61508:carriedBy
+        ] ;
+        owl:someValuesFrom h2ho:PipingHazardSource
+    ] .
 
 ### ProcessEquipmentHazardSource must be played by ProcessEquipment
 h2ho:ProcessEquipmentHazardSource rdfs:subClassOf [
@@ -139,6 +335,18 @@ h2ho:ProcessEquipmentHazardSource rdfs:subClassOf [
     owl:someValuesFrom h2ho:ProcessEquipment
 ] .
 
+### ProcessEquipment endurants play a ProcessEquipmentHazardSource role
+h2ho:ProcessEquipment
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        rdfs:comment "ProcessEquipment endurants play at least one ProcessEquipmentHazardSource role." ;
+        owl:onProperty [
+            a owl:ObjectProperty ;
+            owl:inverseOf ho61508:carriedBy
+        ] ;
+        owl:someValuesFrom h2ho:ProcessEquipmentHazardSource
+    ] .
+
 ### EnvironmentalConfinementHazardSource must be played by EnvironmentalConfinement
 h2ho:EnvironmentalConfinementHazardSource rdfs:subClassOf [
     a owl:Restriction ;
@@ -146,6 +354,18 @@ h2ho:EnvironmentalConfinementHazardSource rdfs:subClassOf [
     owl:onProperty ho61508:carriedBy ;
     owl:someValuesFrom h2ho:EnvironmentalConfinement
 ] .
+
+### EnvironmentalConfinement endurants play an EnvironmentalConfinementHazardSource role
+h2ho:EnvironmentalConfinement
+    rdfs:subClassOf [
+        a owl:Restriction ;
+        rdfs:comment "EnvironmentalConfinement endurants play at least one EnvironmentalConfinementHazardSource role." ;
+        owl:onProperty [
+            a owl:ObjectProperty ;
+            owl:inverseOf ho61508:carriedBy
+        ] ;
+        owl:someValuesFrom h2ho:EnvironmentalConfinementHazardSource
+    ] .
 
 #################################################################
 # Fundamental hydrogen combustion chain

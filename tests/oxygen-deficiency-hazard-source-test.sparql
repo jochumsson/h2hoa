@@ -1,0 +1,24 @@
+PREFIX h2ho: <https://w3id.org/jochumsson/h2ho#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+############################################################
+# OxygenDeficiencyHazard inheres only in EnvironmentalConfinement
+# DL axiom under test:
+#   OxygenDeficiencyHazard ⊑
+#     ∃ ho61508:inheresIn.EnvironmentalConfinementHazardSource
+############################################################
+
+SELECT ?hazard
+WHERE {
+  ?hazard rdfs:subClassOf h2ho:OxygenDeficiencyHazard .
+
+  FILTER NOT EXISTS {
+    ?hazard rdfs:subClassOf [
+      a owl:Restriction ;
+      owl:onProperty ho61508:inheresIn ;
+      owl:someValuesFrom h2ho:EnvironmentalConfinementHazardSource
+    ]
+  }
+}

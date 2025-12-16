@@ -1,0 +1,29 @@
+PREFIX h2ho:    <https://w3id.org/jochumsson/h2ho#>
+PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl:     <http://www.w3.org/2002/07/owl#>
+
+# Rule:
+# Hazard ⊑ ∀ inheresIn.(StorageVesselHazardSource ⊔
+#                        ProcessEquipmentHazardSource ⊔
+#                        PipingHazardSource)
+#
+# Violation:
+# A Hazard inheresIn something outside the allowed set
+
+SELECT ?hazard ?badSource
+WHERE {
+  ?hazard rdfs:subClassOf h2ho:Hazard .
+
+  ?hazard rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty ho61508:inheresIn ;
+    owl:someValuesFrom ?badSource
+  ] .
+
+  FILTER (?badSource NOT IN (
+    h2ho:StorageVesselHazardSource,
+    h2ho:ProcessEquipmentHazardSource,
+    h2ho:PipingHazardSource
+  ))
+}
