@@ -1,47 +1,55 @@
-PREFIX h2ho:    <https://w3id.org/jochumsson/h2ho#>
-PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
-PREFIX owl:     <http://www.w3.org/2002/07/owl#>
-PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-
+############################################################
 # Rule:
-# FlammabilityHazard is constrained via ho61508:inheresIn
-# to use only FlammabilityHazardSource as its bearer.
-#
-# FlammabilityHazardSource is a constraint class defined as:
-#   StorageVesselHazardSource ⊔
-#   ProcessEquipmentHazardSource ⊔
-#   PipingHazardSource
-#
-# In essence it tests: 
-# FlammabilityHazard ⊑ ∃ inheresIn.FlammabilityHazardSource and
-# FlammabilityHazard ⊑ ∀ inheresIn.FlammabilityHazardSource
+# FlammabilityHazard ⊑ ∃ ho61508:inheresIn.FlammabilityHazardSource
+#                        ⊓ ∀ ho61508:inheresIn.FlammabilityHazardSource
 #
 # Violation:
-# The constraint class FlammabilityHazardSource contains
-# a HazardSource that is not permitted to bear a
-# FlammabilityHazard, while being actively used to
-# constrain FlammabilityHazard.
+# FlammabilityHazard is constrained to inhere in a HazardSource other
+# than FlammabilityHazardSource, or the universal restriction
+# is removed or weakened.
+############################################################
 
-SELECT ?badSource
+# PARAMETERS:
+#   ?HazardClass: 		h2ho:FlammabilityHazard
+#   ?Property:			ho61508:inheresIn
+#   ?AllowedSource:		h2ho:FlammabilityHazardSource
+
+PREFIX h2ho: <https://w3id.org/jochumsson/h2ho#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+SELECT ?problem
 WHERE {
-  # 1. Ensure FlammabilityHazard actually uses FlammabilityHazardSource
-  h2ho:FlammabilityHazard rdfs:subClassOf ?r .
-  ?r a owl:Restriction ;
-     owl:onProperty ho61508:inheresIn ;
-     owl:someValuesFrom h2ho:FlammabilityHazardSource .
+  {
+    SELECT
+      (COUNT(DISTINCT ?someR) AS ?someCnt)
+      (COUNT(DISTINCT ?allR)  AS ?allCnt)
+    WHERE {
+	  VALUES (?HazardClass ?Property ?AllowedSource) {
+	    (h2ho:FlammabilityHazard ho61508:inheresIn h2ho:FlammabilityHazardSource)
+	  }
+	  
+      OPTIONAL {
+        ?HazardClass rdfs:subClassOf ?someR .
+        ?someR a owl:Restriction ;
+               owl:onProperty ?Property ;
+               owl:someValuesFrom ?AllowedSource .
+      }
 
-  # 2. Inspect the union defining FlammabilityHazardSource
-  h2ho:FlammabilityHazardSource owl:equivalentClass ?u .
-  ?u owl:unionOf ?list .
-  ?list rdf:rest*/rdf:first ?badSource .
+      OPTIONAL {
+        ?HazardClass rdfs:subClassOf ?allR .
+        ?allR a owl:Restriction ;
+              owl:onProperty ?Property ;
+              owl:allValuesFrom ?AllowedSource .
+      }
+    }
+  }
 
-  # 3. Negative test
-  FILTER (
-    ?badSource NOT IN (
-      h2ho:StorageVesselHazardSource,
-      h2ho:PipingHazardSource,
-      h2ho:ProcessEquipmentHazardSource
-    )
+  FILTER (?someCnt != 1 || ?allCnt != 1)
+  BIND(
+    CONCAT(
+      "Expected exactly 1 SOME and 1 ALL inheresIn restriction but found SOME=", STR(?someCnt), ", ALL=", STR(?allCnt)
+    ) AS ?problem
   )
 }

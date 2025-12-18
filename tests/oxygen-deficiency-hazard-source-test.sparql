@@ -1,24 +1,55 @@
+############################################################
+# Rule:
+# OxygenDeficiencyHazard ⊑ ∃ ho61508:inheresIn.EnvironmentalConfinementHazardSource
+#                        ⊓ ∀ ho61508:inheresIn.EnvironmentalConfinementHazardSource
+#
+# Violation:
+# OxygenDeficiencyHazard is constrained to inhere in a HazardSource other
+# than EnvironmentalConfinementHazardSource, or the universal restriction
+# is removed or weakened.
+#
+# PARAMETERS:
+#   ?HazardClass: 		h2ho:OxygenDeficiencyHazard
+#   ?Property:			ho61508:inheresIn
+#   ?AllowedSource:		h2ho:EnvironmentalConfinementHazardSource
+############################################################
+
 PREFIX h2ho: <https://w3id.org/jochumsson/h2ho#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 
-############################################################
-# OxygenDeficiencyHazard inheres only in EnvironmentalConfinement
-# DL axiom under test:
-#   OxygenDeficiencyHazard ⊑
-#     ∃ ho61508:inheresIn.EnvironmentalConfinementHazardSource
-############################################################
-
-SELECT ?hazard
+SELECT ?problem
 WHERE {
-  ?hazard rdfs:subClassOf h2ho:OxygenDeficiencyHazard .
+  {
+    SELECT
+      (COUNT(DISTINCT ?someR) AS ?someCnt)
+      (COUNT(DISTINCT ?allR)  AS ?allCnt)
+    WHERE {
+	  VALUES (?HazardClass ?Property ?AllowedSource) {
+	    (h2ho:OxygenDeficiencyHazard ho61508:inheresIn h2ho:EnvironmentalConfinementHazardSource)
+	  }
+	  
+      OPTIONAL {
+        ?HazardClass rdfs:subClassOf ?someR .
+        ?someR a owl:Restriction ;
+               owl:onProperty ?Property ;
+               owl:someValuesFrom ?AllowedSource .
+      }
 
-  FILTER NOT EXISTS {
-    ?hazard rdfs:subClassOf [
-      a owl:Restriction ;
-      owl:onProperty ho61508:inheresIn ;
-      owl:someValuesFrom h2ho:EnvironmentalConfinementHazardSource
-    ]
+      OPTIONAL {
+        ?HazardClass rdfs:subClassOf ?allR .
+        ?allR a owl:Restriction ;
+              owl:onProperty ?Property ;
+              owl:allValuesFrom ?AllowedSource .
+      }
+    }
   }
+
+  FILTER (?someCnt != 1 || ?allCnt != 1)
+  BIND(
+    CONCAT(
+      "Expected exactly 1 SOME and 1 ALL inheresIn restriction but found SOME=", STR(?someCnt), ", ALL=", STR(?allCnt)
+    ) AS ?problem
+  )
 }

@@ -1,0 +1,44 @@
+# Rule:
+# FlammabilityHazard is constrained via ho61508:inheresIn
+# to use only FlammabilityHazardSource as its bearer.
+#
+# In essence it tests:
+# FlammabilityHazardSource ⊑ 
+#	(h2ho:StorageVesselHazardSource ⊔ 
+#	 h2ho:PipingHazardSource ⊔ 
+#	 h2ho:ProcessEquipmentHazardSource)
+#
+# Violation:
+# The constraint class FlammabilityHazardSource contains
+# a HazardSource that is not permitted to bear a
+# FlammabilityHazard, while being actively used to
+# constrain FlammabilityHazard.
+
+PREFIX h2ho:    <https://w3id.org/jochumsson/h2ho#>
+PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
+PREFIX owl:     <http://www.w3.org/2002/07/owl#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT ?badSource
+WHERE {
+  # 1. Ensure FlammabilityHazard actually uses FlammabilityHazardSource
+  h2ho:FlammabilityHazard rdfs:subClassOf ?r .
+  ?r a owl:Restriction ;
+     owl:onProperty ho61508:inheresIn ;
+     owl:someValuesFrom h2ho:FlammabilityHazardSource .
+
+  # 2. Inspect the union defining FlammabilityHazardSource
+  h2ho:FlammabilityHazardSource owl:equivalentClass ?u .
+  ?u owl:unionOf ?list .
+  ?list rdf:rest*/rdf:first ?badSource .
+
+  # 3. Remove allowed sources from the bad source indicator variable
+  FILTER (
+    ?badSource NOT IN (
+      h2ho:StorageVesselHazardSource,
+      h2ho:PipingHazardSource,
+      h2ho:ProcessEquipmentHazardSource
+    )
+  )
+}
