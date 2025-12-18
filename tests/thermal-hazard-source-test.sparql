@@ -3,29 +3,40 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 
-############################################################
-# ThermalHazard inheres only in allowed equipment sources
-# DL axiom under test:
-#   ThermalHazard ⊑ ∃ ho61508:inheresIn.
-#     ( StorageVesselHazardSource
-#     ⊔ PipingHazardSource
-#     ⊔ ProcessEquipmentHazardSource )
-############################################################
-
-SELECT ?hazard
+SELECT ?problem
 WHERE {
-  ?hazard rdfs:subClassOf h2ho:ThermalHazard .
+  {
+    SELECT
+      (COUNT(DISTINCT ?someR) AS ?someCnt)
+      (COUNT(DISTINCT ?allR)  AS ?allCnt)
+    WHERE {
+      VALUES (?HazardClass ?Property) {
+        (h2ho:ThermalHazard ho61508:inheresIn)
+      }
 
-  FILTER NOT EXISTS {
-    ?hazard rdfs:subClassOf [
-      a owl:Restriction ;
-      owl:onProperty ho61508:inheresIn ;
-      owl:someValuesFrom ?src
-    ] .
-    FILTER (?src IN (
-      h2ho:StorageVesselHazardSource,
-      h2ho:PipingHazardSource,
-      h2ho:ProcessEquipmentHazardSource
-    ))
+      OPTIONAL {
+        ?HazardClass rdfs:subClassOf ?someR .
+        ?someR a owl:Restriction ;
+               owl:onProperty ?Property ;
+               owl:someValuesFrom ?someUnion .
+        ?someUnion owl:unionOf ?someList .
+      }
+
+      OPTIONAL {
+        ?HazardClass rdfs:subClassOf ?allR .
+        ?allR a owl:Restriction ;
+              owl:onProperty ?Property ;
+              owl:allValuesFrom ?allUnion .
+        ?allUnion owl:unionOf ?allList .
+      }
+    }
   }
+
+  FILTER (?someCnt != 1 || ?allCnt != 1)
+
+  BIND(
+    "Expected exactly 1 SOME and 1 ALL inheresIn restriction for PressureHazard"
+    AS ?problem
+  )
 }
+

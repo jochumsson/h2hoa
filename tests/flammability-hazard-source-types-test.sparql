@@ -6,7 +6,8 @@
 # FlammabilityHazardSource ⊑ 
 #	(h2ho:StorageVesselHazardSource ⊔ 
 #	 h2ho:PipingHazardSource ⊔ 
-#	 h2ho:ProcessEquipmentHazardSource)
+#	 h2ho:ProcessEquipmentHazardSource ⊔ 
+#    h2ho:EnvironmentalConfinementHazardSource)
 #
 # Violation:
 # The constraint class FlammabilityHazardSource contains
@@ -20,25 +21,29 @@ PREFIX owl:     <http://www.w3.org/2002/07/owl#>
 PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-SELECT ?badSource
+SELECT ?invalidRelation
 WHERE {
-  # 1. Ensure FlammabilityHazard actually uses FlammabilityHazardSource
-  h2ho:FlammabilityHazard rdfs:subClassOf ?r .
-  ?r a owl:Restriction ;
-     owl:onProperty ho61508:inheresIn ;
-     owl:someValuesFrom h2ho:FlammabilityHazardSource .
+  VALUES (?Entity ?Property ?RelationEntity) {
+    (h2ho:FlammabilityHazard ho61508:inheresIn h2ho:FlammabilityHazardSource)
+  }
 
-  # 2. Inspect the union defining FlammabilityHazardSource
-  h2ho:FlammabilityHazardSource owl:equivalentClass ?u .
+  ?Entity rdfs:subClassOf ?restriction .
+  ?restriction a owl:Restriction ;
+               owl:onProperty ?Property ;
+               owl:someValuesFrom ?RelationEntity .
+
+  ?RelationEntity owl:equivalentClass ?u .
   ?u owl:unionOf ?list .
-  ?list rdf:rest*/rdf:first ?badSource .
+  ?list rdf:rest*/rdf:first ?invalidRelation .
 
-  # 3. Remove allowed sources from the bad source indicator variable
   FILTER (
-    ?badSource NOT IN (
+    ?invalidRelation NOT IN (
       h2ho:StorageVesselHazardSource,
       h2ho:PipingHazardSource,
-      h2ho:ProcessEquipmentHazardSource
+	  h2ho:ProcessEquipmentHazardSource,
+	  h2ho:EnvironmentalConfinementHazardSource
     )
   )
 }
+
+

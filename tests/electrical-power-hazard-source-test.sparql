@@ -6,36 +6,33 @@ PREFIX owl: <http://www.w3.org/2002/07/owl#>
 SELECT ?problem
 WHERE {
   {
-    SELECT
-      (COUNT(DISTINCT ?someR) AS ?someCnt)
-      (COUNT(DISTINCT ?allR)  AS ?allCnt)
+    SELECT (COUNT(DISTINCT ?someR) AS ?someCnt)
+           (COUNT(DISTINCT ?allR)  AS ?allCnt)
     WHERE {
-      VALUES (?HazardClass ?Property) {
-        (h2ho:PressureHazard ho61508:inheresIn)
+      VALUES (?HazardClass ?Property ?AllowedSource) {
+        (h2ho:ElectricalPowerHazard ho61508:inheresIn h2ho:ProcessEquipmentHazardSource)
       }
 
       OPTIONAL {
         ?HazardClass rdfs:subClassOf ?someR .
         ?someR a owl:Restriction ;
                owl:onProperty ?Property ;
-               owl:someValuesFrom ?someUnion .
-        ?someUnion owl:unionOf ?someList .
+               owl:someValuesFrom ?AllowedSource .
       }
 
       OPTIONAL {
         ?HazardClass rdfs:subClassOf ?allR .
         ?allR a owl:Restriction ;
               owl:onProperty ?Property ;
-              owl:allValuesFrom ?allUnion .
-        ?allUnion owl:unionOf ?allList .
+              owl:allValuesFrom ?AllowedSource .
       }
     }
   }
 
   FILTER (?someCnt != 1 || ?allCnt != 1)
-
   BIND(
-    "Expected exactly 1 SOME and 1 ALL inheresIn restriction for PressureHazard"
-    AS ?problem
+    CONCAT(
+      "Expected exactly 1 SOME and 1 ALL inheresIn restriction for ElectricalPowerHazard"
+    ) AS ?problem
   )
 }
