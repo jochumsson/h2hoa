@@ -37,7 +37,7 @@ h2ho:FlammabilityHazardSource
     rdfs:subClassOf ho61508:HazardSource ;
     rdfs:comment """
 Named set of HazardSource roles that are permitted bearers of a FlammabilityHazard.
-This class exists to make the allowed bearers explicit and queryable.
+This class exists to make the allowed flammability hazard bearers explicit and queryable.
 """ ;
     owl:equivalentClass [
         a owl:Class ;
@@ -108,7 +108,7 @@ h2ho:ThermalHazardSource
     rdfs:subClassOf ho61508:HazardSource ;
     rdfs:comment """
 Named set of HazardSource roles that are permitted bearers of a ThermalHazard.
-This class exists to make the allowed bearers explicit, reusable, and testable.
+This class exists to make the allowed thermal hazard bearers explicit, reusable, and testable.
 """ ;
     owl:equivalentClass [
         a owl:Class ;
@@ -127,10 +127,7 @@ h2ho:ThermalHazard
             a owl:Restriction ;
             rdfs:comment """
 DL:
-ThermalHazard ⊑ ∃ ho61508:inheresIn.
-    ( StorageVesselHazardSource
-    ⊔ PipingHazardSource
-    ⊔ ProcessEquipmentHazardSource )
+ThermalHazard ⊑ ∃ ho61508:inheresIn.StorageVesselHazardSource
 Every ThermalHazard inheres in at least one equipment or storage related hazard source.
 """ ;
             owl:onProperty ho61508:inheresIn ;
@@ -142,10 +139,7 @@ Every ThermalHazard inheres in at least one equipment or storage related hazard 
             a owl:Restriction ;
             rdfs:comment """
 DL:
-ThermalHazard ⊑ ∀ ho61508:inheresIn.
-    ( StorageVesselHazardSource
-    ⊔ PipingHazardSource
-    ⊔ ProcessEquipmentHazardSource )
+ThermalHazard ⊑ ∀ ho61508:inheresIn.StorageVesselHazardSource
 A ThermalHazard may inhere only in equipment, piping, or storage hazard sources.
 """ ;
             owl:onProperty ho61508:inheresIn ;
@@ -208,7 +202,6 @@ h2ho:ElectricalPowerHazard
             rdfs:comment """
 DL:
 ElectricalPowerHazard ⊑ ∃ ho61508:inheresIn.ProcessEquipmentHazardSource
-
 Every ElectricalPowerHazard inheres in at least one process equipment hazard source.
 """ ;
             owl:onProperty ho61508:inheresIn ;
@@ -221,7 +214,6 @@ Every ElectricalPowerHazard inheres in at least one process equipment hazard sou
             rdfs:comment """
 DL:
 ElectricalPowerHazard ⊑ ∀ ho61508:inheresIn.ProcessEquipmentHazardSource
-
 An ElectricalPowerHazard may inhere only in process equipment hazard sources.
 """ ;
             owl:onProperty ho61508:inheresIn ;
@@ -230,6 +222,20 @@ An ElectricalPowerHazard may inhere only in process equipment hazard sources.
 
 
 ### ToxicityHazard inherits in storage, process equipment, or confined volumes
+h2ho:ToxicityHazardSource
+    a owl:Class ;
+    rdfs:subClassOf ho61508:HazardSource ;
+    rdfs:comment "HazardSource roles that may bear a ToxicityHazard." ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:unionOf (
+            h2ho:StorageVesselHazardSource
+            h2ho:PipingHazardSource
+            h2ho:ProcessEquipmentHazardSource
+            h2ho:EnvironmentalConfinementHazardSource
+        )
+    ] .
+
 h2ho:ToxicityHazard
     rdfs:subClassOf
 
@@ -238,23 +244,11 @@ h2ho:ToxicityHazard
             a owl:Restriction ;
             rdfs:comment """
 DL:
-ToxicityHazard ⊑ ∃ ho61508:inheresIn.
-    ( StorageVesselHazardSource
-    ⊔ PipingHazardSource
-    ⊔ ProcessEquipmentHazardSource
-    ⊔ EnvironmentalConfinementHazardSource )
-
+ToxicityHazard ⊑ ∃ ho61508:inheresIn.StorageVesselHazardSource
 Every ToxicityHazard inheres in at least one hydrogen system hazard source.
 """ ;
             owl:onProperty ho61508:inheresIn ;
-            owl:someValuesFrom [
-                owl:unionOf (
-                    h2ho:StorageVesselHazardSource
-                    h2ho:PipingHazardSource
-                    h2ho:ProcessEquipmentHazardSource
-                    h2ho:EnvironmentalConfinementHazardSource
-                )
-            ]
+            owl:someValuesFrom h2ho:ToxicityHazardSource
         ] ,
 
         # Only these hazard sources are allowed as bearers
@@ -262,26 +256,13 @@ Every ToxicityHazard inheres in at least one hydrogen system hazard source.
             a owl:Restriction ;
             rdfs:comment """
 DL:
-ToxicityHazard ⊑ ∀ ho61508:inheresIn.
-    ( StorageVesselHazardSource
-    ⊔ PipingHazardSource
-    ⊔ ProcessEquipmentHazardSource
-    ⊔ EnvironmentalConfinementHazardSource )
-
+ToxicityHazard ⊑ ∀ ho61508:inheresIn.StorageVesselHazardSource
 A ToxicityHazard may inhere only in the listed hazard source types.
 """ ;
             owl:onProperty ho61508:inheresIn ;
-            owl:allValuesFrom [
-                owl:unionOf (
-                    h2ho:StorageVesselHazardSource
-                    h2ho:PipingHazardSource
-                    h2ho:ProcessEquipmentHazardSource
-                    h2ho:EnvironmentalConfinementHazardSource
-                )
-            ]
+            owl:allValuesFrom h2ho:ToxicityHazardSource
         ] .
-
-
+		
 
 #################################################################
 # HazardSources are carried by abstract endurant specifications
