@@ -1,3 +1,19 @@
+############################################################
+# Rule:
+# ThermalHazard ⊑ ∃ ho61508:inheresIn.ThermalHazardSource
+#                        ⊓ ∀ ho61508:inheresIn.ThermalHazardSource
+#
+# Violation:
+# ThermalHazard is constrained to inhere in a HazardSource other
+# than ThermalHazardSource, or the universal restriction
+# is removed or weakened.
+############################################################
+
+# PARAMETERS:
+#   ?HazardClass: 		h2ho:ThermalHazard
+#   ?Property:			ho61508:inheresIn
+#   ?AllowedSource:		h2ho:ThermalHazardSource
+
 PREFIX h2ho: <https://w3id.org/jochumsson/h2ho#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
@@ -10,33 +26,30 @@ WHERE {
       (COUNT(DISTINCT ?someR) AS ?someCnt)
       (COUNT(DISTINCT ?allR)  AS ?allCnt)
     WHERE {
-      VALUES (?HazardClass ?Property) {
-        (h2ho:ThermalHazard ho61508:inheresIn)
-      }
-
+	  VALUES (?HazardClass ?Property ?AllowedSource) {
+	    (h2ho:ThermalHazard ho61508:inheresIn h2ho:ThermalHazardSource)
+	  }
+	  
       OPTIONAL {
         ?HazardClass rdfs:subClassOf ?someR .
         ?someR a owl:Restriction ;
                owl:onProperty ?Property ;
-               owl:someValuesFrom ?someUnion .
-        ?someUnion owl:unionOf ?someList .
+               owl:someValuesFrom ?AllowedSource .
       }
 
       OPTIONAL {
         ?HazardClass rdfs:subClassOf ?allR .
         ?allR a owl:Restriction ;
               owl:onProperty ?Property ;
-              owl:allValuesFrom ?allUnion .
-        ?allUnion owl:unionOf ?allList .
+              owl:allValuesFrom ?AllowedSource .
       }
     }
   }
 
   FILTER (?someCnt != 1 || ?allCnt != 1)
-
   BIND(
-    "Expected exactly 1 SOME and 1 ALL inheresIn restriction for PressureHazard"
-    AS ?problem
+    CONCAT(
+      "Expected exactly 1 SOME and 1 ALL inheresIn restriction but found SOME=", STR(?someCnt), ", ALL=", STR(?allCnt)
+    ) AS ?problem
   )
 }
-

@@ -1,0 +1,48 @@
+# Rule:
+# ThermalHazard is constrained via ho61508:inheresIn
+# to use only ThermalHazardSource as its bearer.
+#
+# In essence it tests:
+# ThermalHazardSource ⊑ 
+#	(h2ho:StorageVesselHazardSource ⊔ 
+#	 h2ho:PipingHazardSource ⊔ 
+#	 h2ho:ProcessEquipmentHazardSource)
+#
+# Violation:
+# The constraint class ThermalHazardSource contains
+# a HazardSource that is not permitted to bear a
+# ThermalHazard, while being actively used to
+# constrain ThermalHazard.
+
+PREFIX h2ho:    <https://w3id.org/jochumsson/h2ho#>
+PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
+PREFIX owl:     <http://www.w3.org/2002/07/owl#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT ?invalidRelation
+WHERE {
+  VALUES (?Entity ?Property ?RelationEntity) {
+    (h2ho:ThermalHazard ho61508:inheresIn h2ho:ThermalHazardSource)
+    (h2ho:ThermalHazard ho61508:inheresIn h2ho:ThermalHazardSource)
+  }
+
+  ?Entity rdfs:subClassOf ?restriction .
+  ?restriction a owl:Restriction ;
+               owl:onProperty ?Property ;
+               owl:someValuesFrom ?RelationEntity .
+
+  ?RelationEntity owl:equivalentClass ?u .
+  ?u owl:unionOf ?list .
+  ?list rdf:rest*/rdf:first ?invalidRelation .
+
+  FILTER (
+    ?invalidRelation NOT IN (
+      h2ho:StorageVesselHazardSource,
+      h2ho:PipingHazardSource,
+	  h2ho:ProcessEquipmentHazardSource
+    )
+  )
+}
+
+

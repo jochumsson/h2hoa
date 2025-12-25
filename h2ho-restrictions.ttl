@@ -32,7 +32,6 @@
 #################################################################
 
 ### FlammabilityHazard inherits in a flammability source
-### This axiom is added for reasoning only and is not part of the conceptual 
 h2ho:FlammabilityHazardSource
     a owl:Class ;
     rdfs:subClassOf ho61508:HazardSource ;
@@ -46,6 +45,7 @@ This class exists to make the allowed bearers explicit and queryable.
             h2ho:StorageVesselHazardSource
             h2ho:PipingHazardSource
             h2ho:ProcessEquipmentHazardSource
+            h2ho:EnvironmentalConfinementHazardSource
         )
     ] .
 	
@@ -101,7 +101,24 @@ An OxygenDeficiencyHazard may inhere only in environmental confinements.
             owl:allValuesFrom h2ho:EnvironmentalConfinementHazardSource
         ] .
 
+
 ### ThermalHazard inherits in equipment or storage
+h2ho:ThermalHazardSource
+    a owl:Class ;
+    rdfs:subClassOf ho61508:HazardSource ;
+    rdfs:comment """
+Named set of HazardSource roles that are permitted bearers of a ThermalHazard.
+This class exists to make the allowed bearers explicit, reusable, and testable.
+""" ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:unionOf (
+            h2ho:StorageVesselHazardSource
+            h2ho:PipingHazardSource
+            h2ho:ProcessEquipmentHazardSource
+        )
+    ] .
+
 h2ho:ThermalHazard
     rdfs:subClassOf
 
@@ -117,13 +134,7 @@ ThermalHazard ⊑ ∃ ho61508:inheresIn.
 Every ThermalHazard inheres in at least one equipment or storage related hazard source.
 """ ;
             owl:onProperty ho61508:inheresIn ;
-            owl:someValuesFrom [
-                owl:unionOf (
-                    h2ho:StorageVesselHazardSource
-                    h2ho:PipingHazardSource
-                    h2ho:ProcessEquipmentHazardSource
-                )
-            ]
+            owl:someValuesFrom h2ho:ThermalHazardSource
         ] ,
 
         # Only equipment or storage are allowed as bearers
@@ -138,13 +149,7 @@ ThermalHazard ⊑ ∀ ho61508:inheresIn.
 A ThermalHazard may inhere only in equipment, piping, or storage hazard sources.
 """ ;
             owl:onProperty ho61508:inheresIn ;
-            owl:allValuesFrom [
-                owl:unionOf (
-                    h2ho:StorageVesselHazardSource
-                    h2ho:PipingHazardSource
-                    h2ho:ProcessEquipmentHazardSource
-                )
-            ]
+            owl:allValuesFrom h2ho:ThermalHazardSource
         ] .
 
 
