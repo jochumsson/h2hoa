@@ -1,3 +1,21 @@
+############################################################
+# Rule:
+# PressureHazard is constrained via ho61508:inheresIn
+# to use only PressureHazardSource as its bearer.
+#
+# In essence it tests:
+# PressureHazardSource ⊑ 
+#   (StorageVesselHazardSource ⊔
+#    PipingHazardSource ⊔
+#    ProcessEquipmentHazardSource)
+#
+# Violation:
+# The constraint class PressureHazardSource contains
+# a HazardSource that is not permitted to bear a
+# PressureHazard, while being actively used to
+# constrain PressureHazard.
+############################################################
+
 PREFIX h2ho:    <https://w3id.org/jochumsson/h2ho#>
 PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
 PREFIX owl:     <http://www.w3.org/2002/07/owl#>
@@ -6,24 +24,24 @@ PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
 SELECT ?invalidRelation
 WHERE {
-  VALUES (?Entity ?Property) {
-    (h2ho:PressureHazard ho61508:inheresIn)
+  VALUES (?Entity ?Property ?RelationEntity) {
+    (h2ho:PressureHazard ho61508:inheresIn h2ho:PressureHazardSource)
   }
 
   ?Entity rdfs:subClassOf ?restriction .
   ?restriction a owl:Restriction ;
                owl:onProperty ?Property ;
-               owl:someValuesFrom ?union .
+               owl:someValuesFrom ?RelationEntity .
 
-  ?union owl:unionOf ?list .
+  ?RelationEntity owl:equivalentClass ?u .
+  ?u owl:unionOf ?list .
   ?list rdf:rest*/rdf:first ?invalidRelation .
 
   FILTER (
     ?invalidRelation NOT IN (
       h2ho:StorageVesselHazardSource,
       h2ho:PipingHazardSource,
-	  h2ho:ProcessEquipmentHazardSource
+      h2ho:ProcessEquipmentHazardSource
     )
   )
 }
-

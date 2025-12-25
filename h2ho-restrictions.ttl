@@ -153,7 +153,23 @@ A ThermalHazard may inhere only in equipment, piping, or storage hazard sources.
         ] .
 
 
-### PressureHazard inherits in pressurised hardware or confined volumes
+### PressureHazard inherits in pressurised hardware
+h2ho:PressureHazardSource
+    a owl:Class ;
+    rdfs:subClassOf ho61508:HazardSource ;
+    rdfs:comment """
+Named set of HazardSource roles that are permitted bearers of a PressureHazard.
+This class exists to make the allowed bearers explicit, reusable, and testable.
+""" ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:unionOf (
+            h2ho:StorageVesselHazardSource
+            h2ho:PipingHazardSource
+            h2ho:ProcessEquipmentHazardSource
+        )
+    ] .
+
 h2ho:PressureHazard
     rdfs:subClassOf
 
@@ -162,21 +178,11 @@ h2ho:PressureHazard
             a owl:Restriction ;
             rdfs:comment """
 DL:
-PressureHazard ⊑ ∃ ho61508:inheresIn.
-    ( StorageVesselHazardSource
-    ⊔ PipingHazardSource
-    ⊔ ProcessEquipmentHazardSource )
-
+PressureHazard ⊑ ∃ ho61508:inheresIn.PressureHazardSource
 Every PressureHazard inheres in at least one pressurised hardware hazard source.
 """ ;
             owl:onProperty ho61508:inheresIn ;
-            owl:someValuesFrom [
-                owl:unionOf (
-                    h2ho:StorageVesselHazardSource
-                    h2ho:PipingHazardSource
-                    h2ho:ProcessEquipmentHazardSource
-                )
-            ]
+            owl:someValuesFrom h2ho:PressureHazardSource
         ] ,
 
         # Only pressurised hardware is allowed as bearer
@@ -184,23 +190,12 @@ Every PressureHazard inheres in at least one pressurised hardware hazard source.
             a owl:Restriction ;
             rdfs:comment """
 DL:
-PressureHazard ⊑ ∀ ho61508:inheresIn.
-    ( StorageVesselHazardSource
-    ⊔ PipingHazardSource
-    ⊔ ProcessEquipmentHazardSource )
-
+PressureHazard ⊑ ∀ ho61508:inheresIn.PressureHazardSource
 A PressureHazard may inhere only in pressurised hardware hazard sources.
 """ ;
             owl:onProperty ho61508:inheresIn ;
-            owl:allValuesFrom [
-                owl:unionOf (
-                    h2ho:StorageVesselHazardSource
-                    h2ho:PipingHazardSource
-                    h2ho:ProcessEquipmentHazardSource
-                )
-            ]
+            owl:allValuesFrom h2ho:PressureHazardSource
         ] .
-
 
 
 ### ElectricalPowerHazard inherits in process equipment
