@@ -12,14 +12,16 @@
 # for hydrogen hazard analysis. These rules are NOT part of
 # the conceptual H2HO ontology described in the paper "A Hazard 
 # Ontology Based on IEC 61508", but are added at later state during
-# knowledge base construction, discussed in the paper: "Towards 
-# Ontological Semantics for Hazard Analysis with Automatic Reasoning".
+# knowledge base construction, discussed in the paper: "An Ontological
+# Representation of Hazard Analysis for a Hydrogen Energy Site Based on
+# IEC61508".
 #
 # These rules, belong to the application layer: scenario 
 # modelling, causal sequence construction, and hazard analysis.
 #
 # They illustrate how HO61508 object properties (resultsIn, 
-# enables, manifestsIn) may be used to express domain physics. 
+# enables, manifestsIn) may be used to represent domain hazard 
+# analysis. 
 #
 # The conceptual ontology (h2ho.ttl) intentionally excludes such
 # rules to remain general, reusable, and structurally aligned 
@@ -262,82 +264,101 @@ A ToxicityHazard may inhere only in the listed hazard source types.
             owl:onProperty ho61508:inheresIn ;
             owl:allValuesFrom h2ho:ToxicityHazardSource
         ] .
-		
 
 #################################################################
-# HazardSources are carried by abstract endurant specifications
+# HazardSources carried by abstract endurant specifications
 #################################################################
 
-### StorageVessel endurants must carry a StorageVesselHazardSource role
-h2ho:StorageVessel rdfs:subClassOf [
-    a owl:Restriction ;
-    rdfs:comment """
+### StorageVessel endurants carry only StorageVesselHazardSource roles
+h2ho:StorageVessel
+    rdfs:subClassOf
+        [
+            a owl:Restriction ;
+            rdfs:comment """
 Every StorageVessel carries at least one StorageVesselHazardSource role.
-DL: StorageVessel ⊑ ∃ inverse(carriedBy).StorageVesselHazardSource		
-	""" ;
-    owl:onProperty [ owl:inverseOf ho61508:carriedBy ] ;
-    owl:someValuesFrom h2ho:StorageVesselHazardSource
-] .
+DL: StorageVessel ⊑ ∃ carries.StorageVesselHazardSource
+""" ;
+            owl:onProperty ho61508:carries ;
+            owl:someValuesFrom h2ho:StorageVesselHazardSource
+        ] ,
+        [
+            a owl:Restriction ;
+            rdfs:comment """
+A StorageVessel may carry only StorageVesselHazardSource roles.
+DL: StorageVessel ⊑ ∀ carries.StorageVesselHazardSource
+""" ;
+            owl:onProperty ho61508:carries ;
+            owl:allValuesFrom h2ho:StorageVesselHazardSource
+        ] .
 
-### PipingHazardSource must be played by a Piping endurant
-h2ho:PipingHazardSource rdfs:subClassOf [
-    a owl:Restriction ;
-    rdfs:comment "Instances of PipingHazardSource are played by Piping endurants." ;
-    owl:onProperty ho61508:carriedBy ;
-    owl:someValuesFrom h2ho:Piping
-] .
 
-### Piping endurants play a PipingHazardSource role
+### Piping endurants carry only PipingHazardSource roles
 h2ho:Piping
-    rdfs:subClassOf [
-        a owl:Restriction ;
-        rdfs:comment "Piping endurants play at least one PipingHazardSource role." ;
-        owl:onProperty [
-            a owl:ObjectProperty ;
-            owl:inverseOf ho61508:carriedBy
-        ] ;
-        owl:someValuesFrom h2ho:PipingHazardSource
-    ] .
+    rdfs:subClassOf
+        [
+            a owl:Restriction ;
+            rdfs:comment """
+Piping endurants carry at least one PipingHazardSource role.
+DL: Piping ⊑ ∃ carries.PipingHazardSource
+""" ;
+            owl:onProperty ho61508:carries ;
+            owl:someValuesFrom h2ho:PipingHazardSource
+        ] ,
+        [
+            a owl:Restriction ;
+            rdfs:comment """
+Piping endurants may carry only PipingHazardSource roles.
+DL: Piping ⊑ ∀ carries.PipingHazardSource
+""" ;
+            owl:onProperty ho61508:carries ;
+            owl:allValuesFrom h2ho:PipingHazardSource
+        ] .
 
-### ProcessEquipmentHazardSource must be played by ProcessEquipment
-h2ho:ProcessEquipmentHazardSource rdfs:subClassOf [
-    a owl:Restriction ;
-    rdfs:comment "Instances of ProcessEquipmentHazardSource are played by ProcessEquipment endurants." ;
-    owl:onProperty ho61508:carriedBy ;
-    owl:someValuesFrom h2ho:ProcessEquipment
-] .
 
-### ProcessEquipment endurants play a ProcessEquipmentHazardSource role
+### ProcessEquipment endurants carry only ProcessEquipmentHazardSource roles
 h2ho:ProcessEquipment
-    rdfs:subClassOf [
-        a owl:Restriction ;
-        rdfs:comment "ProcessEquipment endurants play at least one ProcessEquipmentHazardSource role." ;
-        owl:onProperty [
-            a owl:ObjectProperty ;
-            owl:inverseOf ho61508:carriedBy
-        ] ;
-        owl:someValuesFrom h2ho:ProcessEquipmentHazardSource
-    ] .
+    rdfs:subClassOf
+        [
+            a owl:Restriction ;
+            rdfs:comment """
+ProcessEquipment endurants carry at least one ProcessEquipmentHazardSource role.
+DL: ProcessEquipment ⊑ ∃ carries.ProcessEquipmentHazardSource
+""" ;
+            owl:onProperty ho61508:carries ;
+            owl:someValuesFrom h2ho:ProcessEquipmentHazardSource
+        ] ,
+        [
+            a owl:Restriction ;
+            rdfs:comment """
+ProcessEquipment endurants may carry only ProcessEquipmentHazardSource roles.
+DL: ProcessEquipment ⊑ ∀ carries.ProcessEquipmentHazardSource
+""" ;
+            owl:onProperty ho61508:carries ;
+            owl:allValuesFrom h2ho:ProcessEquipmentHazardSource
+        ] .
 
-### EnvironmentalConfinementHazardSource must be played by EnvironmentalConfinement
-h2ho:EnvironmentalConfinementHazardSource rdfs:subClassOf [
-    a owl:Restriction ;
-    rdfs:comment "Instances of EnvironmentalConfinementHazardSource are played by EnvironmentalConfinement endurants." ;
-    owl:onProperty ho61508:carriedBy ;
-    owl:someValuesFrom h2ho:EnvironmentalConfinement
-] .
 
-### EnvironmentalConfinement endurants play an EnvironmentalConfinementHazardSource role
+### EnvironmentalConfinement endurants carry only EnvironmentalConfinementHazardSource roles
 h2ho:EnvironmentalConfinement
-    rdfs:subClassOf [
-        a owl:Restriction ;
-        rdfs:comment "EnvironmentalConfinement endurants play at least one EnvironmentalConfinementHazardSource role." ;
-        owl:onProperty [
-            a owl:ObjectProperty ;
-            owl:inverseOf ho61508:carriedBy
-        ] ;
-        owl:someValuesFrom h2ho:EnvironmentalConfinementHazardSource
-    ] .
+    rdfs:subClassOf
+        [
+            a owl:Restriction ;
+            rdfs:comment """
+EnvironmentalConfinement endurants carry at least one EnvironmentalConfinementHazardSource role.
+DL: EnvironmentalConfinement ⊑ ∃ carries.EnvironmentalConfinementHazardSource
+""" ;
+            owl:onProperty ho61508:carries ;
+            owl:someValuesFrom h2ho:EnvironmentalConfinementHazardSource
+        ] ,
+        [
+            a owl:Restriction ;
+            rdfs:comment """
+EnvironmentalConfinement endurants may carry only EnvironmentalConfinementHazardSource roles.
+DL: EnvironmentalConfinement ⊑ ∀ carries.EnvironmentalConfinementHazardSource
+""" ;
+            owl:onProperty ho61508:carries ;
+            owl:allValuesFrom h2ho:EnvironmentalConfinementHazardSource
+        ] .
 
 #################################################################
 # Fundamental hydrogen combustion chain

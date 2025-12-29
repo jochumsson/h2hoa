@@ -1,0 +1,47 @@
+############################################################
+# Rule:
+# ProcessEquipment ⊑ ∃ carries.ProcessEquipmentHazardSource
+#                  ⊓ ∀ carries.ProcessEquipmentHazardSource
+############################################################
+
+PREFIX h2ho: <https://w3id.org/jochumsson/h2ho#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+SELECT ?problem
+WHERE {
+  {
+    SELECT
+      (COUNT(DISTINCT ?someR) AS ?someCnt)
+      (COUNT(DISTINCT ?allR)  AS ?allCnt)
+    WHERE {
+      VALUES (?Endurant ?Property ?Role) {
+        (h2ho:ProcessEquipment ho61508:carries h2ho:ProcessEquipmentHazardSource)
+      }
+
+      OPTIONAL {
+        ?Endurant rdfs:subClassOf ?someR .
+        ?someR a owl:Restriction ;
+               owl:onProperty ?Property ;
+               owl:someValuesFrom ?Role .
+      }
+
+      OPTIONAL {
+        ?Endurant rdfs:subClassOf ?allR .
+        ?allR a owl:Restriction ;
+              owl:onProperty ?Property ;
+              owl:allValuesFrom ?Role .
+      }
+    }
+  }
+
+  FILTER (?someCnt != 1 || ?allCnt != 1)
+  BIND(
+    CONCAT(
+      "ProcessEquipment must carry exactly one ProcessEquipmentHazardSource (SOME+ALL), found SOME=",
+      STR(?someCnt), ", ALL=", STR(?allCnt)
+    ) AS ?problem
+  )
+}
+
