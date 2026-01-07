@@ -3,7 +3,7 @@
 # Input files
 HO=../ho61508/ho61508.ttl
 H2HO=h2ho.ttl
-RESTR=h2ho-restrictions.ttl
+H2HOA=h2ho-a.ttl
 
 # Output
 OUT=ho61508-h2ho-merged.ttl
@@ -35,7 +35,7 @@ echo "" >> "$OUT"
 # 4. Append restrictions WITHOUT HEADER
 ############################################################
 # Same logic: remove everything before the first real triple
-sed -n '/^h2ho:/,$p' "$RESTR" >> "$OUT"
+sed -n '/^h2ho:/,$p' "$H2HOA" >> "$OUT"
 
 echo ""
 echo "Done. Output written to $OUT"

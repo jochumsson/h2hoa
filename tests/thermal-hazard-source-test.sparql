@@ -19,7 +19,7 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 
-SELECT ?problem
+SELECT ?violation
 WHERE {
   {
     SELECT
@@ -50,6 +50,6 @@ WHERE {
   BIND(
     CONCAT(
       "Expected exactly 1 SOME and 1 ALL inheresIn restriction but found SOME=", STR(?someCnt), ", ALL=", STR(?allCnt)
-    ) AS ?problem
+    ) AS ?violation
   )
 }

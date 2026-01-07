@@ -9,7 +9,7 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 
-SELECT ?problem
+SELECT ?violation
 WHERE {
   {
     SELECT
@@ -41,7 +41,7 @@ WHERE {
     CONCAT(
       "Piping must carry exactly one PipingHazardSource (SOME+ALL), found SOME=",
       STR(?someCnt), ", ALL=", STR(?allCnt)
-    ) AS ?problem
+    ) AS ?violation
   )
 }
 

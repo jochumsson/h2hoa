@@ -361,6 +361,91 @@ DL: EnvironmentalConfinement ⊑ ∀ carries.EnvironmentalConfinementHazardSourc
         ] .
 
 #################################################################
+# Hazard triggers
+#################################################################
+
+### Flammability hazard is triggered by ignition
+h2ho:FlammabilityHazard
+    rdfs:subClassOf
+
+        # At least one ignition event is required to trigger flammability
+        [
+            a owl:Restriction ;
+            rdfs:comment """
+DL:
+FlammabilityHazard ⊑ ∃ ho61508:triggeredBy.Ignition
+
+A FlammabilityHazard is a potential hazard that is realised when an ignition
+event occurs in the presence of flammable conditions. This models the IEC 61508
+notion that hazards are triggered by events rather than being continuously active.
+""" ;
+            owl:onProperty ho61508:triggeredBy ;
+            owl:someValuesFrom h2ho:Ignition
+        ] ,
+
+        # Only ignition events are permitted to trigger flammability
+        [
+            a owl:Restriction ;
+            rdfs:comment """
+DL:
+FlammabilityHazard ⊑ ∀ ho61508:triggeredBy.Ignition
+
+This restriction formalises that flammability hazards are triggered exclusively
+by ignition events. Other event types (e.g. releases, malfunctions, or external
+events) may create enabling conditions but do not directly trigger flammability
+according to the hazard definition.
+""" ;
+            owl:onProperty ho61508:triggeredBy ;
+            owl:allValuesFrom h2ho:Ignition
+        ] .
+
+### Detonation hazard triggering
+h2ho:DetonationHazard
+    rdfs:subClassOf
+        [
+            a owl:Restriction ;
+            rdfs:comment """
+DL:
+DetonationHazard ⊑ ∃ ho61508:triggeredBy.FlameAcceleration
+
+A detonation hazard may be triggered by flame acceleration,
+reflecting the escalation of combustion phenomena under
+certain physical conditions.
+""" ;
+            owl:onProperty ho61508:triggeredBy ;
+            owl:someValuesFrom h2ho:FlameAcceleration
+        ] .
+
+
+### ElectricalPowerHazard is triggered by malfunction
+h2ho:ElectricalPowerHazard
+    rdfs:subClassOf
+
+        # At least one malfunction trigger is required
+        [
+            a owl:Restriction ;
+            rdfs:comment """
+DL:
+ElectricalPowerHazard ⊑ ∃ ho61508:triggeredBy.Malfunction
+Every ElectricalPowerHazard is triggered by at least one malfunction.
+""" ;
+            owl:onProperty ho61508:triggeredBy ;
+            owl:someValuesFrom h2ho:Malfunction
+        ] ,
+
+        # Only malfunction triggers are permitted
+        [
+            a owl:Restriction ;
+            rdfs:comment """
+DL:
+ElectricalPowerHazard ⊑ ∀ ho61508:triggeredBy.Malfunction
+An ElectricalPowerHazard may only be triggered by malfunction events.
+""" ;
+            owl:onProperty ho61508:triggeredBy ;
+            owl:allValuesFrom h2ho:Malfunction
+        ] .
+
+#################################################################
 # Fundamental hydrogen combustion chain
 #################################################################
 
