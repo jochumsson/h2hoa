@@ -1,0 +1,57 @@
+############################################################
+# Rule:
+# ThermalHazard ⊑ ∃ ho61508:triggeredBy.ThermalHazardTrigger
+#             ⊓ ∀ ho61508:triggeredBy.ThermalHazardTrigger
+#
+# Where:
+# ThermalHazardTrigger ≡ Malfunction ⊔ LossOfFunction ⊔ ExternalEvent
+############################################################
+
+# PARAMETERS:
+#   ?HazardClass:     h2ho:ThermalHazard
+#   ?Property:        ho61508:triggeredBy
+#   ?AllowedTrigger:  h2ho:ThermalHazardTrigger
+
+PREFIX h2ho: <https://w3id.org/jochumsson/h2ho#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+SELECT ?violation
+WHERE {
+  {
+    SELECT
+      (COUNT(DISTINCT ?someR) AS ?someCnt)
+      (COUNT(DISTINCT ?allR)  AS ?allCnt)
+    WHERE {
+      VALUES (?HazardClass ?Property ?AllowedTrigger) {
+        (h2ho:ThermalHazard ho61508:triggeredBy h2ho:ThermalHazardTrigger)
+      }
+
+      OPTIONAL {
+        ?HazardClass rdfs:subClassOf ?someR .
+        ?someR a owl:Restriction ;
+               owl:onProperty ?Property ;
+               owl:someValuesFrom ?AllowedTrigger .
+      }
+
+      OPTIONAL {
+        ?HazardClass rdfs:subClassOf ?allR .
+        ?allR a owl:Restriction ;
+              owl:onProperty ?Property ;
+              owl:allValuesFrom ?AllowedTrigger .
+      }
+    }
+  }
+
+  FILTER (?someCnt != 1 || ?allCnt != 1)
+
+  BIND(
+    CONCAT(
+      "Expected exactly 1 SOME and 1 ALL triggeredBy restriction for ",
+      STR(h2ho:ThermalHazard),
+      " but found SOME=", STR(?someCnt), ", ALL=", STR(?allCnt)
+    ) AS ?violation
+  )
+}
+

@@ -1,0 +1,45 @@
+# Rule:
+# ToxicityHazard is constrained via ho61508:triggeredBy
+# to use only ToxicityHazardTriggerEvent as its trigger event set.
+#
+# In essence it tests:
+# ToxicityHazardTrigger ⊑
+#       (h2ho:ExternalEvent ⊔
+#        h2ho:Malfunction ⊔
+#        h2ho:LossOfFunction)
+#
+# Violation:
+# The constraint class ToxicityHazardTrigger contains
+# an event type that is not permitted to trigger a ToxicityHazard,
+# while being actively used to constrain ToxicityHazard.
+
+PREFIX h2ho:    <https://w3id.org/jochumsson/h2ho#>
+PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
+PREFIX owl:     <http://www.w3.org/2002/07/owl#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT ?invalidRelation
+WHERE {
+  VALUES (?Entity ?Property ?RelationEntity) {
+    (h2ho:ToxicityHazard ho61508:triggeredBy h2ho:ToxicityHazardTrigger)
+  }
+
+  ?Entity rdfs:subClassOf ?restriction .
+  ?restriction a owl:Restriction ;
+               owl:onProperty ?Property ;
+               owl:someValuesFrom ?RelationEntity .
+
+  ?RelationEntity owl:equivalentClass ?u .
+  ?u owl:unionOf ?list .
+  ?list rdf:rest*/rdf:first ?invalidRelation .
+
+  FILTER (
+    ?invalidRelation NOT IN (
+      h2ho:ExternalEvent,
+      h2ho:Malfunction,
+      h2ho:LossOfFunction
+    )
+  )
+}
+
