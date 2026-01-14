@@ -107,6 +107,15 @@ h2ho:DetonationHazard rdf:type owl:Class ;
     rdfs:subClassOf h2ho:FlammabilityHazard ;
     rdfs:comment "Hazard whose manifestation is a detonation." .
 
+[] a owl:AllDisjointClasses ;
+   owl:members (
+     h2ho:JetFireHazard
+     h2ho:FireballHazard
+     h2ho:PoolFireHazard
+     h2ho:DeflagrationHazard
+     h2ho:DetonationHazard
+   ) .
+
 #################################################################
 # H2HO-A ho61508:HazardousEvent specialisations
 #################################################################
@@ -745,7 +754,7 @@ An ElectricalPowerHazard may only be triggered by malfunction events.
             owl:allValuesFrom h2ho:Malfunction
         ] .
 
-### OxygenDeficiencyHazard is triggered by malfunction
+### ElectricalPowerHazard is triggered by malfunction
 h2ho:ElectricalPowerHazard
     rdfs:subClassOf
 
