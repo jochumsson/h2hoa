@@ -2,7 +2,7 @@
 
 # Input files
 HO=../ho61508/ho61508.ttl
-H2HO=h2ho.ttl
+H2HO=../ho61508/h2ho.ttl
 H2HOA=h2ho-a.ttl
 
 # Output

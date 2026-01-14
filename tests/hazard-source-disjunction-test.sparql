@@ -1,0 +1,16 @@
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX h2ho: <https://w3id.org/jochumsson/h2ho#>
+
+SELECT ( "Test disjoint declaration of HazardSource role specialisation." AS ?violation )
+WHERE {
+  FILTER NOT EXISTS {
+    ?adc a owl:AllDisjointClasses ;
+         owl:members ?list .
+
+    FILTER EXISTS { ?list rdf:rest*/rdf:first h2ho:StorageVesselHazardSource . }
+    FILTER EXISTS { ?list rdf:rest*/rdf:first h2ho:PipingHazardSource . }
+    FILTER EXISTS { ?list rdf:rest*/rdf:first h2ho:ProcessEquipmentHazardSource . }
+    FILTER EXISTS { ?list rdf:rest*/rdf:first h2ho:EnvironmentalConfinementHazardSource . }
+  }
+}
