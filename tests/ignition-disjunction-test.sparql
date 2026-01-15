@@ -1,0 +1,17 @@
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX h2ho: <https://w3id.org/jochumsson/h2ho#>
+
+SELECT ( "Test disjoint declaration of ignition event subtypes." AS ?violation )
+WHERE {
+  FILTER NOT EXISTS {
+    ?adc a owl:AllDisjointClasses ; owl:members ?list .
+
+    FILTER EXISTS { ?list rdf:rest*/rdf:first h2ho:FlameIgnition . }
+    FILTER EXISTS { ?list rdf:rest*/rdf:first h2ho:HotSurfaceIgnition . }
+    FILTER EXISTS { ?list rdf:rest*/rdf:first h2ho:FrictionIgnition . }
+    FILTER EXISTS { ?list rdf:rest*/rdf:first h2ho:StaticSparkIgnition . }
+    FILTER EXISTS { ?list rdf:rest*/rdf:first h2ho:AutoIgnition . }
+    FILTER EXISTS { ?list rdf:rest*/rdf:first h2ho:EscalationIgnition . }
+  }
+}

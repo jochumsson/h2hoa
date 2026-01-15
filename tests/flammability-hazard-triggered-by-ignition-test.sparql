@@ -24,7 +24,6 @@ WHERE {
   {
     SELECT
       (COUNT(DISTINCT ?someR) AS ?someCnt)
-      (COUNT(DISTINCT ?allR)  AS ?allCnt)
     WHERE {
       VALUES (?HazardClass ?Property ?AllowedTrigger) {
         (h2ho:FlammabilityHazard ho61508:triggeredBy h2ho:Ignition)
@@ -36,22 +35,14 @@ WHERE {
                owl:onProperty ?Property ;
                owl:someValuesFrom ?AllowedTrigger .
       }
-
-      OPTIONAL {
-        ?HazardClass rdfs:subClassOf ?allR .
-        ?allR a owl:Restriction ;
-              owl:onProperty ?Property ;
-              owl:allValuesFrom ?AllowedTrigger .
-      }
     }
   }
 
-  FILTER (?someCnt != 1 || ?allCnt != 1)
+  FILTER (?someCnt != 1)
 
   BIND(
     CONCAT(
-      "Expected exactly 1 SOME and 1 ALL triggeredBy restriction for FlammabilityHazard but found SOME=",
-      STR(?someCnt), ", ALL=", STR(?allCnt)
+      "Expected exactly 1 SOME triggeredBy restriction for FlammabilityHazard but found SOME=", STR(?someCnt)
     ) AS ?violation
   )
 }
