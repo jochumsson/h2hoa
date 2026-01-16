@@ -98,13 +98,43 @@ h2ho:EnvironmentalConfinement rdf:type owl:Class ;
      h2ho:ElectricalPowerHazard
    ) .
 
+h2ho:FlammabilityHazard
+  rdfs:subClassOf
+    [
+      a owl:Restriction ;
+      rdfs:comment """
+A FlammabilityHazard is relevant only when a flammable hydrogen–air condition exists.
+This restriction captures the necessary precondition without committing to a specific
+combustion regime.
+""" ;
+      owl:onProperty ho61508:involves ;
+      owl:someValuesFrom h2ho:FlammableCondition
+    ] .
+
 h2ho:JetFireHazard rdf:type owl:Class ;
     rdfs:subClassOf h2ho:FlammabilityHazard ;
     rdfs:comment "Hazard whose manifestation is a jet fire." .
 
+h2ho:JetFireHazard
+  rdfs:subClassOf
+    [
+      a owl:Restriction ;
+      owl:onProperty ho61508:involves ;
+      owl:someValuesFrom h2ho:HydrogenJet
+    ] .
+	
+
 h2ho:FireballHazard rdf:type owl:Class ;
     rdfs:subClassOf h2ho:FlammabilityHazard ;
     rdfs:comment "Hazard whose manifestation is a fireball." .
+
+h2ho:FireballHazard
+  rdfs:subClassOf
+    [
+      a owl:Restriction ;
+      owl:onProperty ho61508:involves ;
+      owl:someValuesFrom h2ho:FlammableVaporCloud
+    ] .
 
 h2ho:PoolFireHazard rdf:type owl:Class ;
     rdfs:subClassOf h2ho:FlammabilityHazard ;
@@ -114,10 +144,26 @@ h2ho:DeflagrationHazard rdf:type owl:Class ;
     rdfs:subClassOf h2ho:FlammabilityHazard ;
     rdfs:comment "Hazard whose manifestation is a deflagration (slow or fast)." .
 
+h2ho:DeflagrationHazard
+  rdfs:subClassOf
+    [
+      a owl:Restriction ;
+      owl:onProperty ho61508:involves ;
+      owl:someValuesFrom h2ho:DeflagrationCondition
+    ] .
+	
 h2ho:DetonationHazard rdf:type owl:Class ;
     rdfs:subClassOf h2ho:FlammabilityHazard ;
     rdfs:comment "Hazard whose manifestation is a detonation." .
 
+h2ho:DetonationHazard
+  rdfs:subClassOf
+    [
+      a owl:Restriction ;
+      owl:onProperty ho61508:involves ;
+      owl:someValuesFrom h2ho:DetonationCondition
+    ] .
+	
 ### H2HO-A Flammability hazard family disjunction
 [] a owl:AllDisjointClasses ;
    owl:members (

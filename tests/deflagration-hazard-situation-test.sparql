@@ -1,0 +1,18 @@
+PREFIX h2ho:    <https://w3id.org/jochumsson/h2ho#>
+PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl:     <http://www.w3.org/2002/07/owl#>
+
+SELECT ( "Test anchoring deflagration hazards to deflagration-capable conditions." AS ?violation )
+WHERE {
+  FILTER NOT EXISTS {
+    VALUES (?HazardClass ?Property ?SituationClass) {
+      (h2ho:DeflagrationHazard ho61508:involves h2ho:DeflagrationCondition)
+    }
+
+    ?HazardClass rdfs:subClassOf ?r .
+    ?r a owl:Restriction ;
+       owl:onProperty ?Property ;
+       owl:someValuesFrom ?SituationClass .
+  }
+}
