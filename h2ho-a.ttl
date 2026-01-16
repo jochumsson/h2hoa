@@ -283,6 +283,15 @@ h2ho:DamagedEquipmentDegradation rdf:type owl:Class ;
 # H2HO-A ho61508:HarmfulEvent specialisations
 #################################################################
 
+# HarmfulEvent subtype family disjunction
+[] a owl:AllDisjointClasses ;
+   owl:members (
+     h2ho:PressureWave
+     h2ho:Combustion
+     h2ho:ElectricalShock
+     h2ho:ExposureEvent
+   ) .
+
 h2ho:Fire rdf:type owl:Class ;
     rdfs:subClassOf h2ho:Combustion ;
     rdfs:comment "Non-premixed combustion where hydrogen burns immediately at the release point. Includes jet fires, pool fires, and fireballs." .
@@ -298,6 +307,14 @@ h2ho:PoolFire rdf:type owl:Class ;
 h2ho:Fireball rdf:type owl:Class ;
     rdfs:subClassOf h2ho:Fire ;
     rdfs:comment "Spherical flame cloud resulting from delayed ignition of a dispersed hydrogen-air mixture." .
+
+# Fire disjunction
+[] a owl:AllDisjointClasses ;
+   owl:members (
+     h2ho:JetFire
+     h2ho:PoolFire
+     h2ho:Fireball
+   ) .
 
 h2ho:Explosion rdf:type owl:Class ;
     rdfs:subClassOf h2ho:Combustion ;
@@ -315,9 +332,22 @@ h2ho:FastDeflagration rdf:type owl:Class ;
     rdfs:subClassOf h2ho:Deflagration ;
     rdfs:comment "Accelerated deflagration that may transition to detonation (DDT)." .
 
+# disjunction between fast and slow deflagration
+[] a owl:AllDisjointClasses ;
+   owl:members (
+     h2ho:SlowDeflagration
+     h2ho:FastDeflagration
+   ) .
+   
 h2ho:Detonation rdf:type owl:Class ;
     rdfs:subClassOf h2ho:Explosion ;
     rdfs:comment "Supersonic premixed combustion characterized by a shock-induced explosion wave." .
+
+[] a owl:AllDisjointClasses ;
+   owl:members (
+     h2ho:Deflagration
+     h2ho:Detonation
+   ) .
 
 h2ho:ThermalExposureEvent rdf:type owl:Class ;
     rdfs:subClassOf h2ho:ExposureEvent ;
@@ -334,6 +364,15 @@ h2ho:HighPressureExposureEvent rdf:type owl:Class ;
 h2ho:OxygenDeficiencyExposureEvent rdf:type owl:Class ;
     rdfs:subClassOf h2ho:ExposureEvent ;
     rdfs:comment "A harmful exposure event in which a person is subjected to an atmosphere with insufficient oxygen, potentially leading to asphyxiation." .
+
+# ExposureEvent disjunction
+[] a owl:AllDisjointClasses ;
+   owl:members (
+     h2ho:ThermalExposureEvent
+     h2ho:ToxicExposureEvent
+     h2ho:HighPressureExposureEvent
+     h2ho:OxygenDeficiencyExposureEvent
+   ) .
 
 #################################################################
 # H2HO-A ho61508:Harm specialisations

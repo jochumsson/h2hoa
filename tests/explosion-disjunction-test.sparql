@@ -1,0 +1,22 @@
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX h2ho: <https://w3id.org/jochumsson/h2ho#>
+
+SELECT ( "Test disjoint declaration of explosion regimes." AS ?violation )
+WHERE {
+  VALUES (?a ?b) {
+    (h2ho:Deflagration h2ho:Detonation)
+  }
+
+  FILTER NOT EXISTS {
+    {
+      ?adc a owl:AllDisjointClasses ; owl:members ?list .
+      ?list rdf:rest*/rdf:first ?a .
+      ?list rdf:rest*/rdf:first ?b .
+    }
+    UNION
+    {
+      { ?a owl:disjointWith ?b } UNION { ?b owl:disjointWith ?a }
+    }
+  }
+}

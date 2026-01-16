@@ -1,0 +1,13 @@
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX h2ho: <https://w3id.org/jochumsson/h2ho#>
+
+SELECT ( "Test disjoint declaration of fire event subtypes." AS ?violation )
+WHERE {
+  FILTER NOT EXISTS {
+    ?adc a owl:AllDisjointClasses ; owl:members ?list .
+    FILTER EXISTS { ?list rdf:rest*/rdf:first h2ho:JetFire . }
+    FILTER EXISTS { ?list rdf:rest*/rdf:first h2ho:PoolFire . }
+    FILTER EXISTS { ?list rdf:rest*/rdf:first h2ho:Fireball . }
+  }
+}
