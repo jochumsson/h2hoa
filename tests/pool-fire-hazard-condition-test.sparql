@@ -7,7 +7,7 @@ SELECT ( "Test cryogenic pool condition involves pool fire hazard." AS ?violatio
 WHERE {
   FILTER NOT EXISTS {
     VALUES (?SituationClass ?Property ?HazardClass) {
-      (h2ho:CryogenicHydrogenPool ho61508:involves h2ho:PoolFire)
+      (h2ho:CryogenicHydrogenPool ho61508:involves h2ho:PoolFireHazard)
     }
 
     ?SituationClass rdfs:subClassOf ?r .

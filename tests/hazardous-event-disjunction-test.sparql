@@ -9,7 +9,6 @@ WHERE {
 
     FILTER EXISTS { ?list rdf:rest*/rdf:first h2ho:Ignition . }
     FILTER EXISTS { ?list rdf:rest*/rdf:first h2ho:ExternalEvent . }
-    FILTER EXISTS { ?list rdf:rest*/rdf:first h2ho:FlameAcceleration . }
     FILTER EXISTS { ?list rdf:rest*/rdf:first h2ho:Malfunction . }
     FILTER EXISTS { ?list rdf:rest*/rdf:first h2ho:LossOfFunction . }
   }

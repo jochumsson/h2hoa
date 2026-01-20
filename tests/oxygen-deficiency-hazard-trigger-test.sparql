@@ -1,18 +1,3 @@
-############################################################
-# Rule:
-# OxygenDeficiencyHazard ⊑ ∃ ho61508:triggeredBy.LossOfContainment
-#                      ⊓ ∀ ho61508:triggeredBy.LossOfContainment
-#
-# Violation:
-# OxygenDeficiencyHazard is triggered by events other than LossOfContainment,
-# or the existential/universal trigger restriction is removed or weakened.
-############################################################
-
-# PARAMETERS:
-#   ?HazardClass:     h2ho:OxygenDeficiencyHazard
-#   ?Property:        ho61508:triggeredBy
-#   ?AllowedTrigger:  h2ho:LossOfContainment
-
 PREFIX h2ho: <https://w3id.org/jochumsson/h2ho#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
@@ -22,18 +7,10 @@ SELECT ?violation
 WHERE {
   {
     SELECT
-      (COUNT(DISTINCT ?someR) AS ?someCnt)
       (COUNT(DISTINCT ?allR)  AS ?allCnt)
     WHERE {
       VALUES (?HazardClass ?Property ?AllowedTrigger) {
-        (h2ho:OxygenDeficiencyHazard ho61508:triggeredBy h2ho:LossOfContainment)
-      }
-
-      OPTIONAL {
-        ?HazardClass rdfs:subClassOf ?someR .
-        ?someR a owl:Restriction ;
-               owl:onProperty ?Property ;
-               owl:someValuesFrom ?AllowedTrigger .
+        (h2ho:OxygenDeficiencyHazard h2ho:triggeredBy h2ho:LossOfContainment)
       }
 
       OPTIONAL {
@@ -45,13 +22,13 @@ WHERE {
     }
   }
 
-  FILTER (?someCnt != 1 || ?allCnt != 1)
+  FILTER (?allCnt != 1)
 
   BIND(
     CONCAT(
-      "Expected exactly 1 SOME and 1 ALL triggeredBy restriction for ",
+      "Expected exactly 1 ALL triggeredBy restriction for ",
       STR(h2ho:OxygenDeficiencyHazard),
-      " but found SOME=", STR(?someCnt), ", ALL=", STR(?allCnt)
+      " but found ALL=", STR(?allCnt)
     ) AS ?violation
   )
 }

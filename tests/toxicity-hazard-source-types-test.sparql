@@ -1,16 +1,3 @@
-############################################################
-# Rule:
-# ToxicityHazardSource ⊑
-#   ( StorageVesselHazardSource ⊔
-#     PipingHazardSource ⊔
-#     ProcessEquipmentHazardSource ⊔
-#     EnvironmentalConfinementHazardSource )
-#
-# Violation:
-# ToxicityHazardSource contains a HazardSource that is not
-# permitted to bear a ToxicityHazard.
-############################################################
-
 PREFIX h2ho:    <https://w3id.org/jochumsson/h2ho#>
 PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
 PREFIX owl:     <http://www.w3.org/2002/07/owl#>
