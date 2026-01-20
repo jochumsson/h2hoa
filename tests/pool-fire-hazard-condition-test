@@ -3,11 +3,11 @@ PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
 PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX owl:     <http://www.w3.org/2002/07/owl#>
 
-SELECT ( "Test jet situations involves jet fire hazards." AS ?violation )
+SELECT ( "Test cryogenic pool condition involves pool fire hazard." AS ?violation )
 WHERE {
   FILTER NOT EXISTS {
     VALUES (?SituationClass ?Property ?HazardClass) {
-      (h2ho:HydrogenJet ho61508:involves h2ho:JetFireHazard)
+      (h2ho:CryogenicHydrogenPool ho61508:involves h2ho:PoolFire)
     }
 
     ?SituationClass rdfs:subClassOf ?r .

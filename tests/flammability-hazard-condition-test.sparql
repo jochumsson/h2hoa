@@ -3,16 +3,16 @@ PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
 PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX owl:     <http://www.w3.org/2002/07/owl#>
 
-SELECT ( "Test anchoring flammability hazards to flammable conditions." AS ?violation )
+SELECT ( "Test flammable conditions involves flammability hazard." AS ?violation )
 WHERE {
   FILTER NOT EXISTS {
-    VALUES (?HazardClass ?Property ?SituationClass) {
-      (h2ho:FlammabilityHazard ho61508:involves h2ho:FlammableCondition)
+    VALUES (?SituationClass ?Property ?HazardClass) {
+      (h2ho:FlammableCondition ho61508:involves h2ho:FlammabilityHazard)
     }
 
-    ?HazardClass rdfs:subClassOf ?r .
+    ?SituationClass rdfs:subClassOf ?r .
     ?r a owl:Restriction ;
        owl:onProperty ?Property ;
-       owl:someValuesFrom ?SituationClass .
+       owl:someValuesFrom ?HazardClass .
   }
 }

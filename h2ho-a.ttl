@@ -1,5 +1,6 @@
 @prefix h2ho:    <https://w3id.org/jochumsson/h2ho#> .
 @prefix ho61508: <https://w3id.org/jochumsson/ho61508#> .
+@prefix gufo:    <https://purl.org/nemo/gufo#> .
 @prefix owl:     <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
@@ -98,43 +99,15 @@ h2ho:EnvironmentalConfinement rdf:type owl:Class ;
      h2ho:ElectricalPowerHazard
    ) .
 
-h2ho:FlammabilityHazard
-  rdfs:subClassOf
-    [
-      a owl:Restriction ;
-      rdfs:comment """
-A FlammabilityHazard is relevant only when a flammable hydrogen–air condition exists.
-This restriction captures the necessary precondition without committing to a specific
-combustion regime.
-""" ;
-      owl:onProperty ho61508:involves ;
-      owl:someValuesFrom h2ho:FlammableCondition
-    ] .
-
 h2ho:JetFireHazard rdf:type owl:Class ;
     rdfs:subClassOf h2ho:FlammabilityHazard ;
     rdfs:comment "Hazard whose manifestation is a jet fire." .
-
-h2ho:JetFireHazard
-  rdfs:subClassOf
-    [
-      a owl:Restriction ;
-      owl:onProperty ho61508:involves ;
-      owl:someValuesFrom h2ho:HydrogenJet
-    ] .
 	
 
 h2ho:FireballHazard rdf:type owl:Class ;
     rdfs:subClassOf h2ho:FlammabilityHazard ;
     rdfs:comment "Hazard whose manifestation is a fireball." .
 
-h2ho:FireballHazard
-  rdfs:subClassOf
-    [
-      a owl:Restriction ;
-      owl:onProperty ho61508:involves ;
-      owl:someValuesFrom h2ho:FlammableVaporCloud
-    ] .
 
 h2ho:PoolFireHazard rdf:type owl:Class ;
     rdfs:subClassOf h2ho:FlammabilityHazard ;
@@ -143,26 +116,10 @@ h2ho:PoolFireHazard rdf:type owl:Class ;
 h2ho:DeflagrationHazard rdf:type owl:Class ;
     rdfs:subClassOf h2ho:FlammabilityHazard ;
     rdfs:comment "Hazard whose manifestation is a deflagration (slow or fast)." .
-
-h2ho:DeflagrationHazard
-  rdfs:subClassOf
-    [
-      a owl:Restriction ;
-      owl:onProperty ho61508:involves ;
-      owl:someValuesFrom h2ho:DeflagrationCondition
-    ] .
 	
 h2ho:DetonationHazard rdf:type owl:Class ;
     rdfs:subClassOf h2ho:FlammabilityHazard ;
     rdfs:comment "Hazard whose manifestation is a detonation." .
-
-h2ho:DetonationHazard
-  rdfs:subClassOf
-    [
-      a owl:Restriction ;
-      owl:onProperty ho61508:involves ;
-      owl:someValuesFrom h2ho:DetonationCondition
-    ] .
 	
 ### H2HO-A Flammability hazard family disjunction
 [] a owl:AllDisjointClasses ;
@@ -284,30 +241,117 @@ h2ho:EscalationIgnition rdf:type owl:Class ;
 # H2HO-A ho61508:HazardousSituation specialisations
 #################################################################
 
-### Generic flammable hydrogen-air condition
-h2ho:FlammableCondition rdf:type owl:Class ;
-    rdfs:subClassOf ho61508:HazardousSituation ;
-    rdfs:comment "HazardousSituation in which hydrogen and air form a flammable condition. This corresponds to what is often called an 'explosive atmosphere' in standards, but expressed in chemically neutral terms." .
+h2ho:FlammableCondition
+  rdfs:subClassOf
+    [
+      a owl:Restriction ;
+      rdfs:comment """
+IEC 61508 aligned: a HazardousSituation involves the Hazard(s) present in that situation.
+A FlammableCondition represents the existence of a flammable hydrogen air mixture
+as used in ISO 15916 style hazard analysis (flammable atmosphere leading to fire or explosion scenarios).
+Therefore, every FlammableCondition involves at least one FlammabilityHazard.
+""" ;
+      owl:onProperty ho61508:involves ;
+      owl:someValuesFrom h2ho:FlammabilityHazard
+    ] .
+
+### Hydrogen jet situation
+h2ho:HydrogenJet rdf:type owl:Class ;
+    rdfs:subClassOf h2ho:FlammableCondition ;
+    rdfs:comment "HazardousSituation in which hydrogen emerges as a momentum driven jet, for example after a pressurised release. Portions of the jet are within flammable limits and can produce a jet fire if ignited." .
+
+h2ho:HydrogenJet
+  rdfs:subClassOf
+    [
+      a owl:Restriction ;
+      rdfs:comment """
+ISO 15916 context: a momentum driven hydrogen release can form a flammable jet region.
+This HazardousSituation involves the JetFireHazard that may be realised if ignition occurs.
+""" ;
+      owl:onProperty ho61508:involves ;
+      owl:someValuesFrom h2ho:JetFireHazard
+    ] .
 
 ### Flammable vapor cloud (delayed mixing)
 h2ho:FlammableVaporCloud rdf:type owl:Class ;
     rdfs:subClassOf h2ho:FlammableCondition ;
     rdfs:comment "HazardousSituation in which a dispersed hydrogen-air cloud is within flammable limits. Relevant for fireball and vapor cloud explosion scenarios." .
 
+h2ho:FlammableVaporCloud
+  rdfs:subClassOf
+    [
+      a owl:Restriction ;
+      rdfs:comment """
+ISO 15916 context: a dispersed flammable cloud supports delayed ignition scenarios
+such as fireball and vapour cloud explosion. This HazardousSituation involves a FireballHazard
+as one recognised flammability hazard in such conditions.
+""" ;
+      owl:onProperty ho61508:involves ;
+      owl:someValuesFrom h2ho:FireballHazard
+    ] .
+
+
+### Cryogenic hydrogen pool situation
+h2ho:CryogenicHydrogenPool rdf:type owl:Class ;
+  rdfs:subClassOf h2ho:FlammableCondition ;
+  rdfs:comment """
+HazardousSituation in which liquid hydrogen has accumulated as a cryogenic pool
+on a surface following a spill or release.
+The pool continuously evaporates, producing a flammable hydrogen–air condition
+above the liquid surface.
+
+ISO 15916 context: cryogenic hydrogen pool formation following LH2 release
+is a recognised precursor to pool fire, fireball, or vapour cloud explosion,
+depending on ignition timing and dispersion.
+The situation itself does not imply ignition or combustion.
+""" .
+
+h2ho:CryogenicHydrogenPool
+  rdfs:subClassOf
+    [
+      a owl:Restriction ;
+      rdfs:comment """
+A CryogenicHydrogenPool involves a PoolFireHazard, representing the potential
+for pool fire if ignition occurs during sustained evaporation.
+""" ;
+      owl:onProperty ho61508:involves ;
+      owl:someValuesFrom h2ho:PoolFireHazard
+    ] .
+
 ### Deflagration-capable condition
 h2ho:DeflagrationCondition rdf:type owl:Class ;
     rdfs:subClassOf h2ho:FlammableCondition ;
     rdfs:comment "HazardousSituation in which a hydrogen-air condition can support subsonic flame propagation (deflagration), based on concentration, confinement, and turbulence." .
+
+h2ho:DeflagrationCondition
+  rdfs:subClassOf
+    [
+      a owl:Restriction ;
+      rdfs:comment """
+ISO 15916 context: mixture, congestion, and confinement can support subsonic flame propagation.
+This HazardousSituation captures a deflagration capable condition and involves a DeflagrationHazard.
+""" ;
+      owl:onProperty ho61508:involves ;
+      owl:someValuesFrom h2ho:DeflagrationHazard
+    ] .
 
 ### Detonation-capable condition
 h2ho:DetonationCondition rdf:type owl:Class ;
     rdfs:subClassOf h2ho:FlammableCondition ;
     rdfs:comment "HazardousSituation in which a hydrogen-air condition can support detonation, for example when mixture composition and confinement exceed detonation limits." .
 
-### Hydrogen jet situation
-h2ho:HydrogenJet rdf:type owl:Class ;
-    rdfs:subClassOf h2ho:FlammableCondition ;
-    rdfs:comment "HazardousSituation in which hydrogen emerges as a momentum driven jet, for example after a pressurised release. Portions of the jet are within flammable limits and can produce a jet fire if ignited." .
+h2ho:DetonationCondition
+  rdfs:subClassOf
+    [
+      a owl:Restriction ;
+      rdfs:comment """
+ISO 15916 context: under more severe conditions (mixture and confinement), detonation may be possible.
+This HazardousSituation captures a detonation capable condition and involves a DetonationHazard.
+IEC 61508 aligned: hazards are linked as present in the situation via involves.
+""" ;
+      owl:onProperty ho61508:involves ;
+      owl:someValuesFrom h2ho:DetonationHazard
+    ] .
 
 h2ho:LiquidHydrogenExposureSituation rdf:type owl:Class ;
     rdfs:subClassOf h2ho:ExposureSituation ;
@@ -843,34 +887,6 @@ certain physical conditions.
             owl:someValuesFrom h2ho:FlameAcceleration
         ] .
 
-
-### ElectricalPowerHazard is triggered by malfunction
-h2ho:ElectricalPowerHazard
-    rdfs:subClassOf
-
-        # At least one malfunction trigger is required
-        [
-            a owl:Restriction ;
-            rdfs:comment """
-DL:
-ElectricalPowerHazard ⊑ ∃ ho61508:triggeredBy.Malfunction
-Every ElectricalPowerHazard is triggered by at least one malfunction.
-""" ;
-            owl:onProperty ho61508:triggeredBy ;
-            owl:someValuesFrom h2ho:Malfunction
-        ] ,
-
-        # Only malfunction triggers are permitted
-        [
-            a owl:Restriction ;
-            rdfs:comment """
-DL:
-ElectricalPowerHazard ⊑ ∀ ho61508:triggeredBy.Malfunction
-An ElectricalPowerHazard may only be triggered by malfunction events.
-""" ;
-            owl:onProperty ho61508:triggeredBy ;
-            owl:allValuesFrom h2ho:Malfunction
-        ] .
 
 ### ElectricalPowerHazard is triggered by malfunction
 h2ho:ElectricalPowerHazard
