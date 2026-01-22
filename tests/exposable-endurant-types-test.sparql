@@ -1,0 +1,51 @@
+PREFIX h2ho:    <https://w3id.org/jochumsson/h2ho#>
+PREFIX owl:     <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT DISTINCT ?violation
+WHERE {
+  # Define the allowed members once
+  VALUES ?allowed {
+    h2ho:Environment
+    h2ho:Property
+    h2ho:Person
+  }
+
+  # Locate the union list
+  h2ho:ExposableEndurant owl:equivalentClass ?u .
+  ?u owl:unionOf ?list .
+
+  {
+    # Case 1: a required member is missing
+    FILTER NOT EXISTS { ?list rdf:rest*/rdf:first ?allowed . }
+
+    BIND(
+      CONCAT(
+        "Missing required member in ExposableEndurant union: ",
+        STR(?allowed)
+      ) AS ?violation
+    )
+  }
+  UNION
+  {
+    # Case 2: extra members exist (union list contains more members than allowed)
+    {
+      SELECT (COUNT(DISTINCT ?m) AS ?memberCount)
+      WHERE {
+        h2ho:ExposableEndurant owl:equivalentClass ?u2 .
+        ?u2 owl:unionOf ?list2 .
+        ?list2 rdf:rest*/rdf:first ?m .
+      }
+    }
+
+    FILTER(?memberCount > 3)
+
+    BIND(
+      CONCAT(
+        "ExposableEndurant union has extra member(s). Member count is ",
+        STR(?memberCount),
+        " but should be 3."
+      ) AS ?violation
+    )
+  }
+}

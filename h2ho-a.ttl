@@ -530,8 +530,40 @@ h2ho:ComposedHazardousSituation rdfs:subClassOf
 
 #################################################################
 # F: Exposed application role specifications
-# Currently, no extensions are provided for the ho61508:Exposed entity
+# Application layer definitions and restrictions on exposed
+# endurants
 #################################################################
+
+[] a owl:AllDisjointClasses ;
+  owl:members (
+    h2ho:Environment
+    h2ho:Property
+    h2ho:Person
+  ) .
+
+h2ho:ExposableEndurant
+  a owl:Class ;
+  rdfs:comment """
+Named set of gufo:Endurants that may play the ho61508:Exposed role.
+""" ;
+  owl:equivalentClass [
+    a owl:Class ;
+    owl:unionOf (
+      h2ho:Environment
+      h2ho:Property
+      h2ho:Person
+    )
+  ] .
+
+ho61508:Exposed
+  rdfs:subClassOf [
+    a owl:Restriction ;
+    rdfs:comment """
+Anything that plays the ho61508:Exposed role must be an ExposableEndurant.
+""" ;
+    owl:onProperty ho61508:affectedBy ;
+    owl:allValuesFrom h2ho:ExposableEndurant
+  ] .
 
 #################################################################
 # G: HarmfulEvent application extensions
