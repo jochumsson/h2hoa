@@ -1,22 +1,6 @@
-############################################################
-# Rule:
-# OxygenDeficiencyHazard ⊑ ∃ ho61508:inheresIn.EnvironmentalConfinementHazardSource
-#                        ⊓ ∀ ho61508:inheresIn.EnvironmentalConfinementHazardSource
-#
-# Violation:
-# OxygenDeficiencyHazard is constrained to inhere in a HazardSource other
-# than EnvironmentalConfinementHazardSource, or the universal restriction
-# is removed or weakened.
-#
-# PARAMETERS:
-#   ?HazardClass: 		h2ho:OxygenDeficiencyHazard
-#   ?Property:			ho61508:inheresIn
-#   ?AllowedSource:		h2ho:EnvironmentalConfinementHazardSource
-############################################################
-
 PREFIX h2ho: <https://w3id.org/jochumsson/h2ho#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 
 SELECT ?violation

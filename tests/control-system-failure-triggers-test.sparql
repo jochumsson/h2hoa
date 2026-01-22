@@ -1,4 +1,5 @@
 PREFIX h2ho:    <https://w3id.org/jochumsson/h2ho#>
+PREFIX h2hoa:   <https://w3id.org/jochumsson/h2ho-a#>
 PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
 PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX owl:     <http://www.w3.org/2002/07/owl#>
@@ -6,7 +7,7 @@ PREFIX owl:     <http://www.w3.org/2002/07/owl#>
 SELECT ( CONCAT(STR(?EventClass), " ", STR(?Property), " ", STR(?HazardClass), " only (ALL restriction exists).") AS ?violation )
 WHERE {
   VALUES (?EventClass ?Property ?HazardClass) {
-    (h2ho:ControlSystemFailure      ho61508:triggers h2ho:ControlSystemFailureTrigger)
+    (h2hoa:ControlSystemFailure      ho61508:triggers h2hoa:ControlSystemFailureTrigger)
   }
 
   FILTER NOT EXISTS {

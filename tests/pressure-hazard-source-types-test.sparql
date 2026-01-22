@@ -1,21 +1,4 @@
-############################################################
-# Rule:
-# PressureHazard is constrained via ho61508:inheresIn
-# to use only PressureHazardSource as its bearer.
-#
-# In essence it tests:
-# PressureHazardSource ⊑ 
-#   (StorageVesselHazardSource ⊔
-#    PipingHazardSource ⊔
-#    ProcessEquipmentHazardSource)
-#
-# Violation:
-# The constraint class PressureHazardSource contains
-# a HazardSource that is not permitted to bear a
-# PressureHazard, while being actively used to
-# constrain PressureHazard.
-############################################################
-
+PREFIX h2hoa:    <https://w3id.org/jochumsson/h2ho-a#>
 PREFIX h2ho:    <https://w3id.org/jochumsson/h2ho#>
 PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
 PREFIX owl:     <http://www.w3.org/2002/07/owl#>
@@ -25,7 +8,7 @@ PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 SELECT ?invalidRelation
 WHERE {
   VALUES (?Entity ?Property ?RelationEntity) {
-    (h2ho:PressureHazard ho61508:inheresIn h2ho:PressureHazardSource)
+    (h2ho:PressureHazard ho61508:inheresIn h2hoa:PressureHazardSource)
   }
 
   ?Entity rdfs:subClassOf ?restriction .

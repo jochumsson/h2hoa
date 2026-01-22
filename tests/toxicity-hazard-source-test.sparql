@@ -1,23 +1,8 @@
-############################################################
-# Rule:
-# ToxicityHazard ⊑ ∃ ho61508:inheresIn.ToxicityHazardSource
-#                ⊓ ∀ ho61508:inheresIn.ToxicityHazardSource
-#
-# Violation:
-# ToxicityHazard is constrained to inhere in a HazardSource
-# other than ToxicityHazardSource, or the universal restriction
-# is removed or weakened.
-############################################################
-
-# PARAMETERS:
-#   ?HazardClass:      h2ho:ToxicityHazard
-#   ?Property:         ho61508:inheresIn
-#   ?AllowedSource:    h2ho:ToxicityHazardSource
-
-PREFIX h2ho: <https://w3id.org/jochumsson/h2ho#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX h2hoa:   <https://w3id.org/jochumsson/h2ho-a#>
+PREFIX h2ho:    <https://w3id.org/jochumsson/h2ho#>
 PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
-PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl:     <http://www.w3.org/2002/07/owl#>
 
 SELECT ?violation
 WHERE {
@@ -27,7 +12,7 @@ WHERE {
       (COUNT(DISTINCT ?allR)  AS ?allCnt)
     WHERE {
       VALUES (?HazardClass ?Property ?AllowedSource) {
-        (h2ho:ToxicityHazard ho61508:inheresIn h2ho:ToxicityHazardSource)
+        (h2ho:ToxicityHazard ho61508:inheresIn h2hoa:ToxicityHazardSource)
       }
 
       OPTIONAL {

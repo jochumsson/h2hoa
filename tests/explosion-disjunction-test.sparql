@@ -1,11 +1,11 @@
-PREFIX owl:  <http://www.w3.org/2002/07/owl#>
-PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX h2ho: <https://w3id.org/jochumsson/h2ho#>
+PREFIX h2hoa:   <https://w3id.org/jochumsson/h2ho-a#>
+PREFIX owl:     <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
 SELECT ( "Test disjoint declaration of explosion regimes." AS ?violation )
 WHERE {
   VALUES (?a ?b) {
-    (h2ho:Deflagration h2ho:Detonation)
+    (h2hoa:Deflagration h2hoa:Detonation)
   }
 
   FILTER NOT EXISTS {

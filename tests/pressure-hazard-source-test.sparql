@@ -1,19 +1,4 @@
-############################################################
-# Rule:
-# PressureHazard ⊑ ∃ ho61508:inheresIn.PressureHazardSource
-#                ⊓ ∀ ho61508:inheresIn.PressureHazardSource
-#
-# Violation:
-# PressureHazard is constrained to inhere in a HazardSource
-# other than PressureHazardSource, or the universal restriction
-# is removed or weakened.
-############################################################
-
-# PARAMETERS:
-#   ?HazardClass:       h2ho:PressureHazard
-#   ?Property:          ho61508:inheresIn
-#   ?AllowedSource:     h2ho:PressureHazardSource
-
+PREFIX h2hoa: <https://w3id.org/jochumsson/h2ho-a#>
 PREFIX h2ho: <https://w3id.org/jochumsson/h2ho#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
@@ -27,7 +12,7 @@ WHERE {
       (COUNT(DISTINCT ?allR)  AS ?allCnt)
     WHERE {
       VALUES (?HazardClass ?Property ?AllowedSource) {
-        (h2ho:PressureHazard ho61508:inheresIn h2ho:PressureHazardSource)
+        (h2ho:PressureHazard ho61508:inheresIn h2hoa:PressureHazardSource)
       }
 
       OPTIONAL {

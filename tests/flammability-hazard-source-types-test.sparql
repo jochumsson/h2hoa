@@ -1,21 +1,5 @@
-# Rule:
-# FlammabilityHazard is constrained via ho61508:inheresIn
-# to use only FlammabilityHazardSource as its bearer.
-#
-# In essence it tests:
-# FlammabilityHazardSource ⊑ 
-#	(h2ho:StorageVesselHazardSource ⊔ 
-#	 h2ho:PipingHazardSource ⊔ 
-#	 h2ho:ProcessEquipmentHazardSource ⊔ 
-#    h2ho:EnvironmentalConfinementHazardSource)
-#
-# Violation:
-# The constraint class FlammabilityHazardSource contains
-# a HazardSource that is not permitted to bear a
-# FlammabilityHazard, while being actively used to
-# constrain FlammabilityHazard.
-
 PREFIX h2ho:    <https://w3id.org/jochumsson/h2ho#>
+PREFIX h2hoa:   <https://w3id.org/jochumsson/h2ho-a#>
 PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
 PREFIX owl:     <http://www.w3.org/2002/07/owl#>
 PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
@@ -24,7 +8,7 @@ PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 SELECT ?invalidRelation
 WHERE {
   VALUES (?Entity ?Property ?RelationEntity) {
-    (h2ho:FlammabilityHazard ho61508:inheresIn h2ho:FlammabilityHazardSource)
+    (h2ho:FlammabilityHazard ho61508:inheresIn h2hoa:FlammabilityHazardSource)
   }
 
   ?Entity rdfs:subClassOf ?restriction .
@@ -40,8 +24,8 @@ WHERE {
     ?invalidRelation NOT IN (
       h2ho:StorageVesselHazardSource,
       h2ho:PipingHazardSource,
-	  h2ho:ProcessEquipmentHazardSource,
-	  h2ho:EnvironmentalConfinementHazardSource
+	    h2ho:ProcessEquipmentHazardSource,
+	    h2ho:EnvironmentalConfinementHazardSource
     )
   )
 }

@@ -32,10 +32,18 @@ sed -n '/^h2ho:/,$p' "$H2HO" >> "$OUT"
 echo "" >> "$OUT"
 
 ############################################################
-# 4. Append restrictions WITHOUT HEADER
+# 4. Ensure h2ho prefix is present
+############################################################
+if ! grep -q "^@prefix h2hoa:" "$HO"; then
+    echo "@prefix h2hoa: <https://w3id.org/jochumsson/h2ho-a#> ." >> "$OUT"
+    echo "" >> "$OUT"
+fi
+
+############################################################
+# 5. Append restrictions WITHOUT HEADER
 ############################################################
 # Same logic: remove everything before the first real triple
-sed -n '/^# H2HO-A - start of the ontolgy/,$p' "$H2HOA" >> "$OUT"
+sed -n '/^# H2HO-A - start of the ontology/,$p' "$H2HOA" >> "$OUT"
 
 echo ""
 echo "Done. Output written to $OUT"

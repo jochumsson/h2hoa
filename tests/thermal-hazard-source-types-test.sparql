@@ -1,19 +1,4 @@
-# Rule:
-# ThermalHazard is constrained via ho61508:inheresIn
-# to use only ThermalHazardSource as its bearer.
-#
-# In essence it tests:
-# ThermalHazardSource ⊑ 
-#	(h2ho:StorageVesselHazardSource ⊔ 
-#	 h2ho:PipingHazardSource ⊔ 
-#	 h2ho:ProcessEquipmentHazardSource)
-#
-# Violation:
-# The constraint class ThermalHazardSource contains
-# a HazardSource that is not permitted to bear a
-# ThermalHazard, while being actively used to
-# constrain ThermalHazard.
-
+PREFIX h2hoa:   <https://w3id.org/jochumsson/h2ho-a#>
 PREFIX h2ho:    <https://w3id.org/jochumsson/h2ho#>
 PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
 PREFIX owl:     <http://www.w3.org/2002/07/owl#>
@@ -23,8 +8,8 @@ PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 SELECT ?invalidRelation
 WHERE {
   VALUES (?Entity ?Property ?RelationEntity) {
-    (h2ho:ThermalHazard ho61508:inheresIn h2ho:ThermalHazardSource)
-    (h2ho:ThermalHazard ho61508:inheresIn h2ho:ThermalHazardSource)
+    (h2ho:ThermalHazard ho61508:inheresIn h2hoa:ThermalHazardSource)
+    (h2ho:ThermalHazard ho61508:inheresIn h2hoa:ThermalHazardSource)
   }
 
   ?Entity rdfs:subClassOf ?restriction .

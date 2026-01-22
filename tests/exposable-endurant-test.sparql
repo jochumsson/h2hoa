@@ -1,4 +1,5 @@
 PREFIX h2ho:    <https://w3id.org/jochumsson/h2ho#>
+PREFIX h2hoa:   <https://w3id.org/jochumsson/h2ho-a#>
 PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
 PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX owl:     <http://www.w3.org/2002/07/owl#>
@@ -6,7 +7,7 @@ PREFIX owl:     <http://www.w3.org/2002/07/owl#>
 SELECT ( "Only ExposableEndurant can be exposed" AS ?violation )
 WHERE {
   VALUES (?EndurantClass ?Property ?Role) {
-    (h2ho:ExposableEndurant ho61508:affectedBy ho61508:Exposed)
+    (h2hoa:ExposableEndurant ho61508:affectedBy ho61508:Exposed)
   }
 
   FILTER NOT EXISTS {
