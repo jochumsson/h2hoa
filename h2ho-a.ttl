@@ -28,6 +28,26 @@
 # rules to remain general, reusable, and structurally aligned 
 # with IEC 61508 on abstract level.
 #
+# This file is organised into following sections:
+# A: Hazard app. extensions
+# B: HazardSource app. role specifications
+# C: Endurant extension that carries HazardSource as a Role
+# D: HazardousEvent app. extensions
+# E: HazardousSituation app. extensions
+# F: Exposed app. role specifications
+# G: HarmfulEvent app. extensions
+# H: Harm app. extenstion
+# I: Hazard inheresIn HazardSource app. restrictions
+# J: Endurant carries HazardSource app. restrictions
+# K: Endurant carries HazardSource app.restrictions
+# L: HazardSource triggers Hazard app. restrictions
+# M: HazardousEvent resultsIn HazardousSituation app. restrictions
+# N: HazardousSituation enables HazardousEvent app. restrictions
+# P: HazardousSituation involves Hazard app. restrictions 
+# Q: HazardousSituation exposes Exposed app. restrictions
+# R: Hazard manifestIn HarmfulEvent app. restrictions
+# S: HarmfulEvent leadsTo HazardousSituation app. restrictions
+# T: HarmfulEvent causes Harm app. restrictions
 #################################################################
 
 #################################################################
@@ -130,6 +150,37 @@ h2ho:DetonationHazard rdf:type owl:Class ;
      h2ho:DeflagrationHazard
      h2ho:DetonationHazard
    ) .
+
+#################################################################
+# H2HO-A ho61508:HazardousEvent composition pattern
+# Ontological variation of the OO composition pattern
+#################################################################
+
+h2ho:ComposedHazardousEvent a owl:Class ;
+  rdfs:subClassOf ho61508:HazardousEvent ;
+  rdfs:comment """
+  Application-level HazardousEvent that is modelled as composed of multiple HazardousEvent components for hazard analysis purposes.
+  Supports entierly disjoint hazardous event types, where the composition provides a means to support events with higher abstraction level.  
+  """ .
+
+h2ho:composedOfEvent a owl:ObjectProperty ;
+  rdfs:domain h2ho:ComposedHazardousEvent ;
+  rdfs:range  ho61508:HazardousEvent ;
+  rdfs:comment "Relates a composed hazardous event to its component hazardous events (analysis-level decomposition)." .
+
+h2ho:composesEvent a owl:ObjectProperty ;
+  owl:inverseOf h2ho:composedOfEvent ;
+  rdfs:domain ho61508:HazardousEvent ;
+  rdfs:range  h2ho:ComposedHazardousEvent ;
+  rdfs:comment "Inverse of composedOfEvent, useful for querying which composed events a component participates in." .
+
+h2ho:ComposedHazardousEvent rdfs:subClassOf
+  [ a owl:Restriction ;
+    owl:onProperty h2ho:composedOfEvent ;
+    owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+    owl:onClass ho61508:HazardousEvent ;
+    rdfs:comment "A composed hazardous event is at least composed of two events."
+  ] .
 
 #################################################################
 # H2HO-A ho61508:HazardousEvent specialisations
@@ -236,6 +287,101 @@ h2ho:EscalationIgnition rdf:type owl:Class ;
      h2ho:EscalationIgnition
    ) .
 
+h2ho:ElectricalFailure a owl:Class ;
+  rdfs:subClassOf h2ho:Malfunction ;
+  rdfs:comment "Electrical malfunction affecting power supply, insulation, grounding, wiring, or control electronics." .
+
+h2ho:InstrumentationFailure a owl:Class ;
+  rdfs:subClassOf h2ho:Malfunction ;
+  rdfs:comment "Failure of sensing, measurement, or signal transmission (e.g., sensor drift, loss of signal, wrong reading)." .
+
+h2ho:ControlSystemFailure a owl:Class ;
+  rdfs:subClassOf h2ho:Malfunction ;
+  rdfs:comment "Failure of logic, software, control loops, or interlocks (e.g., wrong control action, PLC fault)." .
+
+h2ho:ValveFailure a owl:Class ;
+  rdfs:subClassOf h2ho:Malfunction ;
+  rdfs:comment "Failure of a valve to operate as intended (stuck open/closed, leaking, wrong position, actuator fault)." .
+
+h2ho:ReliefSystemFailure a owl:Class ;
+  rdfs:subClassOf h2ho:Malfunction ;
+  rdfs:comment "Failure of pressure relief or venting function (blocked relief, undersized relief, stuck relief valve)." .
+
+h2ho:ContainmentIntegrityFailure a owl:Class ;
+  rdfs:subClassOf h2ho:Malfunction ;
+  rdfs:comment "Failure of barriers that provide containment integrity short of a full rupture (seal failure, flange leak, gasket failure)." .
+
+h2ho:CryogenicInsulationFailure a owl:Class ;
+  rdfs:subClassOf h2ho:Malfunction ;
+  rdfs:comment "Failure of insulation/vacuum/jacket systems leading to abnormal heat ingress or cold exposure in cryogenic equipment." .
+
+h2ho:VentilationFailure a owl:Class ;
+  rdfs:subClassOf h2ho:Malfunction ;
+  rdfs:comment "Failure or loss of ventilation/dilution systems that normally prevent hazardous atmospheres." .
+
+h2ho:DetectionFailure a owl:Class ;
+  rdfs:subClassOf h2ho:Malfunction ;
+  rdfs:comment "Failure of gas/flame detection, alarm, or safety monitoring to detect hazardous states." .
+
+h2ho:HumanMachineInterfaceFailure a owl:Class ;
+  rdfs:subClassOf h2ho:Malfunction ;
+  rdfs:comment "Failure of operator interface / misleading indication / incorrect configuration that contributes to wrong actions." .
+
+[] a owl:AllDisjointClasses ;
+   owl:members (
+     h2ho:ElectricalFailure
+     h2ho:InstrumentationFailure
+     h2ho:ControlSystemFailure
+     h2ho:ValveFailure
+     h2ho:ReliefSystemFailure
+     h2ho:ContainmentIntegrityFailure
+     h2ho:CryogenicInsulationFailure
+     h2ho:VentilationFailure
+     h2ho:DetectionFailure
+     h2ho:HumanMachineInterfaceFailure
+   ) .
+
+#################################################################
+# H2HO-A ho61508:HazardousSituation composition
+# Ontological variation of the OO composition pattern
+#################################################################
+
+h2ho:ComposedHazardousSituation a owl:Class ;
+  rdfs:subClassOf ho61508:HazardousSituation ;
+  rdfs:comment """
+Application-layer construct representing a hazardous situation that is analysed
+as being composed of multiple hazardous situations.
+
+The composition is analytical and used for hazard analysis purposes.
+It does not imply physical part–whole relations, temporal ordering, or
+that the constituent situations are mutually exclusive.
+""" .
+
+h2ho:composedOfSituation a owl:ObjectProperty ;
+  rdfs:domain h2ho:ComposedHazardousSituation ;
+  rdfs:range  ho61508:HazardousSituation ;
+  rdfs:comment """
+Relates a composed hazardous situation to the hazardous situations
+that constitute it in hazard analysis.
+""" .
+
+h2ho:composesSituation a owl:ObjectProperty ;
+  owl:inverseOf h2ho:composedOfSituation ;
+  rdfs:domain ho61508:HazardousSituation ;
+  rdfs:range  h2ho:ComposedHazardousSituation ;
+  rdfs:comment """
+Indicates that a hazardous situation is a constituent
+of a composed hazardous situation.
+""" .
+
+h2ho:ComposedHazardousSituation rdfs:subClassOf
+  [ a owl:Restriction ;
+    owl:onProperty h2ho:composedOfSituation ;
+    owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+    owl:onClass ho61508:HazardousSituation ;
+    rdfs:comment "A composed hazardous situation is at least composed of two situations."
+  ] .
+  
 #################################################################
 # H2HO-A ho61508:HazardousSituation specialisations
 #################################################################
@@ -847,9 +993,9 @@ DL: EnvironmentalConfinement ⊑ ∀ carries.EnvironmentalConfinementHazardSourc
         ] .
 
 #################################################################
-# H2HO-A Hazard triggered by HazardousEvent
-# Restrictions on the invers of triggers, that is h2ho:triggeredBy, 
-# defining what triggers each hazard.
+# H2HO-A HazardousEvent triggers restrictions
+# Restrictions defining semantics which type of HazardousEvents 
+# may trigger which types of Hazards
 #################################################################
 
 h2ho:triggeredBy a owl:ObjectProperty ;
@@ -858,122 +1004,195 @@ h2ho:triggeredBy a owl:ObjectProperty ;
   rdfs:range  ho61508:HazardousEvent ;
   rdfs:comment "Application layer convenience inverse of ho61508:triggers for hazard-centric querying once event instances exist." .
 
-h2ho:FlammabilityHazard
-    rdfs:subClassOf
-
-        # FlammabilityHazard is triggered by Ignition
-        [
-            a owl:Restriction ;
-            rdfs:comment """
-DL:
-FlammabilityHazard ⊑ ∀ h2ho:triggeredBy.Ignition
-A FlammabilityHazard is a potential hazard that is realised by Ignition HazardousEvent. 
+h2ho:Ignition
+  rdfs:subClassOf [
+    a owl:Restriction ;
+    rdfs:comment """
+DL: Ignition ⊑ ∀ ho61508:triggers.FlammabilityHazard
+If an ignition event is asserted to trigger a hazard, that hazard must be a flammability hazard.
 """ ;
-            owl:onProperty h2ho:triggeredBy ;
-            owl:allValuesFrom h2ho:Ignition
-        ] .
-
-h2ho:ElectricalPowerHazard
-    rdfs:subClassOf
-        # Only malfunction triggers are permitted
-        [
-            a owl:Restriction ;
-            rdfs:comment """
-DL:
-ElectricalPowerHazard ⊑ ∀ h2ho:triggeredBy.Malfunction
-An ElectricalPowerHazard may only be triggered by malfunction events.
-""" ;
-            owl:onProperty h2ho:triggeredBy ;
-            owl:allValuesFrom h2ho:Malfunction
-        ] .
-
-h2ho:OxygenDeficiencyHazard
-  rdfs:subClassOf
-    [
-      a owl:Restriction ;
-      rdfs:comment """
-DL:
-OxygenDeficiencyHazard ⊑ ∀ h2ho:triggeredBy.LossOfContainment
-An OxygenDeficiencyHazard may only be triggered by LossOfContainment events.
-""" ;
-      owl:onProperty h2ho:triggeredBy ;
-      owl:allValuesFrom h2ho:LossOfContainment
-    ] .
-
-h2ho:PressureHazardTrigger a owl:Class ;
-  rdfs:comment """
-Trigger events permitted for PressureHazard in H2HO-A.
-DL: PressureHazardTrigger ≡ ExternalEvent ⊔ LossOfFunction
-""" ;
-  owl:equivalentClass [
-    a owl:Class ;
-    owl:unionOf ( h2ho:ExternalEvent h2ho:LossOfFunction )
+    owl:onProperty ho61508:triggers ;
+    owl:allValuesFrom h2ho:FlammabilityHazard
   ] .
 
-h2ho:PressureHazard
-  rdfs:subClassOf
-    [
-      a owl:Restriction ;
-      rdfs:comment """
-DL: PressureHazard ⊑ ∀ h2ho:triggeredBy.PressureHazardTrigger
-A PressureHazard can only be triggered by an event that is a part of the PressureHazardTrigger event union.
+h2ho:ElectricalFailure
+  rdfs:subClassOf [
+    a owl:Restriction ;
+    rdfs:comment """
+DL: ElectricalFailure ⊑ ∀ ho61508:triggers.ElectricalPowerHazard
+If an electrical failure triggers a hazard, that hazard is an ElectricalPowerHazard.
 """ ;
-      owl:onProperty h2ho:triggeredBy ;
-      owl:allValuesFrom h2ho:PressureHazardTrigger
-    ] .
+    owl:onProperty ho61508:triggers ;
+    owl:allValuesFrom h2ho:ElectricalPowerHazard
+  ] .
 
-h2ho:ThermalHazardTrigger a owl:Class ;
-  rdfs:comment """
-Trigger events permitted for ThermalHazard in H2HO-A.
-DL: ThermalHazardTrigger ≡ Malfunction ⊔ LossOfFunction ⊔ ExternalEvent
+h2ho:VentilationFailure
+  rdfs:subClassOf [
+    a owl:Restriction ;
+    rdfs:comment """
+DL: VentilationFailure ⊑ ∀ ho61508:triggers.OxygenDeficiencyHazard
+If ventilation fails and a hazard is triggered, it is related to accumulation of a
+hydrogen and oxygen displacement. VentilationFailure, is though not directly 
+triggering FlammabilityHazard but can be a important event in the hazard causal chain.
 """ ;
+    owl:onProperty ho61508:triggers ;
+    owl:allValuesFrom h2ho:OxygenDeficiencyHazard
+  ] .
+
+h2ho:CryogenicInsulationFailureTrigger a owl:Class ;
+  rdfs:comment "Allowed hazard types that CryogenicInsulationFailure may trigger." ;
   owl:equivalentClass [
     a owl:Class ;
-    owl:unionOf (
-      h2ho:Malfunction
-      h2ho:LossOfFunction
-      h2ho:ExternalEvent
+    owl:unionOf ( 
+        h2ho:ThermalHazard 
+        h2ho:PressureHazard 
+	)
+  ] .
+
+h2ho:CryogenicInsulationFailure
+  rdfs:subClassOf [
+    a owl:Restriction ;
+    rdfs:comment """
+DL: CryogenicInsulationFailure ⊑ ∀ ho61508:triggers.(ThermalHazard ⊔ PressureHazard)
+If cryogenic insulation/vacuum fails and a hazard is triggered, it is typically
+thermal (cold exposure/abnormal temperatures) and or pressure-related (boil-off).
+""" ;
+    owl:onProperty ho61508:triggers ;
+    owl:allValuesFrom h2ho:CryogenicInsulationFailureTrigger
+  ] .
+
+h2ho:ReliefSystemFailure
+  rdfs:subClassOf [
+    a owl:Restriction ;
+    rdfs:comment """
+DL: ReliefSystemFailure ⊑ ∀ ho61508:triggers.PressureHazard
+If a relief/venting function fails and it triggers a hazard, it is a PressureHazard.
+""" ;
+    owl:onProperty ho61508:triggers ;
+    owl:allValuesFrom h2ho:PressureHazard
+  ] .
+
+h2ho:ContainmentIntegrityFailureTrigger a owl:Class ;
+  rdfs:comment "Allowed hazard types that ContainmentIntegrityFailure may trigger." ;
+  owl:equivalentClass [
+    a owl:Class ;
+    owl:unionOf ( 
+	    h2ho:OxygenDeficiencyHazard 
+		h2ho:PressureHazard 
+		h2ho:ToxicityHazard 
+	)
+  ] .
+
+h2ho:ContainmentIntegrityFailure
+  rdfs:subClassOf [
+    a owl:Restriction ;
+    rdfs:comment """
+DL: ContainmentIntegrityFailure ⊑ ∀ ho61508:triggers.(OxygenDeficiencyHazard ⊔ PressureHazard ⊔ ToxicityHazard)
+If containment integrity fails and a hazard is triggered, it falls within the hazard
+families relevant to releases and secondary effects.
+ContainmentIntegrityFailure, is though not directly triggering FlammabilityHazard but can be a important event 
+in the hazard causal chain.
+""" ;
+    owl:onProperty ho61508:triggers ;
+    owl:allValuesFrom h2ho:ContainmentIntegrityFailureTrigger
+  ] .
+
+h2ho:ValveFailureTrigger a owl:Class ;
+  rdfs:comment "Allowed hazard types that ValveFailure may trigger." ;
+  owl:equivalentClass [
+    a owl:Class ;
+    owl:unionOf ( 
+	    h2ho:PressureHazard 
+		h2ho:OxygenDeficiencyHazard 
     )
   ] .
 
-h2ho:ThermalHazard
-  rdfs:subClassOf
-    [
-      a owl:Restriction ;
-      rdfs:comment """
-DL: ThermalHazard ⊑ ∀ h2ho:triggeredBy.ThermalHazardTrigger
-A ThermalHazard may only be triggered by events in the ThermalHazardTrigger set.
+h2ho:ValveFailure
+  rdfs:subClassOf [
+    a owl:Restriction ;
+    rdfs:comment """
+DL: ValveFailure ⊑ ∀ ho61508:triggers.(PressureHazard ⊔ OxygenDeficiencyHazard)
+Valve malfunction can cause overpressure/flow deviations and may contribute to releases
+leading to flammability or oxygen displacement hazards.
 """ ;
-      owl:onProperty h2ho:triggeredBy ;
-      owl:allValuesFrom h2ho:ThermalHazardTrigger
-    ] .
-	
-h2ho:ToxicityHazardTrigger a owl:Class ;
-  rdfs:comment """
-Trigger events permitted for ToxicityHazard in H2HO-A.
-DL: ToxicityHazardTrigger ≡ ExternalEvent ⊔ Malfunction ⊔ LossOfFunction
-""" ;
+    owl:onProperty ho61508:triggers ;
+    owl:allValuesFrom h2ho:ValveFailureTrigger
+  ] .
+
+h2ho:ControlSystemFailureTrigger a owl:Class ;
+  rdfs:comment "Allowed hazard types that ControlSystemFailure may trigger." ;
   owl:equivalentClass [
     a owl:Class ;
-    owl:unionOf (
-      h2ho:ExternalEvent
-      h2ho:Malfunction
-      h2ho:LossOfFunction
+    owl:unionOf ( 
+	    h2ho:ToxicityHazard 
+		h2ho:OxygenDeficiencyHazard 
+		h2ho:ElectricalPowerHazard 
+		h2ho:PressureHazard 
+		h2ho:ThermalHazard 
     )
   ] .
 
-h2ho:ToxicityHazard
-  rdfs:subClassOf
-    [
-      a owl:Restriction ;
-      rdfs:comment """
-DL: ToxicityHazard ⊑ ∀ h2ho:triggeredBy.ToxicityHazardTrigger
-A ToxicityHazard may only be triggered by events in the allowed trigger set.
+h2ho:ControlSystemFailure
+  rdfs:subClassOf [
+    a owl:Restriction ;
+    rdfs:comment """
+DL: HumanMachineInterfaceFailure ⊑ ∀ ho61508:triggers.(ToxicityHazard ⊔ OxygenDeficiencyHazard ⊔ ElectricalPowerHazard ⊔ PressureHazard ⊔ ThermalHazard )
+Control system malfunction can cause overpressure/flow deviations and may contribute to releases
+leading to flammability or oxygen displacement hazards.
 """ ;
-      owl:onProperty h2ho:triggeredBy ;
-      owl:allValuesFrom h2ho:ToxicityHazardTrigger
-    ] .
+    owl:onProperty ho61508:triggers ;
+    owl:allValuesFrom h2ho:ControlSystemFailureTrigger
+  ] .
 
+h2ho:InstrumentationFailureTrigger a owl:Class ;
+  rdfs:comment "Allowed hazard types that InstrumentationFailure may trigger." ;
+  owl:equivalentClass [
+    a owl:Class ;
+    owl:unionOf ( 
+	    h2ho:ToxicityHazard 
+		h2ho:OxygenDeficiencyHazard 
+		h2ho:ElectricalPowerHazard 
+		h2ho:PressureHazard 
+		h2ho:ThermalHazard 
+    )
+  ] .
+
+h2ho:InstrumentationFailure
+  rdfs:subClassOf [
+    a owl:Restriction ;
+    rdfs:comment """
+DL: HumanMachineInterfaceFailure ⊑ ∀ ho61508:triggers.(ToxicityHazard ⊔ OxygenDeficiencyHazard ⊔ ElectricalPowerHazard ⊔ PressureHazard ⊔ ThermalHazard )
+Instrumentation malfunction can cause overpressure/flow deviations and may contribute to releases
+leading to flammability or oxygen displacement hazards.
+""" ;
+    owl:onProperty ho61508:triggers ;
+    owl:allValuesFrom h2ho:InstrumentationFailureTrigger
+  ] .
+  
+  
+h2ho:LossOfFunctionTrigger a owl:Class ;
+  rdfs:comment "Allowed hazard types that LossOfFunction may trigger." ;
+  owl:equivalentClass [
+    a owl:Class ;
+    owl:unionOf ( 
+	    h2ho:ToxicityHazard 
+		h2ho:OxygenDeficiencyHazard 
+		h2ho:PressureHazard 
+		h2ho:ThermalHazard 
+    )
+  ] .
+  
+h2ho:LossOfFunction
+  rdfs:subClassOf [
+    a owl:Restriction ;
+    rdfs:comment """
+DL: LossOfFunction ⊑ ∀ ho61508:triggers.(ToxicityHazard ⊔ OxygenDeficiencyHazard ⊔ PressureHazard ⊔ ThermalHazard )
+Loss of function and containment can cause overpressure/flow deviations and may contribute to hydrogen releases
+leading to flammability or oxygen displacement hazards.
+""" ;
+    owl:onProperty ho61508:triggers ;
+    owl:allValuesFrom h2ho:LossOfFunctionTrigger
+  ] .
 
 ##################################################################
 # H2HO-A HazardousEvent results in HazardousCondition restrictions

@@ -1,0 +1,18 @@
+PREFIX h2ho:    <https://w3id.org/jochumsson/h2ho#>
+PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl:     <http://www.w3.org/2002/07/owl#>
+
+SELECT ( CONCAT(STR(?EventClass), " ", STR(?Property), " ", STR(?HazardClass), " only (ALL restriction exists).") AS ?violation )
+WHERE {
+  VALUES (?EventClass ?Property ?HazardClass) {
+    (h2ho:ElectricalFailure ho61508:triggers h2ho:ElectricalPowerHazard)
+  }
+
+  FILTER NOT EXISTS {
+    ?EventClass rdfs:subClassOf ?r .
+    ?r a owl:Restriction ;
+       owl:onProperty ?Property ;
+       owl:allValuesFrom ?HazardClass .
+  }
+}
