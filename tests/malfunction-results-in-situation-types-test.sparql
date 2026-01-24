@@ -1,0 +1,16 @@
+PREFIX h2ho:    <https://w3id.org/jochumsson/h2ho#>
+PREFIX h2hoa:   <https://w3id.org/jochumsson/h2ho-a#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl:     <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT ( "MalfunctionResultInSituation union is incomplete: must contain Contamination, ExposureSituation, Overpressure." AS ?violation )
+WHERE {
+  FILTER NOT EXISTS {
+    h2hoa:MalfunctionResultInSituation owl:equivalentClass ?ec .
+    ?ec owl:unionOf ?list .
+    FILTER EXISTS { ?list rdf:rest*/rdf:first h2ho:Contamination }
+    FILTER EXISTS { ?list rdf:rest*/rdf:first h2ho:ExposureSituation }
+    FILTER EXISTS { ?list rdf:rest*/rdf:first h2ho:Overpressure }
+  }
+}

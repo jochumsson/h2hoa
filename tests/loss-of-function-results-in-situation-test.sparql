@@ -1,0 +1,19 @@
+PREFIX h2ho:    <https://w3id.org/jochumsson/h2ho#>
+PREFIX h2hoa:   <https://w3id.org/jochumsson/h2ho-a#>
+PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl:     <http://www.w3.org/2002/07/owl#>
+
+SELECT ( "LossOfFunction resultsIn only (Contamination OR ExposureSituation OR Overpressure OR DamagedEquipmentDegradation) (ALL restriction missing)." AS ?violation )
+WHERE {
+  VALUES (?EventClass ?Property ?AllowedUnionClass) {
+    (h2ho:LossOfFunction ho61508:resultsIn h2hoa:LossOfFunctionResultInSituation)
+  }
+
+  FILTER NOT EXISTS {
+    ?EventClass rdfs:subClassOf ?r .
+    ?r a owl:Restriction ;
+       owl:onProperty ?Property ;
+       owl:allValuesFrom ?AllowedUnionClass .
+  }
+}

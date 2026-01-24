@@ -1,0 +1,19 @@
+PREFIX h2ho:    <https://w3id.org/jochumsson/h2ho#>
+PREFIX h2hoa:   <https://w3id.org/jochumsson/h2ho-a#>
+PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl:     <http://www.w3.org/2002/07/owl#>
+
+SELECT ( "HydrogenRelease resultsIn at least one FlammableCondition (SOME restriction missing)." AS ?violation )
+WHERE {
+  VALUES (?EventClass ?Property ?SituationClass) {
+    (h2hoa:HydrogenRelease ho61508:resultsIn h2hoa:FlammableCondition)
+  }
+
+  FILTER NOT EXISTS {
+    ?EventClass rdfs:subClassOf ?r .
+    ?r a owl:Restriction ;
+       owl:onProperty ?Property ;
+       owl:someValuesFrom ?SituationClass .
+  }
+}
