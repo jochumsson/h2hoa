@@ -19,13 +19,13 @@
   dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
   rdfs:seeAlso <https://github.com/jochumsson/ho61508> ;
   rdfs:seeAlso <https://github.com/jochumsson/h2ho> ;
-  dcterms:source "ISO 15916:2015 – Basic considerations for the safety of hydrogen systems."@en ;
+  dcterms:source "ISO 15916:2026 - Basic considerations for the safety of hydrogen systems."@en ;
   owl:imports <https://w3id.org/jochumsson/ho61508> ;
   owl:imports <https://w3id.org/jochumsson/h2ho> ;
   owl:versionInfo "1.0.0" ;
   owl:versionIRI <https://w3id.org/jochumsson/h2ho-a/1.0.0> ;
-  dcterms:issued "2026-01-22"^^xsd:date ;
-  dcterms:modified "2026-01-22"^^xsd:date .
+  dcterms:issued "2026-01-29"^^xsd:date ;
+  dcterms:modified "2026-01-29"^^xsd:date .
 
 #################################################################
 # H2HO-A - start of the ontology marker
@@ -1240,7 +1240,7 @@ h2ho:ExternalEvent
     a owl:Restriction ;
     owl:onProperty ho61508:resultsIn ;
     owl:allValuesFrom h2hoa:ExternalEventResultInSituation ;
-    rdfs:comment "If an ExternalEvent resultsIn a HazardousSituation, that situation must be an equipment degradation situation or an exposure situation."
+    rdfs:comment "If an ExternalEvent resultsIn a HazardousSituation, that situation must be included in the ExternalEventResultInSituation union."
   ] .
 
 h2hoa:MalfunctionResultInSituation
@@ -1260,7 +1260,7 @@ h2ho:Malfunction
     a owl:Restriction ;
     owl:onProperty ho61508:resultsIn ;
     owl:allValuesFrom h2hoa:MalfunctionResultInSituation ;
-    rdfs:comment "If a Malfunction resultsIn a HazardousSituation, that situation must be contamination, exposure, or overpressure."
+    rdfs:comment "If a Malfunction resultsIn a HazardousSituation, that situation must be in the MalfunctionResultInSituation union."
   ] .
 
 h2hoa:LossOfFunctionResultInSituation
@@ -1281,29 +1281,85 @@ h2ho:LossOfFunction
     a owl:Restriction ;
     owl:onProperty ho61508:resultsIn ;
     owl:allValuesFrom h2hoa:LossOfFunctionResultInSituation ;
-    rdfs:comment "If a LossOfFunction resultsIn a HazardousSituation, that situation must be contamination, exposure, overpressure, or equipment degradation."
+    rdfs:comment "If a LossOfFunction resultsIn a HazardousSituation, that situation must be defined in the LossOfFunctionResultInSituation union."
   ] .
 
 ##################################################################
 # M: HazardousSituation enables HazardousEvent application restrictions
-# Application layer restrictions: which ho61508:HazardousCondition
-# enables which ho61508:HazardousEvent
+# Application layer restrictions: which ho61508:HazardousSituation
+# enable which ho61508:HazardousEvent
 ##################################################################
 
 h2hoa:FlammableCondition
-  rdfs:subClassOf [
-    a owl:Restriction ;
-    rdfs:comment "A flammable hydrogen–air condition enables Ignition when an ignition source interacts with the mixture, starting the combustion chain." ;
-    owl:onProperty ho61508:enables ;
-    owl:someValuesFrom h2ho:Ignition
+  rdfs:subClassOf
+    [
+      a owl:Restriction ;
+      owl:onProperty ho61508:enables ;
+      owl:allValuesFrom h2ho:Ignition ;
+      rdfs:comment
+        "If a FlammableCondition enables a HazardousEvent, that event must be an Ignition."
+    ] .
+
+h2hoa:MaterialDegradationEnablesEvent
+  a owl:Class ;
+  rdfs:comment "Allowed HazardousEvent types that MaterialDegradation may enable." ;
+  owl:equivalentClass [
+    a owl:Class ;
+    owl:unionOf (
+      h2hoa:HydrogenRelease
+      h2ho:LossOfFunction
+      h2ho:Malfunction
+    )
   ] .
 
 h2ho:MaterialDegradation
   rdfs:subClassOf [
     a owl:Restriction ;
     owl:onProperty ho61508:enables ;
-    owl:someValuesFrom h2hoa:HydrogenRelease
+    owl:allValuesFrom h2hoa:MaterialDegradationEnablesEvent ;
+    rdfs:comment
+      "If MaterialDegradation enables a HazardousEvent, that event must be part of the event union defined by MaterialDegradationEnablesEvent"
   ] .
+
+h2hoa:OverpressureEnablesEvent
+  a owl:Class ;
+  rdfs:comment "Allowed HazardousEvent types that may be enabled by Overpressure." ;
+  owl:equivalentClass [
+    a owl:Class ;
+    owl:unionOf (
+      h2hoa:ContainmentIntegrityFailure
+      h2hoa:ReliefSystemFailure
+      h2hoa:ValveFailure
+    )
+  ] .
+
+h2ho:Overpressure
+  rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty ho61508:enables ;
+    owl:allValuesFrom h2hoa:OverpressureEnablesEvent ;
+    rdfs:comment "If Overpressure enables a HazardousEvent, that event must be a containment integrity failure, relief system failure, or valve failure."
+  ] .
+
+h2hoa:ContaminationEnablesEvent
+  a owl:Class ;
+  rdfs:comment "Allowed HazardousEvent types for ho61508:enables from Contamination." ;
+  owl:equivalentClass [
+    a owl:Class ;
+    owl:unionOf (
+      h2ho:Malfunction
+      h2ho:LossOfFunction
+    )
+  ] .
+
+h2ho:Contamination
+  rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty ho61508:enables ;
+    owl:allValuesFrom h2hoa:ContaminationEnablesEvent
+  ] .
+
+
 
 ##################################################################
 # N: HazardousSituation involves Hazard application restrictions

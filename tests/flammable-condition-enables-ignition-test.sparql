@@ -1,0 +1,18 @@
+PREFIX h2ho:    <https://w3id.org/jochumsson/h2ho#>
+PREFIX h2hoa:   <https://w3id.org/jochumsson/h2ho-a#>
+PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl:     <http://www.w3.org/2002/07/owl#>
+
+SELECT ( "FlammableCondition enables Ignition (SOME restriction missing)." AS ?violation )
+WHERE {
+  VALUES (?SituationClass ?Property ?EventClass) {
+    (h2hoa:FlammableCondition ho61508:enables h2ho:Ignition)
+  }
+
+  FILTER NOT EXISTS {
+    ?SituationClass rdfs:subClassOf ?r .
+    ?r owl:onProperty ?Property ;
+       owl:allValuesFrom ?EventClass .
+  }
+}

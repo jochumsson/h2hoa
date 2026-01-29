@@ -1,0 +1,38 @@
+PREFIX h2hoa:    <https://w3id.org/jochumsson/h2ho-a#>
+PREFIX h2ho:    <https://w3id.org/jochumsson/h2ho#>
+PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl:     <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT ( CONCAT(
+  "h2ho:MaterialDegradation ho61508:enables union helper missing or incomplete. Expected member not found: ",
+  STR(?ExpectedMember)
+) AS ?violation )
+WHERE {
+  VALUES (?SituationClass ?Property) {
+    (h2ho:MaterialDegradation ho61508:enables)
+  }
+
+  # Expected members defined ONCE
+  VALUES ?ExpectedMember {
+    h2hoa:HydrogenRelease
+    h2ho:LossOfFunction
+    h2ho:Malfunction
+  }
+
+  # Find an ALL restriction filler that is a union helper
+  FILTER NOT EXISTS {
+    ?SituationClass rdfs:subClassOf ?r .
+    ?r a owl:Restriction ;
+       owl:onProperty ?Property ;
+       owl:allValuesFrom ?UnionHelper .
+
+    ?UnionHelper owl:equivalentClass ?ec .
+    ?ec owl:unionOf ?list .
+
+    # Ensure this expected member is in the union
+    ?list rdf:rest*/rdf:first ?ExpectedMember .
+  }
+}
+
