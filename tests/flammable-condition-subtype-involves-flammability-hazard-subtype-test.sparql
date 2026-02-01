@@ -1,0 +1,36 @@
+PREFIX h2hoa:   <https://w3id.org/jochumsson/h2ho-a#>
+PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl:     <http://www.w3.org/2002/07/owl#>
+
+SELECT ( CONCAT(
+  "Section N restriction missing or incorrect for ",
+  STR(?SituationClass),
+  ". Expected involves some and involves only ",
+  STR(?ExpectedHazard)
+) AS ?violation )
+WHERE {
+  VALUES (?SituationClass ?ExpectedHazard) {
+    (h2hoa:HydrogenJet           h2hoa:JetFireHazard)
+    (h2hoa:FlammableVaporCloud   h2hoa:FireballHazard)
+    (h2hoa:CryogenicHydrogenPool h2hoa:PoolFireHazard)
+    (h2hoa:DeflagrationCondition h2hoa:DeflagrationHazard)
+    (h2hoa:DetonationCondition   h2hoa:DetonationHazard)
+  }
+
+  FILTER (
+    NOT EXISTS {
+      ?SituationClass rdfs:subClassOf ?r1 .
+      ?r1 a owl:Restriction ;
+          owl:onProperty ho61508:involves ;
+          owl:someValuesFrom ?ExpectedHazard .
+    }
+    ||
+    NOT EXISTS {
+      ?SituationClass rdfs:subClassOf ?r2 .
+      ?r2 a owl:Restriction ;
+          owl:onProperty ho61508:involves ;
+          owl:allValuesFrom ?ExpectedHazard .
+    }
+  )
+}

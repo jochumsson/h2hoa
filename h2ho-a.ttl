@@ -365,56 +365,14 @@ h2hoa:ComposedHazardousEvent rdfs:subClassOf
 # Application layer ho61508:HazardousSituation specification
 #################################################################
 
-h2hoa:FlammableCondition
-  rdfs:subClassOf
-    [
-      a owl:Restriction ;
-      rdfs:comment """
-IEC 61508 aligned: a HazardousSituation involves the hazard(s) present in that situation.
-A FlammableCondition represents the existence of a flammable hydrogen–air mixture,
-as used in ISO 15916-style hazard analysis (flammable atmospheres leading to fire or explosion scenarios).
-Therefore, every FlammableCondition involves at least one FlammabilityHazard.
-""" ;
-      owl:onProperty ho61508:involves ;
-      owl:someValuesFrom h2ho:FlammabilityHazard
-    ] .
-
-### Hydrogen jet situation
 h2hoa:HydrogenJet a owl:Class ;
   rdfs:subClassOf h2hoa:FlammableCondition ;
   rdfs:comment "HazardousSituation in which hydrogen emerges as a momentum-driven jet, for example after a pressurised release. Portions of the jet are within flammable limits and can produce a jet fire if ignited." .
 
-h2hoa:HydrogenJet
-  rdfs:subClassOf
-    [
-      a owl:Restriction ;
-      rdfs:comment """
-ISO 15916 context: a momentum-driven hydrogen release can form a flammable jet region.
-This HazardousSituation involves the JetFireHazard that may be realised if ignition occurs.
-""" ;
-      owl:onProperty ho61508:involves ;
-      owl:someValuesFrom h2hoa:JetFireHazard
-    ] .
-
-### Flammable vapor cloud (delayed mixing)
 h2hoa:FlammableVaporCloud a owl:Class ;
   rdfs:subClassOf h2hoa:FlammableCondition ;
   rdfs:comment "HazardousSituation in which a dispersed hydrogen–air cloud is within flammable limits. Relevant for fireball and vapour cloud explosion scenarios." .
 
-h2hoa:FlammableVaporCloud
-  rdfs:subClassOf
-    [
-      a owl:Restriction ;
-      rdfs:comment """
-ISO 15916 context: a dispersed flammable cloud supports delayed ignition scenarios
-such as fireball and vapour cloud explosion. This HazardousSituation involves a FireballHazard
-as one recognised flammability hazard in such conditions.
-""" ;
-      owl:onProperty ho61508:involves ;
-      owl:someValuesFrom h2hoa:FireballHazard
-    ] .
-
-### Cryogenic hydrogen pool situation
 h2hoa:CryogenicHydrogenPool a owl:Class ;
   rdfs:subClassOf h2hoa:FlammableCondition ;
   rdfs:comment """
@@ -429,52 +387,13 @@ depending on ignition timing and dispersion.
 The situation itself does not imply ignition or combustion.
 """ .
 
-h2hoa:CryogenicHydrogenPool
-  rdfs:subClassOf
-    [
-      a owl:Restriction ;
-      rdfs:comment """
-A CryogenicHydrogenPool involves a PoolFireHazard, representing the potential
-for a pool fire if ignition occurs during sustained evaporation.
-""" ;
-      owl:onProperty ho61508:involves ;
-      owl:someValuesFrom h2hoa:PoolFireHazard
-    ] .
-
-### Deflagration-capable condition
 h2hoa:DeflagrationCondition a owl:Class ;
   rdfs:subClassOf h2hoa:FlammableCondition ;
   rdfs:comment "HazardousSituation in which a hydrogen–air condition can support subsonic flame propagation (deflagration), based on concentration, confinement, and turbulence." .
 
-h2hoa:DeflagrationCondition
-  rdfs:subClassOf
-    [
-      a owl:Restriction ;
-      rdfs:comment """
-ISO 15916 context: mixture, congestion, and confinement can support subsonic flame propagation.
-This HazardousSituation captures a deflagration-capable condition and involves a DeflagrationHazard.
-""" ;
-      owl:onProperty ho61508:involves ;
-      owl:someValuesFrom h2hoa:DeflagrationHazard
-    ] .
-
-### Detonation-capable condition
 h2hoa:DetonationCondition a owl:Class ;
   rdfs:subClassOf h2hoa:FlammableCondition ;
   rdfs:comment "HazardousSituation in which a hydrogen–air condition can support detonation, for example when mixture composition and confinement exceed detonation limits." .
-
-h2hoa:DetonationCondition
-  rdfs:subClassOf
-    [
-      a owl:Restriction ;
-      rdfs:comment """
-ISO 15916 context: under more severe conditions (mixture and confinement), detonation may be possible.
-This HazardousSituation captures a detonation-capable condition and involves a DetonationHazard.
-IEC 61508 aligned: hazards are linked as present in the situation via involves.
-""" ;
-      owl:onProperty ho61508:involves ;
-      owl:someValuesFrom h2hoa:DetonationHazard
-    ] .
 
 h2hoa:LiquidHydrogenExposureSituation a owl:Class ;
   rdfs:subClassOf h2ho:ExposureSituation ;
@@ -1363,13 +1282,115 @@ h2ho:Contamination
 
 ##################################################################
 # N: HazardousSituation involves Hazard application restrictions
-# No restrictions implemented
-##################################################################
+# ##################################################################
+
+ho61508:HazardousSituation
+  rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty ho61508:involves ;
+    owl:someValuesFrom ho61508:Hazard ;
+    rdfs:comment """
+IEC 61508 aligned: every HazardousSituation involves at least one Hazard.
+Open world assumption applies: this does not force which hazard, only that one exists.
+""" ;
+  ] .
+
+h2hoa:FlammableCondition
+  rdfs:subClassOf
+    [
+      a owl:Restriction ;
+      rdfs:comment """
+IEC 61508 aligned: a HazardousSituation involves the hazard(s) present in that situation.
+A FlammableCondition represents the existence of a flammable hydrogen–air mixture,
+as used in ISO 15916-style hazard analysis (flammable atmospheres leading to fire or explosion scenarios).
+Therefore, every FlammableCondition involves at least one FlammabilityHazard.
+""" ;
+      owl:onProperty ho61508:involves ;
+      owl:someValuesFrom h2ho:FlammabilityHazard
+    ] .
+
+h2hoa:HydrogenJet
+  rdfs:subClassOf
+    [
+      a owl:Restriction ;
+      owl:onProperty ho61508:involves ;
+      owl:someValuesFrom h2hoa:JetFireHazard ;
+      rdfs:comment "A HydrogenJet involves at least one JetFireHazard." ;
+    ] ,
+    [
+      a owl:Restriction ;
+      owl:onProperty ho61508:involves ;
+      owl:allValuesFrom h2hoa:JetFireHazard ;
+      rdfs:comment "A HydrogenJet involves only JetFireHazard." ;
+    ] .
+
+h2hoa:FlammableVaporCloud
+  rdfs:subClassOf
+    [
+      a owl:Restriction ;
+      owl:onProperty ho61508:involves ;
+      owl:someValuesFrom h2hoa:FireballHazard ;
+      rdfs:comment "A FlammableVaporCloud involves at least one FireballHazard." ;
+    ] ,
+    [
+      a owl:Restriction ;
+      owl:onProperty ho61508:involves ;
+      owl:allValuesFrom h2hoa:FireballHazard ;
+      rdfs:comment "A FlammableVaporCloud involves only FireballHazard." ;
+    ] .
+
+
+h2hoa:CryogenicHydrogenPool
+  rdfs:subClassOf
+    [
+      a owl:Restriction ;
+      owl:onProperty ho61508:involves ;
+      owl:someValuesFrom h2hoa:PoolFireHazard ;
+      rdfs:comment "A CryogenicHydrogenPool involves at least one PoolFireHazard." ;
+    ] ,
+    [
+      a owl:Restriction ;
+      owl:onProperty ho61508:involves ;
+      owl:allValuesFrom h2hoa:PoolFireHazard ;
+      rdfs:comment "A CryogenicHydrogenPool involves only PoolFireHazard." ;
+    ] .
+
+h2hoa:DeflagrationCondition
+  rdfs:subClassOf
+    [
+      a owl:Restriction ;
+      owl:onProperty ho61508:involves ;
+      owl:someValuesFrom h2hoa:DeflagrationHazard ;
+      rdfs:comment "A DeflagrationCondition involves at least one DeflagrationHazard." ;
+    ] ,
+    [
+      a owl:Restriction ;
+      owl:onProperty ho61508:involves ;
+      owl:allValuesFrom h2hoa:DeflagrationHazard ;
+      rdfs:comment "A DeflagrationCondition involves only DeflagrationHazard." ;
+    ] .
+
+h2hoa:DetonationCondition
+  rdfs:subClassOf
+    [
+      a owl:Restriction ;
+      owl:onProperty ho61508:involves ;
+      owl:someValuesFrom h2hoa:DetonationHazard ;
+      rdfs:comment "A DetonationCondition involves at least one DetonationHazard." ;
+    ] ,
+    [
+      a owl:Restriction ;
+      owl:onProperty ho61508:involves ;
+      owl:allValuesFrom h2hoa:DetonationHazard ;
+      rdfs:comment "A DetonationCondition involves only DetonationHazard." ;
+    ] .
+
 
 ##################################################################
 # P: HazardousSituation exposes Exposed application restrictions
-# No restrictions implemented
 ##################################################################
+
+
 
 #################################################################
 # Q: Hazard manifestsIn HarmfulEvent application restrictions

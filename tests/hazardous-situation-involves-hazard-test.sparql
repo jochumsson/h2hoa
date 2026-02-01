@@ -1,0 +1,13 @@
+PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl:     <http://www.w3.org/2002/07/owl#>
+
+SELECT ( "ho61508:HazardousSituation missing: involves some ho61508:Hazard" AS ?violation )
+WHERE {
+  FILTER NOT EXISTS {
+    ho61508:HazardousSituation rdfs:subClassOf ?r .
+    ?r a owl:Restriction ;
+       owl:onProperty ho61508:involves ;
+       owl:someValuesFrom ho61508:Hazard .
+  }
+}
