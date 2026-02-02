@@ -1396,107 +1396,178 @@ Anything that plays the ho61508:Exposed role must be an ExposableEndurant.
 # manifestsIn which ho61508:HarmfulEvents
 #################################################################
 
-### FlammabilityHazard manifests in either Fire or Explosion
 h2ho:FlammabilityHazard
-  rdfs:subClassOf [
-    a owl:Restriction ;
-    rdfs:comment "A FlammabilityHazard may manifest as either a Fire or an Explosion, depending on mixture geometry, ignition conditions, and confinement." ;
-    owl:onProperty ho61508:manifestsIn ;
-    owl:someValuesFrom [
-      a owl:Class ;
-      owl:unionOf (h2hoa:Fire h2hoa:Explosion)
-    ]
-  ] .
+  rdfs:subClassOf
+    [
+      a owl:Restriction ;
+      rdfs:comment """
+A FlammabilityHazard manifests in at least one Combustion harmful event.
+This is a type fence at the abstraction level: it does not enumerate leaf event types.
+Extension occurs by adding new subclasses of h2ho:Combustion (or reusing existing ones),
+not by modifying this restriction.
+""" ;
+      owl:onProperty ho61508:manifestsIn ;
+      owl:someValuesFrom h2ho:Combustion
+    ] ,
+    [
+      a owl:Restriction ;
+      rdfs:comment """
+If a FlammabilityHazard manifestsIn any HarmfulEvent, it must be a Combustion.
+This closes the abstraction-level range without enumerating specific combustion subtypes.
+""" ;
+      owl:onProperty ho61508:manifestsIn ;
+      owl:allValuesFrom h2ho:Combustion
+    ] .
 
-### JetFireHazard manifests as JetFire
 h2hoa:JetFireHazard
-  rdfs:subClassOf [
-    a owl:Restriction ;
-    rdfs:comment "A JetFireHazard manifests as a high-momentum, ignited release of hydrogen." ;
-    owl:onProperty ho61508:manifestsIn ;
-    owl:someValuesFrom h2hoa:JetFire
-  ] .
+  rdfs:subClassOf
+    [
+      a owl:Restriction ;
+      rdfs:comment "A JetFireHazard manifests in at least one JetFire." ;
+      owl:onProperty ho61508:manifestsIn ;
+      owl:someValuesFrom h2hoa:JetFire
+    ] ,
+    [
+      a owl:Restriction ;
+      rdfs:comment "A JetFireHazard manifests only in JetFire." ;
+      owl:onProperty ho61508:manifestsIn ;
+      owl:allValuesFrom h2hoa:JetFire
+    ] .
 
-### FireballHazard manifests as Fireball
 h2hoa:FireballHazard
-  rdfs:subClassOf [
-    a owl:Restriction ;
-    rdfs:comment "A FireballHazard manifests when a flammable cloud ignites in an unconfined or semi-confined volume." ;
-    owl:onProperty ho61508:manifestsIn ;
-    owl:someValuesFrom h2hoa:Fireball
-  ] .
+  rdfs:subClassOf
+    [
+      a owl:Restriction ;
+      rdfs:comment "A FireballHazard manifests in at least one Fireball." ;
+      owl:onProperty ho61508:manifestsIn ;
+      owl:someValuesFrom h2hoa:Fireball
+    ] ,
+    [
+      a owl:Restriction ;
+      rdfs:comment "A FireballHazard manifests only in Fireball." ;
+      owl:onProperty ho61508:manifestsIn ;
+      owl:allValuesFrom h2hoa:Fireball
+    ] .
 
-### PoolFireHazard manifests as PoolFire
 h2hoa:PoolFireHazard
-  rdfs:subClassOf [
-    a owl:Restriction ;
-    rdfs:comment "A PoolFireHazard manifests when evaporating liquid hydrogen or a cryogenic spill ignites as a burning pool." ;
-    owl:onProperty ho61508:manifestsIn ;
-    owl:someValuesFrom h2hoa:PoolFire
-  ] .
+  rdfs:subClassOf
+    [
+      a owl:Restriction ;
+      rdfs:comment "A PoolFireHazard manifests in at least one PoolFire." ;
+      owl:onProperty ho61508:manifestsIn ;
+      owl:someValuesFrom h2hoa:PoolFire
+    ] ,
+    [
+      a owl:Restriction ;
+      rdfs:comment "A PoolFireHazard manifests only in PoolFire." ;
+      owl:onProperty ho61508:manifestsIn ;
+      owl:allValuesFrom h2hoa:PoolFire
+    ] .
 
-### DeflagrationHazard manifests as Deflagration
 h2hoa:DeflagrationHazard
-  rdfs:subClassOf [
-    a owl:Restriction ;
-    rdfs:comment "A DeflagrationHazard manifests as a subsonic flame propagation event." ;
-    owl:onProperty ho61508:manifestsIn ;
-    owl:someValuesFrom h2hoa:Deflagration
-  ] .
+  rdfs:subClassOf
+    [
+      a owl:Restriction ;
+      rdfs:comment "A DeflagrationHazard manifests in at least one Deflagration." ;
+      owl:onProperty ho61508:manifestsIn ;
+      owl:someValuesFrom h2hoa:Deflagration
+    ] ,
+    [
+      a owl:Restriction ;
+      rdfs:comment "A DeflagrationHazard manifests only in Deflagration." ;
+      owl:onProperty ho61508:manifestsIn ;
+      owl:allValuesFrom h2hoa:Deflagration
+    ] .
 
-### DetonationHazard manifests as Detonation
 h2hoa:DetonationHazard
-  rdfs:subClassOf [
-    a owl:Restriction ;
-    rdfs:comment "A DetonationHazard manifests as a supersonic combustion event in a hydrogen–air mixture." ;
-    owl:onProperty ho61508:manifestsIn ;
-    owl:someValuesFrom h2hoa:Detonation
-  ] .
+  rdfs:subClassOf
+    [
+      a owl:Restriction ;
+      rdfs:comment "A DetonationHazard manifests in at least one Detonation." ;
+      owl:onProperty ho61508:manifestsIn ;
+      owl:someValuesFrom h2hoa:Detonation
+    ] ,
+    [
+      a owl:Restriction ;
+      rdfs:comment "A DetonationHazard manifests only in Detonation." ;
+      owl:onProperty ho61508:manifestsIn ;
+      owl:allValuesFrom h2hoa:Detonation
+    ] .
 
-### PressureHazard manifests in high-pressure exposure
 h2ho:PressureHazard
-  rdfs:subClassOf [
-    a owl:Restriction ;
-    rdfs:comment "A PressureHazard manifests as a harmful high-pressure exposure event affecting persons or structures." ;
-    owl:onProperty ho61508:manifestsIn ;
-    owl:someValuesFrom h2hoa:HighPressureExposureEvent
-  ] .
+  rdfs:subClassOf
+    [
+      a owl:Restriction ;
+      rdfs:comment "A PressureHazard manifests as a harmful high-pressure exposure event affecting persons or structures." ;
+      owl:onProperty ho61508:manifestsIn ;
+      owl:someValuesFrom h2hoa:HighPressureExposureEvent
+    ] ,
+    [
+      a owl:Restriction ;
+      rdfs:comment "If a PressureHazard manifestsIn a harmful event, it must be a HighPressureExposureEvent." ;
+      owl:onProperty ho61508:manifestsIn ;
+      owl:allValuesFrom h2hoa:HighPressureExposureEvent
+    ] .
 
-### OxygenDeficiencyHazard manifests as oxygen deficiency exposure
 h2ho:OxygenDeficiencyHazard
-  rdfs:subClassOf [
-    a owl:Restriction ;
-    rdfs:comment "An OxygenDeficiencyHazard manifests as an exposure event in which persons are subjected to a low-oxygen atmosphere." ;
-    owl:onProperty ho61508:manifestsIn ;
-    owl:someValuesFrom h2hoa:OxygenDeficiencyExposureEvent
-  ] .
+  rdfs:subClassOf
+    [
+      a owl:Restriction ;
+      rdfs:comment "An OxygenDeficiencyHazard manifests as an exposure event in which persons are subjected to a low-oxygen atmosphere." ;
+      owl:onProperty ho61508:manifestsIn ;
+      owl:someValuesFrom h2hoa:OxygenDeficiencyExposureEvent
+    ] ,
+    [
+      a owl:Restriction ;
+      rdfs:comment "If an OxygenDeficiencyHazard manifestsIn a harmful event, it must be an OxygenDeficiencyExposureEvent." ;
+      owl:onProperty ho61508:manifestsIn ;
+      owl:allValuesFrom h2hoa:OxygenDeficiencyExposureEvent
+    ] .
 
-### ToxicityHazard manifests as toxic exposure
 h2ho:ToxicityHazard
-  rdfs:subClassOf [
-    a owl:Restriction ;
-    rdfs:comment "A ToxicityHazard manifests as a harmful exposure event involving toxic or harmful substances, including cryogenic media or chemical byproducts." ;
-    owl:onProperty ho61508:manifestsIn ;
-    owl:someValuesFrom h2hoa:ToxicExposureEvent
-  ] .
+  rdfs:subClassOf
+    [
+      a owl:Restriction ;
+      rdfs:comment "A ToxicityHazard manifests as a harmful exposure event involving toxic or harmful substances." ;
+      owl:onProperty ho61508:manifestsIn ;
+      owl:someValuesFrom h2hoa:ToxicExposureEvent
+    ] ,
+    [
+      a owl:Restriction ;
+      rdfs:comment "If a ToxicityHazard manifestsIn a harmful event, it must be a ToxicExposureEvent." ;
+      owl:onProperty ho61508:manifestsIn ;
+      owl:allValuesFrom h2hoa:ToxicExposureEvent
+    ] .
 
-### ElectricalPowerHazard manifests as electrical shock
 h2ho:ElectricalPowerHazard
-  rdfs:subClassOf [
-    a owl:Restriction ;
-    rdfs:comment "An ElectricalPowerHazard manifests as an electrical shock harmful event." ;
-    owl:onProperty ho61508:manifestsIn ;
-    owl:someValuesFrom h2ho:ElectricalShock
-  ] .
+  rdfs:subClassOf
+    [
+      a owl:Restriction ;
+      rdfs:comment "An ElectricalPowerHazard manifests as an electrical shock harmful event." ;
+      owl:onProperty ho61508:manifestsIn ;
+      owl:someValuesFrom h2ho:ElectricalShock
+    ] ,
+    [
+      a owl:Restriction ;
+      rdfs:comment "If an ElectricalPowerHazard manifestsIn a harmful event, it must be an ElectricalShock." ;
+      owl:onProperty ho61508:manifestsIn ;
+      owl:allValuesFrom h2ho:ElectricalShock
+    ] .
 
-### ThermalHazard manifests as thermal exposure
 h2ho:ThermalHazard
-  rdfs:subClassOf [
-    a owl:Restriction ;
-    rdfs:comment "A ThermalHazard manifests as a thermal exposure harmful event, representing injury or damage due to hot or cryogenic thermal conditions." ;
-    owl:onProperty ho61508:manifestsIn ;
-    owl:someValuesFrom h2hoa:ThermalExposureEvent
-  ] .
+  rdfs:subClassOf
+    [
+      a owl:Restriction ;
+      rdfs:comment "A ThermalHazard manifests as a thermal exposure harmful event, representing injury or damage due to hot or cryogenic thermal conditions." ;
+      owl:onProperty ho61508:manifestsIn ;
+      owl:someValuesFrom h2hoa:ThermalExposureEvent
+    ] ,
+    [
+      a owl:Restriction ;
+      rdfs:comment "If a ThermalHazard manifestsIn a harmful event, it must be a ThermalExposureEvent." ;
+      owl:onProperty ho61508:manifestsIn ;
+      owl:allValuesFrom h2hoa:ThermalExposureEvent
+    ] .
 
 #################################################################
 # R: HarmfulEvent leadsTo HazardousSituation application restrictions
@@ -1504,17 +1575,32 @@ h2ho:ThermalHazard
 # which ho61508:HazardousSituation
 #################################################################
 
+ho61508:HarmfulEvent
+  rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty ho61508:leadsTo ;
+    owl:allValuesFrom ho61508:HazardousSituation ;
+    rdfs:comment "Application fence: leadsTo from a HarmfulEvent points only to HazardousSituations." ;
+  ] .
+
+h2hoa:CombustionLeadsToSituation
+  a owl:Class ;
+  rdfs:comment "Allowed HazardousSituation types that may follow a Combustion harmful event." ;
+  owl:equivalentClass [
+    a owl:Class ;
+    owl:unionOf (
+      h2hoa:FlammableCondition
+      h2ho:ExposureSituation
+      h2hoa:DamagedEquipmentDegradation
+    )
+  ] .
+
 h2ho:Combustion
   rdfs:subClassOf [
     a owl:Restriction ;
     owl:onProperty ho61508:leadsTo ;
-    owl:allValuesFrom [
-      owl:unionOf (
-        h2hoa:FlammableCondition
-        h2ho:ExposureSituation
-        h2hoa:DamagedEquipmentDegradation
-      )
-    ]
+    owl:allValuesFrom h2hoa:CombustionLeadsToSituation ;
+    rdfs:comment "If a Combustion leadsTo a HazardousSituation, it must be one of the allowed situation types." ;
   ] .
 
 #################################################################
