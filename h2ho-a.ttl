@@ -547,6 +547,10 @@ h2hoa:OxygenDeficiencyExposureEvent a owl:Class ;
   rdfs:subClassOf h2ho:ExposureEvent ;
   rdfs:comment "A harmful exposure event in which a person is subjected to an atmosphere with insufficient oxygen, potentially leading to asphyxiation." .
 
+h2hoa:ElectricalCurrentExposureEvent a owl:Class ;
+  rdfs:subClassOf h2ho:ExposureEvent ;
+  rdfs:comment "A harmful electrical current exposure event." .
+
 # ExposureEvent disjunction
 [] a owl:AllDisjointClasses ;
    owl:members (
@@ -554,6 +558,7 @@ h2hoa:OxygenDeficiencyExposureEvent a owl:Class ;
      h2hoa:ToxicExposureEvent
      h2hoa:HighPressureExposureEvent
      h2hoa:OxygenDeficiencyExposureEvent
+     h2hoa:ElectricalCurrentExposureEvent
    ) .
 
 #################################################################
@@ -1605,5 +1610,84 @@ h2ho:Combustion
 
 #################################################################
 # S: HarmfulEvent causes Harm application restrictions
-# No restrictions implemented
 #################################################################
+
+h2hoa:PressureWaveCausesHarm
+  a owl:Class ;
+  rdfs:comment "Allowed harm outcomes for PressureWave." ;
+  owl:equivalentClass [
+    a owl:Class ;
+    owl:unionOf (
+      h2hoa:Damage
+      h2ho:Injury
+      h2ho:Death
+    )
+  ] .
+
+h2ho:PressureWave
+  rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty ho61508:causes ;
+    owl:allValuesFrom h2hoa:PressureWaveCausesHarm ;
+    rdfs:comment "If a PressureWave causes harm, that harm must be part of the PressureWaveCausesHarm union."
+  ] .
+
+h2hoa:CombustionCausesHarm
+  a owl:Class ;
+  rdfs:comment "Allowed harm outcomes for Combustion." ;
+  owl:equivalentClass [
+    a owl:Class ;
+    owl:unionOf (
+      h2hoa:Damage
+      h2ho:Injury
+      h2ho:Death
+    )
+  ] .
+
+h2ho:Combustion
+  rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty ho61508:causes ;
+    owl:allValuesFrom h2hoa:CombustionCausesHarm ;
+    rdfs:comment "If a Combustion causes harm, that harm must be part of the CombustionCausesHarm union."
+  ] .
+
+
+h2hoa:ElectricalShockCausesHarm
+  a owl:Class ;
+  rdfs:comment "Allowed harm outcomes for ElectricalShock." ;
+  owl:equivalentClass [
+    a owl:Class ;
+    owl:unionOf (
+      h2ho:Injury
+      h2ho:Death
+    )
+  ] .
+
+h2ho:ElectricalShock
+  rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty ho61508:causes ;
+    owl:allValuesFrom h2hoa:ElectricalShockCausesHarm ;
+    rdfs:comment "If an ElectricalShock causes harm, that harm must be part of the ElectricalShockCausesHarm union."
+  ] .
+
+h2hoa:ExposureEventCausesHarm
+  a owl:Class ;
+  rdfs:comment "Allowed harm outcomes for ExposureEvent." ;
+  owl:equivalentClass [
+    a owl:Class ;
+    owl:unionOf (
+      h2hoa:Damage
+      h2ho:Injury
+      h2ho:Death
+    )
+  ] .
+
+h2ho:ExposureEvent
+  rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty ho61508:causes ;
+    owl:allValuesFrom h2hoa:ExposureEventCausesHarm ;
+    rdfs:comment "If an ExposureEvent causes harm, that harm must be part of the ExposureEventCausesHarm union."
+  ] .

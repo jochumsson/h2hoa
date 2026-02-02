@@ -1,0 +1,32 @@
+PREFIX h2hoa:    <https://w3id.org/jochumsson/h2ho-a#>
+PREFIX h2ho:     <https://w3id.org/jochumsson/h2ho#>
+PREFIX ho61508:  <https://w3id.org/jochumsson/ho61508#>
+PREFIX rdfs:     <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl:      <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT (CONCAT(
+  "ElectricalShock causes restriction missing or incomplete. Expected union member not found: ",
+  STR(?ExpectedMember)
+) AS ?violation)
+WHERE {
+  VALUES (?EventClass ?Property ?HelperClass) {
+    (h2ho:ElectricalShock ho61508:causes h2hoa:ElectricalShockCausesHarm)
+  }
+
+  VALUES ?ExpectedMember {
+    h2ho:Injury
+    h2ho:Death
+  }
+
+  FILTER NOT EXISTS {
+    ?EventClass rdfs:subClassOf ?r .
+    ?r a owl:Restriction ;
+       owl:onProperty ?Property ;
+       owl:allValuesFrom ?HelperClass .
+
+    ?HelperClass owl:equivalentClass ?ec .
+    ?ec owl:unionOf ?list .
+    ?list rdf:rest*/rdf:first ?ExpectedMember .
+  }
+}
