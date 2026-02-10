@@ -1,0 +1,24 @@
+PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
+PREFIX h2hoa:   <https://w3id.org/jochumsson/h2ho-a#>
+PREFIX nyhkb:   <https://w3id.org/jochumsson/nyhkb#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT DISTINCT ?endurant ?hsRole ?hazard ?hazardComment WHERE {
+
+  # 1) Endurants located in the technical room (location)
+  ?endurant h2hoa:locatedIn nyhkb:TechnicalRoom .
+
+  # 2) Endurants carry hazard source roles
+  ?endurant ho61508:carries ?hsRole .
+
+  # 3) Hazards that inhere in those roles
+  ?hazard ho61508:inheresIn ?hsRole .
+
+  # 3b) Ensure hazard is (directly or indirectly) a ho61508:Hazard
+  ?hazard a ?hazardType .
+  ?hazardType rdfs:subClassOf* ho61508:Hazard .
+
+  OPTIONAL { ?hazard rdfs:comment ?hazardComment . }
+}
+ORDER BY ?endurant ?hsRole ?hazard
+
