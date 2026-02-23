@@ -946,15 +946,12 @@ h2hoa:triggeredBy a owl:ObjectProperty ;
   rdfs:range  ho61508:HazardousEvent ;
   rdfs:comment "Application-layer convenience inverse of ho61508:triggers for hazard-centric querying once event instances exist." .
 
-h2ho:Ignition
+h2ho:FlammabilityHazard
   rdfs:subClassOf [
     a owl:Restriction ;
-    rdfs:comment """
-DL: Ignition ⊑ ∀ ho61508:triggers.FlammabilityHazard
-If an ignition event is asserted to trigger a hazard, that hazard must be a FlammabilityHazard.
-""" ;
-    owl:onProperty ho61508:triggers ;
-    owl:allValuesFrom h2ho:FlammabilityHazard
+    owl:onProperty h2hoa:triggeredBy ;
+    owl:allValuesFrom h2ho:Ignition ;
+    rdfs:comment "DL: FlammabilityHazard ⊑ ∀ triggeredBy.Ignition"
   ] .
 
 h2hoa:ElectricalFailure

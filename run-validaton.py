@@ -3,9 +3,10 @@ import argparse
 import os
 import subprocess
 import sys
+from typing import List
 
 
-def run_capture(cmd, label: str) -> subprocess.CompletedProcess:
+def run_capture(cmd: List[str], label: str) -> subprocess.CompletedProcess:
     print(f"\n--- {label} ---")
     print(" ".join(cmd))
     cp = subprocess.run(cmd, capture_output=True, text=True)
@@ -14,12 +15,13 @@ def run_capture(cmd, label: str) -> subprocess.CompletedProcess:
     return cp
 
 
-def run(cmd, label: str) -> None:
+def run_or_die(cmd: List[str], label: str) -> subprocess.CompletedProcess:
     cp = run_capture(cmd, label)
     if cp.stdout.strip():
         print(cp.stdout)
     if cp.returncode != 0:
         sys.exit(cp.returncode)
+    return cp
 
 
 def require_file(path: str, label: str) -> None:
@@ -31,10 +33,12 @@ def require_file(path: str, label: str) -> None:
 def main() -> None:
     p = argparse.ArgumentParser(
         description=(
-            "Merge TBox + ABox, reason with ROBOT/HermiT, "
-            "and run a SPARQL report query (results printed to stdout)."
+            "Validate H2HO knowledge base: merge TBox + ABox, "
+            "reason with ROBOT/HermiT, and run a SPARQL query."
         )
     )
+
+    # --- Stable defaults (your canonical setup) ---
 
     p.add_argument(
         "--robot",
@@ -44,12 +48,12 @@ def main() -> None:
     p.add_argument(
         "--reasoner",
         default="hermit",
-        help="Reasoner to use with ROBOT (default: hermit)",
+        help="Reasoner to use (default: hermit)",
     )
     p.add_argument(
         "--tbox",
-        default="ho61508-h2ho-inferred.ttl",
-        help="TBox ontology file (default: ho61508-h2ho-inferred.ttl)",
+        default="h2ho-a.ttl",
+        help="TBox ontology file (default: h2ho-a.ttl)",
     )
     p.add_argument(
         "--abox",
@@ -59,86 +63,115 @@ def main() -> None:
     p.add_argument(
         "--query",
         required=True,
-        help="SPARQL query file (SELECT query recommended)",
+        help="SPARQL SELECT query file",
     )
-    p.add_argument(
-        "--workdir",
-        default=".",
-        help="Directory for intermediate outputs (default: .)",
-    )
+
+    # --- Outputs ---
+
     p.add_argument(
         "--merged-out",
         default="kb-merged.ttl",
-        help="Merged TBox+ABox output file (default: kb-merged.ttl)",
+        help="Merged ontology output (default: kb-merged.ttl)",
     )
     p.add_argument(
         "--inferred-out",
         default="kb-inferred.ttl",
-        help="Reasoned output file (default: kb-inferred.ttl)",
+        help="Reasoned ontology output (default: kb-inferred.ttl)",
     )
+    p.add_argument(
+        "--explain-md",
+        default="kb-inconsistency.md",
+        help="Markdown inconsistency explanation (default: kb-inconsistency.md)",
+    )
+    p.add_argument(
+        "--explain-owl",
+        default="kb-inconsistency.ttl",
+        help="OWL inconsistency explanation (default: kb-inconsistency.ttl)",
+    )
+
     p.add_argument(
         "--skip-reasoning",
         action="store_true",
-        help="Skip reasoning step (query runs on merged graph)",
+        help="Skip reasoning (query runs on merged graph)",
     )
 
     args = p.parse_args()
 
+    # --- Sanity checks ---
+
     require_file(args.robot, "robot.jar")
-    require_file(args.tbox, "TBox file")
-    require_file(args.abox, "ABox file")
-    require_file(args.query, "SPARQL query file")
+    require_file(args.tbox, "TBox")
+    require_file(args.abox, "ABox")
+    require_file(args.query, "SPARQL query")
 
-    merged_path = os.path.join(args.workdir, args.merged_out)
-    inferred_path = os.path.join(args.workdir, args.inferred_out)
+    # --- Merge TBox + ABox ---
 
-    # 1) Merge TBox + ABox
-    run(
-        [
-            "java", "-jar", args.robot,
-            "merge",
-            "--input", args.tbox,
-            "--input", args.abox,
-            "--output", merged_path,
-        ],
-        "MERGE (TBOX + ABOX)",
-    )
+    merged_cmd = [
+        "java", "-jar", args.robot,
+        "merge",
+        "--input", args.tbox,
+        "--input", args.abox,
+        "--output", args.merged_out,
+    ]
+    run_or_die(merged_cmd, "MERGE (TBOX + ABOX)")
 
-    # 2) Reason (materialise inferred types)
-    target = merged_path
+    target = args.merged_out
+
+    # --- Reasoning (Protégé-equivalent materialization) ---
+
     if not args.skip_reasoning:
-        run(
-            [
-                "java", "-jar", args.robot,
-                "reason",
-                "--input", merged_path,
-                "--reasoner", args.reasoner,
-                "--output", inferred_path,
-            ],
-            f"REASON ({args.reasoner})",
-        )
-        target = inferred_path
-    else:
-        print("\n--- SKIPPING REASONING (query runs on merged graph) ---")
-
-    # 3) Run SPARQL report query (print results to stdout)
-    cp = run_capture(
-        [
+        reason_cmd = [
             "java", "-jar", args.robot,
-            "query",
-            "--input", target,
-            "--query", args.query,
-        ],
-        f"QUERY (REPORT): {os.path.basename(args.query)}",
-    )
+            "reason",
+            "--input", args.merged_out,
+            "--reasoner", args.reasoner,
+            "--axiom-generators",
+            "ClassAssertion", "PropertyAssertion",
+            "--output", args.inferred_out,
+        ]
 
-    if cp.stdout.strip():
-        print(cp.stdout)
+        cp = run_capture(reason_cmd, f"REASON ({args.reasoner})")
 
-    if cp.returncode != 0:
-        sys.exit(cp.returncode)
+        if cp.returncode != 0:
+            if "inconsistent" in (cp.stderr or "").lower():
+                print("\nOntology inconsistent. Generating explanation…", file=sys.stderr)
 
-    print("\n✅ QUERY EXECUTED")
+                explain_cmd = [
+                    "java", "-jar", args.robot,
+                    "explain",
+                    "--input", args.merged_out,
+                    "--reasoner", args.reasoner,
+                    "-M", "inconsistency",
+                    "--explanation", args.explain_md,
+                    "--output", args.explain_owl,
+                ]
+                run_capture(explain_cmd, "EXPLAIN (INCONSISTENCY)")
+
+            sys.exit(cp.returncode)
+
+        if cp.stdout.strip():
+            print(cp.stdout)
+
+        target = args.inferred_out
+    else:
+        print("\n--- SKIPPING REASONING ---")
+
+    # --- Run SPARQL query ---
+
+    query_cmd = [
+        "java", "-jar", args.robot,
+        "query",
+        "--input", target,
+        "--query", args.query,
+    ]
+
+    cpq = run_capture(query_cmd, "QUERY")
+    if cpq.stdout.strip():
+        print(cpq.stdout)
+    if cpq.returncode != 0:
+        sys.exit(cpq.returncode)
+
+    print("\n✅ VALIDATION COMPLETE")
 
 
 if __name__ == "__main__":

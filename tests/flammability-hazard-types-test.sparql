@@ -1,0 +1,17 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+PREFIX h2ho: <https://w3id.org/jochumsson/h2ho#> 
+PREFIX h2hoa: <https://w3id.org/jochumsson/h2ho-a#> 
+
+SELECT ( "Invalid subtype." AS ?violation ) ?SubType
+WHERE {
+  ?SubType rdfs:subClassOf h2ho:FlammabilityHazard .
+  FILTER NOT EXISTS { 
+    VALUES ?SubType {
+      h2hoa:JetFireHazard 
+      h2hoa:FireballHazard
+      h2hoa:PoolFireHazard 
+      h2hoa:DeflagrationHazard
+      h2hoa:DetonationHazard
+    } 
+  } 
+}

@@ -1,0 +1,19 @@
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>  
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#> 
+PREFIX h2ho: <https://w3id.org/jochumsson/h2ho#> 
+PREFIX h2hoa: <https://w3id.org/jochumsson/h2ho-a#> 
+
+SELECT ( "Missing restriction for triggeredBy property on FlammabilityHazard." AS ?violation )
+WHERE {
+  VALUES (?HazardClass ?Property ?EventClass) {
+    (h2ho:FlammabilityHazard h2hoa:triggeredBy h2ho:Ignition)
+  }
+  FILTER NOT EXISTS {
+    ?HazardClass rdfs:subClassOf ?r .
+    ?r a owl:Restriction ;
+       owl:onProperty ?Property ;
+       owl:allValuesFrom ?EventClass .
+  } 
+}
