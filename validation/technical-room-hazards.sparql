@@ -9,7 +9,7 @@ SELECT DISTINCT ?endurant ?hsRole ?hazard ?hazardComment WHERE {
   ?endurant h2hoa:locatedIn nyhkb:TechnicalRoom .
 
   # 2) Endurants carry hazard source roles
-  ?endurant ho61508:carries ?hsRole .
+  ?endurant h2hoa:carries ?hsRole .
 
   # 3) Hazards that inhere in those roles
   ?hazard ho61508:inheresIn ?hsRole .

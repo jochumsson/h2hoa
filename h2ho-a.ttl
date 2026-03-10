@@ -139,6 +139,13 @@ h2hoa:DetonationHazard a owl:Class ;
 # ho61508:HazardSource role
 #################################################################
 
+### carries, inverse of carriedBy
+h2hoa:carries a owl:ObjectProperty ;
+    owl:inverseOf ho61508:carriedBy ;
+    rdfs:domain gufo:Endurant ;
+    rdfs:range ho61508:HazardSource ;
+    rdfs:comment "Relates an endurant to the HazardSource role it carries." .
+
 h2hoa:H2Location a owl:Class ;
   rdfs:subClassOf gufo:SpaceRegion ;
   rdfs:comment "Physical location or facility region where hydrogen is produced, handled, stored, or distributed." .
@@ -855,7 +862,7 @@ h2hoa:StorageVessel
 Every StorageVessel carries at least one StorageVesselHazardSource role.
 DL: StorageVessel ⊑ ∃ carries.StorageVesselHazardSource
 """ ;
-      owl:onProperty ho61508:carries ;
+      owl:onProperty h2hoa:carries ;
       owl:someValuesFrom h2ho:StorageVesselHazardSource
     ] ,
     [
@@ -864,7 +871,7 @@ DL: StorageVessel ⊑ ∃ carries.StorageVesselHazardSource
 A StorageVessel may carry only StorageVesselHazardSource roles.
 DL: StorageVessel ⊑ ∀ carries.StorageVesselHazardSource
 """ ;
-      owl:onProperty ho61508:carries ;
+      owl:onProperty h2hoa:carries ;
       owl:allValuesFrom h2ho:StorageVesselHazardSource
     ] .
 
@@ -877,7 +884,7 @@ h2hoa:Piping
 Piping endurants carry at least one PipingHazardSource role.
 DL: Piping ⊑ ∃ carries.PipingHazardSource
 """ ;
-      owl:onProperty ho61508:carries ;
+      owl:onProperty h2hoa:carries ;
       owl:someValuesFrom h2ho:PipingHazardSource
     ] ,
     [
@@ -886,7 +893,7 @@ DL: Piping ⊑ ∃ carries.PipingHazardSource
 Piping endurants may carry only PipingHazardSource roles.
 DL: Piping ⊑ ∀ carries.PipingHazardSource
 """ ;
-      owl:onProperty ho61508:carries ;
+      owl:onProperty h2hoa:carries ;
       owl:allValuesFrom h2ho:PipingHazardSource
     ] .
 
@@ -899,7 +906,7 @@ h2hoa:ProcessEquipment
 ProcessEquipment endurants carry at least one ProcessEquipmentHazardSource role.
 DL: ProcessEquipment ⊑ ∃ carries.ProcessEquipmentHazardSource
 """ ;
-      owl:onProperty ho61508:carries ;
+      owl:onProperty h2hoa:carries ;
       owl:someValuesFrom h2ho:ProcessEquipmentHazardSource
     ] ,
     [
@@ -908,7 +915,7 @@ DL: ProcessEquipment ⊑ ∃ carries.ProcessEquipmentHazardSource
 ProcessEquipment endurants may carry only ProcessEquipmentHazardSource roles.
 DL: ProcessEquipment ⊑ ∀ carries.ProcessEquipmentHazardSource
 """ ;
-      owl:onProperty ho61508:carries ;
+      owl:onProperty h2hoa:carries ;
       owl:allValuesFrom h2ho:ProcessEquipmentHazardSource
     ] .
 
@@ -921,7 +928,7 @@ h2hoa:EnvironmentalConfinement
 EnvironmentalConfinement endurants carry at least one EnvironmentalConfinementHazardSource role.
 DL: EnvironmentalConfinement ⊑ ∃ carries.EnvironmentalConfinementHazardSource
 """ ;
-      owl:onProperty ho61508:carries ;
+      owl:onProperty h2hoa:carries ;
       owl:someValuesFrom h2ho:EnvironmentalConfinementHazardSource
     ] ,
     [
@@ -930,7 +937,7 @@ DL: EnvironmentalConfinement ⊑ ∃ carries.EnvironmentalConfinementHazardSourc
 EnvironmentalConfinement endurants may carry only EnvironmentalConfinementHazardSource roles.
 DL: EnvironmentalConfinement ⊑ ∀ carries.EnvironmentalConfinementHazardSource
 """ ;
-      owl:onProperty ho61508:carries ;
+      owl:onProperty h2hoa:carries ;
       owl:allValuesFrom h2ho:EnvironmentalConfinementHazardSource
     ] .
 

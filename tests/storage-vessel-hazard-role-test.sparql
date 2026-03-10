@@ -12,7 +12,7 @@ WHERE {
       (COUNT(DISTINCT ?allR)  AS ?allCnt)
     WHERE {
       VALUES (?Endurant ?Property ?Role) {
-        (h2hoa:StorageVessel ho61508:carries h2ho:StorageVesselHazardSource)
+        (h2hoa:StorageVessel h2hoa:carries h2ho:StorageVesselHazardSource)
       }
 
       OPTIONAL {

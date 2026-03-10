@@ -52,58 +52,58 @@ nyhkb:ExternalBuildingStorageRoom a h2hoa:H2Location ;
 nyhkb:TechnicalRoomConfinement01 a h2hoa:EnvironmentalConfinement ;
   rdfs:comment "Technical room confinement (teknikutrymmets omfattning), representing a confined space where H2 is produced/handled." ;
   h2hoa:locatedIn nyhkb:TechnicalRoom ;
-  ho61508:carries nyhkb:TechnicalRoomConfinementHazardSource01 .
+  h2hoa:carries nyhkb:TechnicalRoomConfinementHazardSource01 .
 
 nyhkb:Electrolyser01 a h2hoa:ProcessEquipment ;
   rdfs:comment "Electrolyser unit." ;
   h2hoa:locatedIn nyhkb:TechnicalRoom ;
-  ho61508:carries nyhkb:ElectrolyserHazardSource01 .
+  h2hoa:carries nyhkb:ElectrolyserHazardSource01 .
 
 nyhkb:FuelCell01 a h2hoa:ProcessEquipment ;
   rdfs:comment "Fuel cell unit." ;
   h2hoa:locatedIn nyhkb:TechnicalRoom ;
-  ho61508:carries nyhkb:FuelCellHazardSource01 .
+  h2hoa:carries nyhkb:FuelCellHazardSource01 .
 
 nyhkb:BatteryStorage01 a h2hoa:BatteryStorage ;
   rdfs:comment "Battery storage unit." ;
   h2hoa:locatedIn nyhkb:TechnicalRoom ;
-  ho61508:carries nyhkb:BatteryStorageHazardSource01 .
+  h2hoa:carries nyhkb:BatteryStorageHazardSource01 .
 
 nyhkb:Inverter01 a h2hoa:Inverter ;
   rdfs:comment "Inverter unit." ;
   h2hoa:locatedIn nyhkb:TechnicalRoom ;
-  ho61508:carries nyhkb:InverterHazardSource01 .
+  h2hoa:carries nyhkb:InverterHazardSource01 .
   
 # 5.2 - Piping between areas (rörledningar)
 nyhkb:Piping01 a h2hoa:Piping ;
   rdfs:comment "Hydrogen piping run between technical room and external building, includes above-ground and culvert segments." ;
   h2hoa:locatedIn nyhkb:PipelineCorridor ;
-  ho61508:carries nyhkb:PipingHazardSource01 .
+  h2hoa:carries nyhkb:PipingHazardSource01 .
 
 nyhkb:Culvert01 a h2hoa:EnvironmentalConfinement ;
   rdfs:comment "Underground culvert connecting the main and the external building, representing a confined space with potential for gas accumulation." ;
   h2hoa:locatedIn nyhkb:PipelineCorridor ;
-  ho61508:carries nyhkb:CulvertConfinementHazardSource01 .
+  h2hoa:carries nyhkb:CulvertConfinementHazardSource01 .
 
 # 5.3 - External building, including buffer tank, compressor, storage tank, etc (utvändig byggnad)
 nyhkb:ExternalBuildingConfinement01 a h2hoa:EnvironmentalConfinement ;
   rdfs:comment "External building area, representing a confined space with potential for gas accumulation." ;
   h2hoa:locatedIn nyhkb:ExternalBuildingUtilityRoom ;
-  ho61508:carries nyhkb:ExternalBuildingConfinementHazardSource01 .
+  h2hoa:carries nyhkb:ExternalBuildingConfinementHazardSource01 .
 nyhkb:Compressor01 a h2hoa:ProcessEquipment ;
   rdfs:comment "Hydrogen compressor raising pressure from ~35 bar to ~350 bar." ;
   h2hoa:locatedIn nyhkb:ExternalBuildingUtilityRoom ;
-  ho61508:carries nyhkb:CompressorHazardSource01 .
+  h2hoa:carries nyhkb:CompressorHazardSource01 .
 
 nyhkb:HydrogenBufferStorage01 a h2hoa:StorageVessel ;
   rdfs:comment "Separate smaller H2 cylinder (~5 L) used as buffer supply classified as pressure vessel up to 200 bar." ;
   h2hoa:locatedIn nyhkb:ExternalBuildingUtilityRoom ;
-  ho61508:carries nyhkb:BufferStorageHazardSource01 .
+  h2hoa:carries nyhkb:BufferStorageHazardSource01 .
 
 nyhkb:HighPressureH2Storage01 a h2hoa:HighPressureH2Storage ;
   rdfs:comment "High pressure H2 storage Emue tank. Classified as pressure vessel classified up to 350 bar." ;
   h2hoa:locatedIn nyhkb:ExternalBuildingStorageRoom ;
-  ho61508:carries nyhkb:HighPressureH2StorageHazardSource01 .
+  h2hoa:carries nyhkb:HighPressureH2StorageHazardSource01 .
 
 #################################################################
 # Exposable endurants (bearers that can be affected)
