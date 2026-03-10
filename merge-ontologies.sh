@@ -3,7 +3,7 @@
 # Input files
 HO=../ho61508/ho61508.ttl
 H2HO=../ho61508/h2ho.ttl
-H2HOA=h2ho-a.ttl
+H2HOA=h2hoa.ttl
 
 # Output
 OUT=ho61508-h2ho-merged.ttl
