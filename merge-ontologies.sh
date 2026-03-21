@@ -43,7 +43,7 @@ fi
 # 5. Append restrictions WITHOUT HEADER
 ############################################################
 # Same logic: remove everything before the first real triple
-sed -n '/^# H2HO-A - start of the ontology/,$p' "$H2HOA" >> "$OUT"
+sed -n '/^# H2HOA - start of the ontology/,$p' "$H2HOA" >> "$OUT"
 
 echo ""
 echo "Done. Output written to $OUT"

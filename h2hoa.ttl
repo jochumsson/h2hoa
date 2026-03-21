@@ -28,7 +28,7 @@
   dcterms:modified "2026-01-29"^^xsd:date .
 
 #################################################################
-# H2HO-A - start of the ontology marker
+# H2HOA - start of the ontology marker
 # For automatic merging and parsing purposes
 #################################################################
 
@@ -39,8 +39,9 @@
 # the conceptual H2HO ontology described in the paper "A Hazard
 # Ontology Based on IEC 61508", but are added at a later stage during
 # application ontology development and knowledge base construction,
-# as discussed in the paper: "An Ontological Representation of Hazard
-# Analysis for a Hydrogen Energy Site Based on IEC61508".
+# as discussed in the paper: "An Ontological Approach for Hazard 
+# Analysis Representation Aligned with IEC61508: A Hydrogen System 
+# Case Study".
 #
 # These rules belong to the application layer: scenario modelling,
 # causal sequence construction, and hazard analysis.
@@ -139,30 +140,44 @@ h2hoa:DetonationHazard a owl:Class ;
 # ho61508:HazardSource role
 #################################################################
 
-### carries, inverse of carriedBy
-h2hoa:carries a owl:ObjectProperty ;
-    owl:inverseOf ho61508:carriedBy ;
-    rdfs:domain gufo:Endurant ;
-    rdfs:range ho61508:HazardSource ;
-    rdfs:comment "Relates an endurant to the HazardSource role it carries." .
+h2hoa:HazardSourceEndurant a owl:Class ;
+  rdfs:subClassOf gufo:Endurant ;
+  rdfs:comment "Structural abstraction for entity types whose instances carry the ho61508:HazardSource role within the contextual representation." .
 
-h2hoa:H2Location a owl:Class ;
+h2hoa:hasPartHazardSourceEndurant a owl:ObjectProperty ;
+  rdfs:domain h2hoa:HazardSourceEndurant ;
+  rdfs:range h2hoa:HazardSourceEndurant ;
+  rdfs:comment "Relates a HazardSourceEndurant to another HazardSourceEndurant that forms part of it." .
+
+h2hoa:partOfHazardSourceEndurant a owl:ObjectProperty ;
+  owl:inverseOf h2hoa:hasPartHazardSourceEndurant ;
+  rdfs:domain h2hoa:HazardSourceEndurant ;
+  rdfs:range h2hoa:HazardSourceEndurant ;
+  rdfs:comment "Inverse of hasPartHazardSourceEndurant." .
+
+h2hoa:carries a owl:ObjectProperty ;
+  owl:inverseOf ho61508:carriedBy ;
+  rdfs:domain gufo:Endurant ;
+  rdfs:range ho61508:HazardSource ;
+  rdfs:comment "Relates an endurant to the HazardSource role it carries." .
+
+h2hoa:PhysicalLocation a owl:Class ;
   rdfs:subClassOf gufo:SpaceRegion ;
   rdfs:comment "Physical location or facility region where hydrogen is produced, handled, stored, or distributed." .
 
 h2hoa:locatedIn a owl:ObjectProperty ;
   rdfs:domain gufo:Endurant ;
-  rdfs:range  h2hoa:H2Location ;
-  rdfs:comment "Relates an endurant (typically equipment, piping, or enclosure) to the physical H2Location where it is situated." .
+  rdfs:range h2hoa:PhysicalLocation ;
+  rdfs:comment "Relates an endurant to the PhysicalLocation where it is situated." .
 
 h2hoa:hasLocatedEndurant a owl:ObjectProperty ;
   owl:inverseOf h2hoa:locatedIn ;
-  rdfs:domain h2hoa:H2Location ;
-  rdfs:range  gufo:Endurant ;
-  rdfs:comment "Inverse of locatedIn. Lists endurants located in an H2Location." .
+  rdfs:domain h2hoa:PhysicalLocation ;
+  rdfs:range gufo:Endurant ;
+  rdfs:comment "Inverse of locatedIn. Lists endurants located in a PhysicalLocation." .
 
 h2hoa:StorageVessel a owl:Class ;
-  rdfs:subClassOf gufo:Endurant ;
+  rdfs:subClassOf h2hoa:HazardSourceEndurant ;
   rdfs:comment "Component or system whose main function is to store hydrogen or related media (gas or liquid)." .
 
 h2hoa:LH2Storage a owl:Class ;
@@ -174,11 +189,11 @@ h2hoa:HighPressureH2Storage a owl:Class ;
   rdfs:comment "Storage vessel containing hydrogen at elevated pressure." .
 
 h2hoa:Piping a owl:Class ;
-  rdfs:subClassOf gufo:Endurant ;
+  rdfs:subClassOf h2hoa:HazardSourceEndurant ;
   rdfs:comment "Piping or pipework used to transport hydrogen between system components." .
 
 h2hoa:ProcessEquipment a owl:Class ;
-  rdfs:subClassOf gufo:Endurant ;
+  rdfs:subClassOf h2hoa:HazardSourceEndurant ;
   rdfs:comment "Equipment that processes, conditions, or uses hydrogen (for example, compressors, valves, reformers, and fuel cells)." .
 
 h2hoa:Valve a owl:Class ;
@@ -187,24 +202,22 @@ h2hoa:Valve a owl:Class ;
 
 h2hoa:Electrolyser a owl:Class ;
   rdfs:subClassOf h2hoa:ProcessEquipment ;
-  rdfs:comment "Equipment that produces hydrogen through electrolysis. It can play the role ho61508:HazardSource when participating in accident scenarios." .
+  rdfs:comment "Equipment that produces hydrogen through electrolysis. It can carry the ho61508:HazardSource role when participating in accident scenarios." .
 
 h2hoa:FuelCell a owl:Class ;
   rdfs:subClassOf h2hoa:ProcessEquipment ;
-  rdfs:comment "Equipment that converts hydrogen into electricity. It can play the role ho61508:HazardSource when participating in accident scenarios." .
+  rdfs:comment "Equipment that converts hydrogen into electricity. It can carry the ho61508:HazardSource role when participating in accident scenarios." .
 
-h2hoa:BatteryStorage
-  a owl:Class ;
+h2hoa:BatteryStorage a owl:Class ;
   rdfs:subClassOf h2hoa:ProcessEquipment ;
   rdfs:comment "Battery energy storage system (BESS), including cells, modules, BMS, and enclosure." .
 
-h2hoa:Inverter
-  a owl:Class ;
+h2hoa:Inverter a owl:Class ;
   rdfs:subClassOf h2hoa:ProcessEquipment ;
   rdfs:comment "Inverter unit." .
 
 h2hoa:EnvironmentalConfinement a owl:Class ;
-  rdfs:subClassOf gufo:Endurant ;
+  rdfs:subClassOf h2hoa:HazardSourceEndurant ;
   rdfs:comment "Structures or surroundings that confine hydrogen or combustion products, such as buildings, enclosures, or congested layouts." .
 
 #################################################################
