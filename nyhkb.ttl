@@ -22,7 +22,7 @@
   dcterms:contributor "Mehrdad Saadatmand" ;
   dcterms:contributor "Kristina Lundqvist" ;
   dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
- # owl:imports <https://w3id.org/jochumsson/h2hoa> ;
+  owl:imports <https://w3id.org/jochumsson/h2hoa> ;
   owl:versionInfo "0.2.0" ;
   dcterms:issued "2026-02-03"^^xsd:date .
 
