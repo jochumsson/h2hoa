@@ -35,7 +35,7 @@ echo "" >> "$OUT"
 # 4. Ensure h2ho prefix is present
 ############################################################
 if ! grep -q "^@prefix h2hoa:" "$HO"; then
-    echo "@prefix h2hoa: <https://w3id.org/jochumsson/h2ho-a#> ." >> "$OUT"
+    echo "@prefix h2hoa: <https://w3id.org/jochumsson/h2hoa#> ." >> "$OUT"
     echo "" >> "$OUT"
 fi
 

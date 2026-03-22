@@ -1,0 +1,23 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
+PREFIX h2hoa: <https://w3id.org/jochumsson/h2hoa#>
+
+SELECT ?hazard ?event ?situation
+WHERE {
+  # Hazard triggered by hazardous event
+  ?hazard h2hoa:triggeredBy ?event .
+
+  # Hazard manifests in hazardous situation
+  OPTIONAL {
+    ?hazard ho61508:manifestsIn ?situation .
+  }
+
+  # Conceptual typing (robust via subclass hierarchy)
+  ?hazard rdf:type/rdfs:subClassOf* ho61508:Hazard .
+  ?event rdf:type/rdfs:subClassOf* ho61508:HazardousEvent .
+
+  OPTIONAL {
+    ?situation rdf:type/rdfs:subClassOf* ho61508:HazardousSituation .
+  }
+}

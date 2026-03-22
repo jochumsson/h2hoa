@@ -1,0 +1,6 @@
+PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
+
+SELECT ?event ?hazard
+WHERE {
+  ?event ho61508:triggers ?hazard .
+}

@@ -1,6 +1,6 @@
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix h2ho: <https://w3id.org/jochumsson/h2ho#> .
-@prefix h2hoa: <https://w3id.org/jochumsson/h2ho-a#> .
+@prefix h2hoa: <https://w3id.org/jochumsson/h2hoa#> .
 @prefix ho61508: <https://w3id.org/jochumsson/ho61508#> .
 @prefix nyhkb: <https://w3id.org/jochumsson/nyhkb#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
@@ -9,57 +9,55 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 #################################################################
-# KB: Nykvarn risk analysis instance base (Bilaga E)
-# Scope: Teknikutrymme, Rörledningar, Utvändig byggnad
-#
-# NYHKB uses a consistent local-name convention for individual instances
-# to support traceability, readability, and alignment with the underlying
-# risk analysis documentations.
+# KB: Nykvarn hazard analysis knowledge base
+# Scope: teknikutrymme, rorledningar, utvandig byggnad
 #################################################################
 
 <https://w3id.org/jochumsson/nyhkb>
   a owl:Ontology ;
-  dcterms:title "Nykvarn Hazard Analysis Knowledge Base (NYHKB"@en ;
-  rdfs:comment "Knowledge base for Nykvarn hazard analysis scenarios, built on H2HO-A application ontology."@en ;
+  dcterms:title "Nykvarn Hazard Analysis Knowledge Base (NYHKB)"@en ;
+  rdfs:comment "Knowledge base for Nykvarn hazard analysis scenarios, built on the H2HOA application ontology."@en ;
   dcterms:creator "Thorvaldur Jochumsson" ;
   dcterms:contributor "Kaj Hänninen" ;
   dcterms:contributor "Mehrdad Saadatmand" ;
   dcterms:contributor "Kristina Lundqvist" ;
   dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
-#  owl:imports <https://w3id.org/jochumsson/h2ho-a> ;
-  dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
+ # owl:imports <https://w3id.org/jochumsson/h2hoa> ;
   owl:versionInfo "0.2.0" ;
   dcterms:issued "2026-02-03"^^xsd:date .
 
 #################################################################
-# Endurants: facilities and objects 
+# Physical locations
 #################################################################
 
-# 5 - Physical locations and equipment (fysiska platser och utrustning)
-nyhkb:TechnicalRoom a h2hoa:H2Location ;
+nyhkb:TechnicalRoom a h2hoa:PhysicalLocation ;
   rdfs:comment "Technical room (teknikutrymme), physical location for equipment where hydrogen is produced and used." .
 
-nyhkb:PipelineCorridor a h2hoa:H2Location ; 
-  rdfs:comment "Physical corridor where piping runs between technical room and external building, including above ground segments." .
+nyhkb:PipelineCorridor a h2hoa:PhysicalLocation ;
+  rdfs:comment "Physical corridor where piping runs between technical room and external building, including above-ground segments." .
 
-nyhkb:ExternalBuildingUtilityRoom a h2hoa:H2Location ; 
-  rdfs:comment "External building, housing compressor, pressure release equipment, manifold and other related system components." .
+nyhkb:ExternalBuildingUtilityRoom a h2hoa:PhysicalLocation ;
+  rdfs:comment "External building utility room, housing compressor, pressure release equipment, manifold and other related system components." .
 
-nyhkb:ExternalBuildingStorageRoom a h2hoa:H2Location ; 
-  rdfs:comment "External building, housing the main hydrogen storage vessels and related system and safety components." .
+nyhkb:ExternalBuildingStorageRoom a h2hoa:PhysicalLocation ;
+  rdfs:comment "External building storage room, housing the main hydrogen storage vessels and related system and safety components." .
 
-# 5.1 - Technical room (teknikutrymme)
+#################################################################
+# HazardSource contexts
+#################################################################
+
+# Technical room
 nyhkb:TechnicalRoomConfinement01 a h2hoa:EnvironmentalConfinement ;
-  rdfs:comment "Technical room confinement (teknikutrymmets omfattning), representing a confined space where H2 is produced/handled." ;
+  rdfs:comment "Technical room confinement, representing a confined space where hydrogen is produced and handled." ;
   h2hoa:locatedIn nyhkb:TechnicalRoom ;
   h2hoa:carries nyhkb:TechnicalRoomConfinementHazardSource01 .
 
-nyhkb:Electrolyser01 a h2hoa:ProcessEquipment ;
+nyhkb:Electrolyser01 a h2hoa:Electrolyser ;
   rdfs:comment "Electrolyser unit." ;
   h2hoa:locatedIn nyhkb:TechnicalRoom ;
   h2hoa:carries nyhkb:ElectrolyserHazardSource01 .
 
-nyhkb:FuelCell01 a h2hoa:ProcessEquipment ;
+nyhkb:FuelCell01 a h2hoa:FuelCell ;
   rdfs:comment "Fuel cell unit." ;
   h2hoa:locatedIn nyhkb:TechnicalRoom ;
   h2hoa:carries nyhkb:FuelCellHazardSource01 .
@@ -73,151 +71,136 @@ nyhkb:Inverter01 a h2hoa:Inverter ;
   rdfs:comment "Inverter unit." ;
   h2hoa:locatedIn nyhkb:TechnicalRoom ;
   h2hoa:carries nyhkb:InverterHazardSource01 .
-  
-# 5.2 - Piping between areas (rörledningar)
+
+# Piping between areas
 nyhkb:Piping01 a h2hoa:Piping ;
-  rdfs:comment "Hydrogen piping run between technical room and external building, includes above-ground and culvert segments." ;
+  rdfs:comment "Hydrogen piping run between technical room and external building, including above-ground and culvert segments." ;
   h2hoa:locatedIn nyhkb:PipelineCorridor ;
   h2hoa:carries nyhkb:PipingHazardSource01 .
 
 nyhkb:Culvert01 a h2hoa:EnvironmentalConfinement ;
-  rdfs:comment "Underground culvert connecting the main and the external building, representing a confined space with potential for gas accumulation." ;
+  rdfs:comment "Underground culvert connecting the main and external building, representing a confined space with potential for gas accumulation." ;
   h2hoa:locatedIn nyhkb:PipelineCorridor ;
   h2hoa:carries nyhkb:CulvertConfinementHazardSource01 .
 
-# 5.3 - External building, including buffer tank, compressor, storage tank, etc (utvändig byggnad)
+# External building
 nyhkb:ExternalBuildingConfinement01 a h2hoa:EnvironmentalConfinement ;
   rdfs:comment "External building area, representing a confined space with potential for gas accumulation." ;
   h2hoa:locatedIn nyhkb:ExternalBuildingUtilityRoom ;
   h2hoa:carries nyhkb:ExternalBuildingConfinementHazardSource01 .
+
 nyhkb:Compressor01 a h2hoa:ProcessEquipment ;
-  rdfs:comment "Hydrogen compressor raising pressure from ~35 bar to ~350 bar." ;
+  rdfs:comment "Hydrogen compressor raising pressure from approximately 35 bar to approximately 350 bar." ;
   h2hoa:locatedIn nyhkb:ExternalBuildingUtilityRoom ;
   h2hoa:carries nyhkb:CompressorHazardSource01 .
 
 nyhkb:HydrogenBufferStorage01 a h2hoa:StorageVessel ;
-  rdfs:comment "Separate smaller H2 cylinder (~5 L) used as buffer supply classified as pressure vessel up to 200 bar." ;
+  rdfs:comment "Separate smaller hydrogen cylinder used as buffer supply, classified as pressure vessel up to 200 bar." ;
   h2hoa:locatedIn nyhkb:ExternalBuildingUtilityRoom ;
   h2hoa:carries nyhkb:BufferStorageHazardSource01 .
 
 nyhkb:HighPressureH2Storage01 a h2hoa:HighPressureH2Storage ;
-  rdfs:comment "High pressure H2 storage Emue tank. Classified as pressure vessel classified up to 350 bar." ;
+  rdfs:comment "High-pressure hydrogen storage vessel, classified up to 350 bar." ;
   h2hoa:locatedIn nyhkb:ExternalBuildingStorageRoom ;
   h2hoa:carries nyhkb:HighPressureH2StorageHazardSource01 .
 
 #################################################################
-# Exposable endurants (bearers that can be affected)
+# Exposed contexts
 #################################################################
 
-nyhkb:Person01 a h2ho:Person ;
-  rdfs:comment "Person potentially present near the installation (operator/visitor/maintenance)." .
+nyhkb:Person01 a h2hoa:Person ;
+  rdfs:comment "Person potentially present near the installation, such as operator, visitor, or maintenance staff." ;
+  h2hoa:affectedBy nyhkb:ExposedPerson01 .
 
-nyhkb:Property01 a h2ho:Property ;
-  rdfs:comment "Buildings, equipment, and infrastructure that can be damaged." .
+nyhkb:Property01 a h2hoa:Property ;
+  rdfs:comment "Buildings, equipment, and infrastructure that can be damaged." ;
+  h2hoa:affectedBy nyhkb:ExposedProperty01 .
 
-nyhkb:Environment01 a h2ho:Environment ;
-  rdfs:comment "Surrounding environment (air/soil area/animals) potentially impacted." .
+nyhkb:Environment01 a h2hoa:Environment ;
+  rdfs:comment "Surrounding environment, such as air, soil area, and animals, potentially impacted." ;
+  h2hoa:affectedBy nyhkb:ExposedEnvironment01 .
 
 #################################################################
-# Role instances: HazardSource roles, representing roles endurant
-# entities carry as hazard sources
+# HazardSource role instances
 #################################################################
 
 nyhkb:TechnicalRoomConfinementHazardSource01
   a h2ho:EnvironmentalConfinementHazardSource ;
-  rdfs:comment
-    "HazardSource role played by the technical room confinement, representing enclosed volume characteristics that may enable accumulation of flammable hydrogen–air mixtures." .
+  rdfs:comment "HazardSource role played by the technical room confinement, representing enclosed-volume characteristics that may enable accumulation of flammable hydrogen-air mixtures." .
 
 nyhkb:ElectrolyserHazardSource01
   a h2ho:ProcessEquipmentHazardSource ;
-  rdfs:comment
-    "HazardSource role played by electrolyser equipment, representing hydrogen-related hazards associated with electrolysis processes." .
+  rdfs:comment "HazardSource role played by electrolyser equipment, representing hydrogen-related hazards associated with electrolysis processes." .
 
 nyhkb:FuelCellHazardSource01
   a h2ho:ProcessEquipmentHazardSource ;
-  rdfs:comment
-    "HazardSource role played by fuel cell equipment, representing hazards associated with hydrogen handling and electrochemical conversion." .
+  rdfs:comment "HazardSource role played by fuel cell equipment, representing hazards associated with hydrogen handling and electrochemical conversion." .
 
 nyhkb:BatteryStorageHazardSource01
   a h2ho:ProcessEquipmentHazardSource ;
-  rdfs:comment
-    "HazardSource role played by battery storage equipment, representing electrical and thermal hazard contributions that may act as ignition sources in hydrogen-related scenarios." .
+  rdfs:comment "HazardSource role played by battery storage equipment, representing electrical and thermal hazard contributions that may act as ignition sources in hydrogen-related scenarios." .
 
 nyhkb:InverterHazardSource01
   a h2ho:ProcessEquipmentHazardSource ;
-  rdfs:comment
-    "HazardSource role played by inverter equipment, representing electrical and thermal effects that may contribute ignition sources or escalation pathways." .
+  rdfs:comment "HazardSource role played by inverter equipment, representing electrical and thermal effects that may contribute ignition sources or escalation pathways." .
 
 nyhkb:PipingHazardSource01
   a h2ho:PipingHazardSource ;
-  rdfs:comment
-    "HazardSource role played by hydrogen piping, representing hazards associated with pressurised hydrogen transport such as leaks, releases, and jet formation." .
+  rdfs:comment "HazardSource role played by hydrogen piping, representing hazards associated with pressurised hydrogen transport such as leaks, releases, and jet formation." .
 
 nyhkb:CulvertConfinementHazardSource01
   a h2ho:EnvironmentalConfinementHazardSource ;
-  rdfs:comment
-    "HazardSource role played by the culvert confinement, representing a subsurface enclosed volume where hydrogen accumulation may support deflagration scenarios." .
+  rdfs:comment "HazardSource role played by the culvert confinement, representing a subsurface enclosed volume where hydrogen accumulation may support deflagration scenarios." .
 
 nyhkb:ExternalBuildingConfinementHazardSource01
   a h2ho:EnvironmentalConfinementHazardSource ;
-  rdfs:comment
-    "HazardSource role played by the external building confinement, representing enclosure characteristics that may allow accumulation of flammable hydrogen–air mixtures." .
+  rdfs:comment "HazardSource role played by the external building confinement, representing enclosure characteristics that may allow accumulation of flammable hydrogen-air mixtures." .
 
 nyhkb:CompressorHazardSource01
   a h2ho:ProcessEquipmentHazardSource ;
-  rdfs:comment
-    "HazardSource role played by hydrogen compressor equipment, representing hazards associated with high-pressure compression, heat generation, and mechanical failure." .
+  rdfs:comment "HazardSource role played by hydrogen compressor equipment, representing hazards associated with high-pressure compression, heat generation, and mechanical failure." .
 
 nyhkb:BufferStorageHazardSource01
   a h2ho:StorageVesselHazardSource ;
-  rdfs:comment
-    "HazardSource role played by buffer hydrogen storage vessels, representing hazards associated with small-volume pressurised hydrogen storage used for operational buffering." .
+  rdfs:comment "HazardSource role played by buffer hydrogen storage vessel, representing hazards associated with small-volume pressurised hydrogen storage used for operational buffering." .
 
 nyhkb:HighPressureH2StorageHazardSource01
   a h2ho:StorageVesselHazardSource ;
-  rdfs:comment
-    "HazardSource role played by high-pressure hydrogen storage vessels, representing hazards associated with large-volume, high-pressure hydrogen storage and escalation under external stressors." .
-
+  rdfs:comment "HazardSource role played by high-pressure hydrogen storage vessel, representing hazards associated with large-volume, high-pressure hydrogen storage and escalation under external stressors." .
 
 #################################################################
-# Role instances: Exposed roles, representing roles endurant
-# entities carry as exposed to hazards
+# Exposed role instances
 #################################################################
 
-nyhkb:ExposedPerson01 a ho61508:Exposed ;
-  ho61508:affectedBy nyhkb:Person01 .
-
-nyhkb:ExposedProperty01 a ho61508:Exposed ;
-  ho61508:affectedBy nyhkb:Property01 .
-
-nyhkb:ExposedEnvironment01 a ho61508:Exposed ;
-  ho61508:affectedBy nyhkb:Environment01 .
+nyhkb:ExposedPerson01 a h2ho:ExposedPerson .
+nyhkb:ExposedProperty01 a h2ho:ExposedProperty .
+nyhkb:ExposedEnvironment01 a h2ho:ExposedEnvironment .
 
 #################################################################
 # Hazard instances
 #################################################################
 
-# flammability hazard manifestations related to technical room
+# Technical room
 nyhkb:JetFireHazard01
   a h2hoa:JetFireHazard ;
-  rdfs:comment "Jet fire hazard in technical room due to pressurised H2 release and immediate ignition." ;
+  rdfs:comment "Jet fire hazard in technical room due to pressurised hydrogen release and immediate ignition." ;
   ho61508:inheresIn nyhkb:ElectrolyserHazardSource01 .
 
 nyhkb:DeflagrationHazard01
   a h2hoa:DeflagrationHazard ;
-  rdfs:comment "Deflagration hazard in technical room due to accumulation of flammable H2 air mixture in enclosed volume." ;
+  rdfs:comment "Deflagration hazard in technical room due to accumulation of flammable hydrogen-air mixture in enclosed volume." ;
   ho61508:inheresIn nyhkb:TechnicalRoomConfinementHazardSource01 ;
   ho61508:manifestsIn nyhkb:Deflagration01 .
 
 nyhkb:DetonationHazard01
   a h2hoa:DetonationHazard ;
-  rdfs:comment "Detonation hazard in technical room in extreme confinement turbulence conditions." ;
+  rdfs:comment "Detonation hazard in technical room in extreme confinement and turbulence conditions." ;
   ho61508:inheresIn nyhkb:TechnicalRoomConfinementHazardSource01 .
 
-# flammability hazard manifestations related to the pipeline corridor
+# Pipeline corridor
 nyhkb:JetFireHazard02
   a h2hoa:JetFireHazard ;
-  rdfs:comment "Jet fire hazard along piping run due to high pressure release and ignition." ;
+  rdfs:comment "Jet fire hazard along piping run due to high-pressure release and ignition." ;
   ho61508:inheresIn nyhkb:PipingHazardSource01 .
 
 nyhkb:DeflagrationHazard02
@@ -227,14 +210,14 @@ nyhkb:DeflagrationHazard02
 
 nyhkb:FireballHazard01
   a h2hoa:FireballHazard ;
-  rdfs:comment "Fireball hazard due to delayed ignition of dispersed cloud associated witht the piping corridor." ;
+  rdfs:comment "Fireball hazard due to delayed ignition of dispersed cloud associated with the piping corridor." ;
   ho61508:inheresIn nyhkb:PipingHazardSource01 .
 
-# Hazard instances for external building area
+# External building
 nyhkb:JetFireHazard03
   a h2hoa:JetFireHazard ;
   rdfs:comment "Jet fire hazard in external building from pressurised release at compressor or fittings and ignition." ;
-  ho61508:inheresIn nyhkb:HighPressureH2Storage01 .
+  ho61508:inheresIn nyhkb:HighPressureH2StorageHazardSource01 .
 
 nyhkb:FireballHazard02
   a h2hoa:FireballHazard ;
@@ -253,80 +236,77 @@ nyhkb:JetFireHazard04
 
 nyhkb:JetFireHazard05
   a h2hoa:JetFireHazard ;
-  rdfs:comment "Jet fire hazard from cylinder storage release and ignition." ;
+  rdfs:comment "Jet fire hazard from high-pressure storage vessel release and ignition." ;
   ho61508:inheresIn nyhkb:HighPressureH2StorageHazardSource01 .
 
 nyhkb:PressureHazard01
   a h2ho:PressureHazard ;
-  rdfs:comment "Pressure hazard from high pressure compression/storage (350 bar class equipment)." ;
-  ho61508:inheresIn 
-    nyhkb:CompressorHazardSource01 , 
-    nyhkb:HighPressureH2StorageHazardSource01 ;
+  rdfs:comment "Pressure hazard associated with the hydrogen compressor." ;
+  ho61508:inheresIn nyhkb:CompressorHazardSource01 ;
+  ho61508:manifestsIn nyhkb:HighPressureExposure01 .
+
+nyhkb:PressureHazard02
+  a h2ho:PressureHazard ;
+  rdfs:comment "Pressure hazard associated with the high-pressure hydrogen storage vessel." ;
+  ho61508:inheresIn nyhkb:HighPressureH2StorageHazardSource01 ;
   ho61508:manifestsIn nyhkb:HighPressureExposure01 .
 
 nyhkb:ThermalHazard01
   a h2ho:ThermalHazard ;
-  rdfs:comment "Thermal impact on storage vessel can degrade equipment and lead to loss of containment." ;
+  rdfs:comment "Thermal hazard affecting storage vessel integrity and surrounding equipment." ;
   ho61508:inheresIn nyhkb:HighPressureH2StorageHazardSource01 ;
   ho61508:manifestsIn nyhkb:ThermalExposure01 .
 
 #################################################################
-# HazardousSituations – NYHKB realistic situation catalogue
+# Hazardous situations
 #################################################################
 
 nyhkb:HydrogenJetSituation01
   a h2hoa:HydrogenJet ;
-  rdfs:comment
-    "Pressurised hydrogen jet release inside technical room, enabling immediate ignition." ;
+  rdfs:comment "Pressurised hydrogen jet release inside technical room, enabling immediate ignition." ;
   ho61508:involves nyhkb:JetFireHazard01 ;
   ho61508:exposes
     nyhkb:ExposedPerson01 ,
     nyhkb:ExposedProperty01 ;
-  ho61508:enables 
+  ho61508:enables
     nyhkb:HotSurfaceIgnition01 ,
     nyhkb:StaticIgnition01 .
 
 nyhkb:DeflagrationCondition01
   a h2hoa:DeflagrationCondition ;
-  rdfs:comment
-    "Accumulation of hydrogen-air mixture in technical room forming a flammable atmosphere capable of deflagration if ignited." ;
+  rdfs:comment "Accumulation of hydrogen-air mixture in technical room forming a flammable atmosphere capable of deflagration if ignited." ;
   ho61508:involves nyhkb:DeflagrationHazard01 ;
   ho61508:exposes
     nyhkb:ExposedPerson01 ,
     nyhkb:ExposedProperty01 ;
-  ho61508:enables 
+  ho61508:enables
     nyhkb:HotSurfaceIgnition01 ,
     nyhkb:StaticIgnition01 .
 
 nyhkb:DetonationCondition01
   a h2hoa:DetonationCondition ;
-  rdfs:comment
-    "Extreme and low probability scenario where severe confinement, congestion, and turbulence in the technical room could enable deflagration-to-detonation transition." ;
+  rdfs:comment "Extreme, low-probability scenario where severe confinement, congestion, and turbulence in the technical room could enable detonation." ;
   ho61508:involves nyhkb:DetonationHazard01 ;
   ho61508:exposes
     nyhkb:ExposedPerson01 ,
     nyhkb:ExposedProperty01 ;
-  ho61508:enables 
-    nyhkb:HotSurfaceIgnition01 ,
-    nyhkb:StaticIgnition01 .
+  ho61508:enables nyhkb:HighEnergyIgnition01 .
 
 nyhkb:ProcessEquipmentMaterialDegradation01
   a h2hoa:DamagedEquipmentDegradation ;
-  rdfs:comment
-    "Material degradation of technical room equipment due to thermal exposure.  " ;
+  rdfs:comment "Material degradation of technical-room equipment due to thermal exposure." ;
   ho61508:involves nyhkb:JetFireHazard01 ;
-  ho61508:exposes 
-    nyhkb:ExposedProperty01 , 
-    nyhkb:ExposedPerson01, 
+  ho61508:exposes
+    nyhkb:ExposedProperty01 ,
+    nyhkb:ExposedPerson01 ,
     nyhkb:ExposedEnvironment01 ;
-  ho61508:enables 
-    nyhkb:LowPressureRelease01, 
+  ho61508:enables
+    nyhkb:LowPressureRelease01 ,
     nyhkb:StaticIgnition01 .
 
 nyhkb:HydrogenJetSituation02
   a h2hoa:HydrogenJet ;
-  rdfs:comment
-    "High pressure hydrogen jet release along piping run, potentially ignited immediately." ;
+  rdfs:comment "High-pressure hydrogen jet release along piping run, potentially ignited immediately." ;
   ho61508:involves nyhkb:JetFireHazard02 ;
   ho61508:exposes
     nyhkb:ExposedPerson01 ,
@@ -335,8 +315,7 @@ nyhkb:HydrogenJetSituation02
 
 nyhkb:FlammableVaporCloud01
   a h2hoa:FlammableVaporCloud ;
-  rdfs:comment
-    "Dispersed hydrogen cloud formed after release from piping with delayed ignition outside confined volumes." ;
+  rdfs:comment "Dispersed hydrogen cloud formed after release from piping with delayed ignition outside confined volumes." ;
   ho61508:involves nyhkb:FireballHazard01 ;
   ho61508:exposes
     nyhkb:ExposedPerson01 ,
@@ -345,8 +324,7 @@ nyhkb:FlammableVaporCloud01
 
 nyhkb:DeflagrationCondition02
   a h2hoa:DeflagrationCondition ;
-  rdfs:comment
-    "Hydrogen accumulation in culvert creating a confined flammable atmosphere capable of deflagration." ;
+  rdfs:comment "Hydrogen accumulation in culvert creating a confined flammable atmosphere capable of deflagration." ;
   ho61508:involves nyhkb:DeflagrationHazard02 ;
   ho61508:exposes
     nyhkb:ExposedPerson01 ,
@@ -360,61 +338,59 @@ nyhkb:HydrogenJetSituation03
   ho61508:exposes
     nyhkb:ExposedPerson01 ,
     nyhkb:ExposedProperty01 ;
-  ho61508:enables nyhkb:FrictionIgnition01  .
+  ho61508:enables nyhkb:FrictionIgnition01 .
 
 nyhkb:FlammableVaporCloud02
   a h2hoa:FlammableVaporCloud ;
-  rdfs:comment "Accumulation of hydrogen–air mixture in external building." ;
-  ho61508:involves 
-    nyhkb:DeflagrationHazard03 ,
-    nyhkb:FireballHazard02;
+  rdfs:comment "Accumulation of hydrogen-air mixture in external building." ;
+  ho61508:involves nyhkb:FireballHazard02 ;
   ho61508:exposes
     nyhkb:ExposedPerson01 ,
     nyhkb:ExposedProperty01 ;
-  ho61508:enables 
-    nyhkb:FrictionIgnition01 , 
+  ho61508:enables
+    nyhkb:FrictionIgnition01 ,
     nyhkb:HotSurfaceIgnition02 ,
     nyhkb:StaticIgnition03 .
 
 nyhkb:FireMaterialDegradation01
   a h2hoa:DamagedEquipmentDegradation ;
-  rdfs:comment "Damaged equipment degradation due to external fire/heat exposure external building." ;
-  ho61508:exposes 
+  rdfs:comment "Damaged equipment degradation due to external fire and heat exposure in the external building." ;
+  ho61508:exposes
     nyhkb:ExposedProperty01 ,
     nyhkb:ExposedEnvironment01 ,
     nyhkb:ExposedPerson01 ;
-  ho61508:enables 
-    nyhkb:Rupture01 ,  
+  ho61508:enables
+    nyhkb:Rupture01 ,
     nyhkb:Rupture02 .
 
 #################################################################
-# HazardousEvents
+# Hazardous events
 #################################################################
 
 nyhkb:LowPressureRelease01
   a h2hoa:LowPressureRelease ;
-  rdfs:comment "Hydrogen leakage/release in or near technical room equipment." ;
+  rdfs:comment "Hydrogen leakage or release in or near technical-room equipment." ;
   ho61508:resultsIn nyhkb:DeflagrationCondition01 .
 
 nyhkb:LowPressureRelease02
   a h2hoa:LowPressureRelease ;
-  rdfs:comment "Low pressure hydrogen release along piping run, including potential culvert segment." ;
-  ho61508:resultsIn 
+  rdfs:comment "Low-pressure hydrogen release along piping run, including potential culvert segment." ;
+  ho61508:resultsIn
     nyhkb:FlammableVaporCloud01 ,
     nyhkb:DeflagrationCondition02 .
 
 nyhkb:HighPressureRelease01
   a h2hoa:HighPressureRelease ;
-  rdfs:comment "High pressure hydrogen release along piping run, including potential culvert segment." ;
-  ho61508:resultsIn 
+  rdfs:comment "High-pressure hydrogen release along piping run, including potential culvert segment." ;
+  ho61508:resultsIn
     nyhkb:HydrogenJetSituation02 ,
     nyhkb:FlammableVaporCloud01 ,
     nyhkb:DeflagrationCondition02 .
 
 nyhkb:HighPressureRelease02
   a h2hoa:HighPressureRelease ;
-  rdfs:comment "High pressure hydrogen release in external building compressor/consumption area." ;
-  ho61508:resultsIn 
+  rdfs:comment "High-pressure hydrogen release in external building compressor or consumption area." ;
+  ho61508:resultsIn
     nyhkb:HydrogenJetSituation03 ,
     nyhkb:FlammableVaporCloud02 .
 
@@ -425,22 +401,21 @@ nyhkb:Rupture01
 
 nyhkb:Rupture02
   a h2hoa:Rupture ;
-  rdfs:comment "Rupture of high pressure containment of hydrogen storage vessel." ;
-  ho61508:resultsIn 
-    nyhkb:HydrogenJetSituation03 .
+  rdfs:comment "Rupture of high-pressure hydrogen storage vessel containment." ;
+  ho61508:resultsIn nyhkb:HydrogenJetSituation03 .
 
 nyhkb:HotSurfaceIgnition01
   a h2hoa:HotSurfaceIgnition ;
-  rdfs:comment "Ignition due to hot surface in technical room (e.g., heaters, components, hot machinery)." ;
-  ho61508:triggers 
-    nyhkb:JetFireHazard01 , 
+  rdfs:comment "Ignition due to hot surface in technical room." ;
+  ho61508:triggers
+    nyhkb:JetFireHazard01 ,
     nyhkb:DeflagrationHazard01 .
 
 nyhkb:StaticIgnition01
   a h2hoa:StaticSparkIgnition ;
   rdfs:comment "Ignition due to electrostatic discharge in technical room." ;
-  ho61508:triggers 
-    nyhkb:JetFireHazard01 , 
+  ho61508:triggers
+    nyhkb:JetFireHazard01 ,
     nyhkb:DeflagrationHazard01 .
 
 nyhkb:StaticIgnition02
@@ -450,39 +425,42 @@ nyhkb:StaticIgnition02
 
 nyhkb:FrictionIgnition01
   a h2hoa:FrictionIgnition ;
-  rdfs:comment "Ignition due to friction/heating in compressor or rotating equipment." ;
-  ho61508:triggers 
-    nyhkb:JetFireHazard03 , 
+  rdfs:comment "Ignition due to friction or heating in compressor or rotating equipment." ;
+  ho61508:triggers
+    nyhkb:JetFireHazard03 ,
     nyhkb:DeflagrationHazard03 .
 
 nyhkb:HotSurfaceIgnition02
   a h2hoa:HotSurfaceIgnition ;
   rdfs:comment "Ignition due to hot surfaces in compressor or equipment area." ;
-  ho61508:triggers 
-    nyhkb:JetFireHazard03 , 
+  ho61508:triggers
+    nyhkb:JetFireHazard03 ,
     nyhkb:DeflagrationHazard03 .
 
 nyhkb:StaticIgnition03
   a h2hoa:StaticSparkIgnition ;
   rdfs:comment "Ignition due to static discharge in external building." ;
-  ho61508:triggers 
-    nyhkb:JetFireHazard03 , 
+  ho61508:triggers
+    nyhkb:JetFireHazard03 ,
     nyhkb:DeflagrationHazard03 .
 
-nyhkb:EscalationIgnition
+nyhkb:HighEnergyIgnition01
+  a h2hoa:HighEnergyIgnition ;
+  rdfs:comment "High-energy ignition scenario associated with the extreme detonation case in the technical room." ;
+  ho61508:triggers nyhkb:DetonationHazard01 .
+
+nyhkb:EscalationIgnition01
   a h2hoa:EscalationIgnition ;
-  rdfs:comment "Ignition as escalation where an ongoing fire/heat source acts as ignition driver." ;
-  ho61508:triggers 
-    nyhkb:FireballHazard02 , 
+  rdfs:comment "Ignition as escalation where an ongoing fire or heat source acts as ignition driver." ;
+  ho61508:triggers
+    nyhkb:FireballHazard02 ,
     nyhkb:JetFireHazard03 ,
     nyhkb:DeflagrationHazard03 .
 
 nyhkb:ExternalFire01
   a h2ho:ExternalEvent ;
-  rdfs:comment "External fire impact on external building (yttre brandpåverkan)." ;
-  ho61508:resultsIn 
-    nyhkb:Rupture01 ,
-    nyhkb:Rupture02 .
+  rdfs:comment "External fire impact on external building." ;
+  ho61508:resultsIn nyhkb:FireMaterialDegradation01 .
 
 #################################################################
 # Harmful events
@@ -491,16 +469,16 @@ nyhkb:ExternalFire01
 nyhkb:JetFire01
   a h2hoa:JetFire ;
   rdfs:comment "Jet fire in the technical room." ;
-  ho61508:causes 
-    nyhkb:BurnInjury01 , 
+  ho61508:causes
+    nyhkb:BurnInjury01 ,
     nyhkb:PropertyDamage01 ;
   ho61508:leadsTo nyhkb:ProcessEquipmentMaterialDegradation01 .
 
 nyhkb:Deflagration01
   a h2hoa:Deflagration ;
   rdfs:comment "Deflagration in the technical room." ;
-  ho61508:causes 
-    nyhkb:BurnInjury01 , 
+  ho61508:causes
+    nyhkb:BurnInjury01 ,
     nyhkb:PropertyDamage01 ,
     nyhkb:BlastTrauma01 ;
   ho61508:leadsTo nyhkb:ProcessEquipmentMaterialDegradation01 .
@@ -508,60 +486,59 @@ nyhkb:Deflagration01
 nyhkb:Fireball01
   a h2hoa:Fireball ;
   rdfs:comment "Fireball if delayed ignition of dispersed cloud occurs in and around technical room." ;
-  ho61508:causes 
-    nyhkb:BurnInjury01 , 
+  ho61508:causes
+    nyhkb:BurnInjury01 ,
     nyhkb:PropertyDamage01 ;
-  ho61508:leadsTo 
-    nyhkb:ProcessEquipmentMaterialDegradation01 .
+  ho61508:leadsTo nyhkb:ProcessEquipmentMaterialDegradation01 .
 
 nyhkb:JetFire02
   a h2hoa:JetFire ;
   rdfs:comment "Jet fire in external building." ;
-  ho61508:causes 
-    nyhkb:BurnInjury03 , 
+  ho61508:causes
+    nyhkb:BurnInjury03 ,
     nyhkb:ThermalDamage01 .
 
 nyhkb:HighPressureExposure01
   a h2hoa:HighPressureExposureEvent ;
-  rdfs:comment "High pressure exposure in external building (blast loading / overpressure exposure)." ;
-  ho61508:causes 
-    nyhkb:BlastTrauma02 , 
-    nyhkb:BlastTrauma03 , 
+  rdfs:comment "High-pressure exposure in external building, including blast loading and overpressure exposure." ;
+  ho61508:causes
+    nyhkb:BlastTrauma02 ,
+    nyhkb:BlastTrauma03 ,
     nyhkb:PropertyDamage02 .
 
 nyhkb:ThermalExposure01
   a h2hoa:ThermalExposureEvent ;
-  rdfs:comment "thermal exposure causing stress on process equiment." ;
+  rdfs:comment "Thermal exposure causing stress on process equipment." ;
   ho61508:causes nyhkb:ThermalDamage01 .
 
 #################################################################
-# Resulting harm situations
+# Harm instances
 #################################################################
 
-nyhkb:BurnInjury01 a h2hoa:BurnInjury ; 
-rdfs:comment "Burn injury consequence of thermal exposure in technical room ." .
+nyhkb:BurnInjury01 a h2hoa:BurnInjury ;
+  rdfs:comment "Burn injury consequence of thermal exposure in the technical room." .
 
-nyhkb:PropertyDamage01 a h2hoa:PropertyDamage ; 
-rdfs:comment "Property damage consequence in technical room." .
+nyhkb:PropertyDamage01 a h2hoa:PropertyDamage ;
+  rdfs:comment "Property damage consequence in the technical room." .
 
-nyhkb:BlastTrauma01 a h2hoa:BlastTrauma ; 
-rdfs:comment "Blast/fragmentation injury in technical room." .
+nyhkb:BlastTrauma01 a h2hoa:BlastTrauma ;
+  rdfs:comment "Blast or fragmentation injury in the technical room." .
 
-nyhkb:BurnInjury02 a h2hoa:BurnInjury ; 
-rdfs:comment "Burn injury consequence in piping and distribution corridor." .
+nyhkb:BurnInjury02 a h2hoa:BurnInjury ;
+  rdfs:comment "Burn injury consequence in piping and distribution corridor." .
 
-nyhkb:BurnInjury03 a h2hoa:BurnInjury ; 
-rdfs:comment "Burn injury consequence in external building utiligy room." .
+nyhkb:BurnInjury03 a h2hoa:BurnInjury ;
+  rdfs:comment "Burn injury consequence in external building utility room." .
 
-nyhkb:BlastTrauma02 a h2hoa:BlastTrauma ; 
-rdfs:comment "Blast/fragmentation injury in external building utiligy room." .
+nyhkb:BlastTrauma02 a h2hoa:BlastTrauma ;
+  rdfs:comment "Blast or fragmentation injury in external building utility room." .
 
-nyhkb:PropertyDamage02 a h2hoa:PropertyDamage ; 
-rdfs:comment "Property damage consequence in external building utiligy room." .
+nyhkb:PropertyDamage02 a h2hoa:PropertyDamage ;
+  rdfs:comment "Property damage consequence in external building utility room." .
 
-nyhkb:BlastTrauma03 a h2hoa:BlastTrauma ; 
-rdfs:comment "Blast/fragmentation injury consequence in external building, housing high pressure hydrogen storage vessel." .
+nyhkb:BlastTrauma03 a h2hoa:BlastTrauma ;
+  rdfs:comment "Blast or fragmentation injury consequence in external building housing the high-pressure hydrogen storage vessel." .
 
 nyhkb:ThermalDamage01
   a h2hoa:PropertyDamage ;
-  rdfs:comment "Thermal damage to equipment/building in external building." .
+  rdfs:comment "Thermal damage to equipment or building in external building." .

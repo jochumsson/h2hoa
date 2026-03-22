@@ -1,0 +1,16 @@
+PREFIX h2hoa: <https://w3id.org/jochumsson/h2ho-a#>
+PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?hazardSource ?hazard ?event ?context
+WHERE {
+  ?event ho61508:triggers ?hazard .
+  ?hazard ho61508:inheresIn ?hazardSource .
+  ?hazardSource ho61508:carriedBy ?context .
+
+
+  ?event rdf:type/rdfs:subClassOf* ho61508:HazardousEvent .
+  ?hazard rdf:type/rdfs:subClassOf* ho61508:Hazard .
+  #?hazardSource rdf:type/rdfs:subClassOf* ho61508:HazardSource .
+}

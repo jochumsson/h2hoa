@@ -1,0 +1,12 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
+
+SELECT ?hazardSource ?hazardSourceType ?hazard ?hazardType ?event ?eventType
+WHERE {
+  ?event ho61508:triggers ?hazard .
+  ?hazard ho61508:inheresIn ?hazardSource .
+  
+  ?hazardSource rdf:type ?hazardSourceType .
+  ?hazard rdf:type ?hazardType .
+  ?event rdf:type ?eventType .
+}

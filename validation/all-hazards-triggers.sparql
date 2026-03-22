@@ -1,0 +1,17 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
+PREFIX h2ho: <https://w3id.org/jochumsson/h2ho#>
+PREFIX h2hoa: <https://w3id.org/jochumsson/h2hoa#>
+
+# SELECT ?hazard ?event
+# WHERE {
+#  ?hazard h2hoa:triggeredBy ?event .
+# }
+
+SELECT ?hazard ?event
+WHERE {
+  ?hazard h2hoa:triggeredBy ?event .
+  ?hazard rdf:type/rdfs:subClassOf* ho61508:Hazard .
+  ?event rdf:type/rdfs:subClassOf* ho61508:HazardousEvent .
+}

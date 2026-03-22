@@ -1,17 +1,16 @@
+@prefix h2hoa:   <https://w3id.org/jochumsson/h2hoa#> .
 @prefix h2ho:    <https://w3id.org/jochumsson/h2ho#> .
-@prefix h2hoa:   <https://w3id.org/jochumsson/h2ho-a#> .
 @prefix ho61508: <https://w3id.org/jochumsson/ho61508#> .
 @prefix gufo:    <https://purl.org/nemo/gufo#> .
 @prefix owl:     <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
 
-<https://w3id.org/jochumsson/h2ho-a>
+<https://w3id.org/jochumsson/h2hoa>
   a owl:Ontology ;
-  dcterms:title "Hydrogen Hazard Analysis Application Ontology (H2HO-A)"@en ;
-  rdfs:comment "Hydrogen Hazard Analysis Application Ontology (H2HO-A). An application extension of H2HO for representing hydrogen hazard analysis, following the modular structure described in 'A Modular Hazard Ontology Based on IEC61508'."@en ;
+  dcterms:title "Hydrogen Hazard Analysis Application Ontology (H2HOA)"@en ;
+  rdfs:comment "Hydrogen Hazard Analysis Application Ontology (H2HOA). An application extension of H2HO for representing hydrogen hazard analysis."@en ;
   dcterms:creator "Thorvaldur Jochumsson" ;
   dcterms:contributor "Kaj Hänninen" ;
   dcterms:contributor "Mehrdad Saadatmand" ;
@@ -19,11 +18,11 @@
   dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
   rdfs:seeAlso <https://github.com/jochumsson/ho61508> ;
   rdfs:seeAlso <https://github.com/jochumsson/h2ho> ;
-  dcterms:source "ISO 15916:2026 - Basic considerations for the safety of hydrogen systems."@en ;
+  dcterms:source "ISO 15916:2015 - Basic considerations for the safety of hydrogen systems."@en ;
   owl:imports <https://w3id.org/jochumsson/ho61508> ;
   owl:imports <https://w3id.org/jochumsson/h2ho> ;
   owl:versionInfo "1.0.0" ;
-  owl:versionIRI <https://w3id.org/jochumsson/h2ho-a/1.0.0> ;
+  owl:versionIRI <https://w3id.org/jochumsson/h2hoa/1.0.0> ;
   dcterms:issued "2026-01-29"^^xsd:date ;
   dcterms:modified "2026-01-29"^^xsd:date .
 
@@ -80,7 +79,7 @@
 # Application layer specialisation of the ho61508:Hazard entity
 #################################################################
 
-### H2HO-A hazard family disjunction
+### H2HOA hazard family disjunction
 [] a owl:AllDisjointClasses ;
    owl:members (
      h2ho:FlammabilityHazard
@@ -111,7 +110,7 @@ h2hoa:DetonationHazard a owl:Class ;
   rdfs:subClassOf h2ho:FlammabilityHazard ;
   rdfs:comment "Hazard whose manifestation is a detonation." .
 
-### H2HO-A flammability hazard family disjunction
+### H2HOA flammability hazard family disjunction
 [] a owl:AllDisjointClasses ;
    owl:members (
      h2hoa:JetFireHazard
@@ -134,50 +133,63 @@ h2hoa:DetonationHazard a owl:Class ;
      h2ho:EnvironmentalConfinementHazardSource
    ) .
 
+
+
 #################################################################
-# C: Endurant extension that carries HazardSource as a role
-# Application layer gufo:Endurant specialisations that carry the
-# ho61508:HazardSource role
+# C: Contextual endurant extensions that carry HazardSource as a role
+#
 #################################################################
 
-h2hoa:HazardSourceEndurant a owl:Class ;
-  rdfs:subClassOf gufo:Endurant ;
-  rdfs:comment "Structural abstraction for entity types whose instances carry the ho61508:HazardSource role within the contextual representation." .
-
-h2hoa:hasPartHazardSourceEndurant a owl:ObjectProperty ;
-  rdfs:domain h2hoa:HazardSourceEndurant ;
-  rdfs:range h2hoa:HazardSourceEndurant ;
-  rdfs:comment "Relates a HazardSourceEndurant to another HazardSourceEndurant that forms part of it." .
-
-h2hoa:partOfHazardSourceEndurant a owl:ObjectProperty ;
-  owl:inverseOf h2hoa:hasPartHazardSourceEndurant ;
-  rdfs:domain h2hoa:HazardSourceEndurant ;
-  rdfs:range h2hoa:HazardSourceEndurant ;
-  rdfs:comment "Inverse of hasPartHazardSourceEndurant." .
-
-h2hoa:carries a owl:ObjectProperty ;
-  owl:inverseOf ho61508:carriedBy ;
-  rdfs:domain gufo:Endurant ;
-  rdfs:range ho61508:HazardSource ;
-  rdfs:comment "Relates an endurant to the HazardSource role it carries." .
+h2hoa:composes a owl:ObjectProperty ;
+  owl:inverseOf h2hoa:composedOf ;
+  rdfs:domain h2hoa:HazardContext ;
+  rdfs:range h2hoa:HazardContext ;
+  rdfs:comment "Inverse of composedOf." .
 
 h2hoa:PhysicalLocation a owl:Class ;
   rdfs:subClassOf gufo:SpaceRegion ;
-  rdfs:comment "Physical location or facility region where hydrogen is produced, handled, stored, or distributed." .
+  rdfs:comment "Physical location or facility region that structurally anchors a hazard context." .
+
+h2hoa:HazardContext a owl:Class ;
+  rdfs:subClassOf gufo:Endurant ;
+  rdfs:comment "Structural abstraction for contextual entity types whose instances represent hazard context grounded in real-world entities." .
+
+h2hoa:composedOf a owl:ObjectProperty ;
+  rdfs:domain h2hoa:HazardContext ;
+  rdfs:range h2hoa:HazardContext ;
+  rdfs:comment "Relates a hazard context to contextual elements that form part of it." .
 
 h2hoa:locatedIn a owl:ObjectProperty ;
-  rdfs:domain gufo:Endurant ;
+  rdfs:domain h2hoa:HazardContext ;
   rdfs:range h2hoa:PhysicalLocation ;
-  rdfs:comment "Relates an endurant to the PhysicalLocation where it is situated." .
+  rdfs:comment "Relates a hazard context to the physical location in which it is situated." .
 
-h2hoa:hasLocatedEndurant a owl:ObjectProperty ;
+h2hoa:hasLocatedContext a owl:ObjectProperty ;
   owl:inverseOf h2hoa:locatedIn ;
   rdfs:domain h2hoa:PhysicalLocation ;
-  rdfs:range gufo:Endurant ;
-  rdfs:comment "Inverse of locatedIn. Lists endurants located in a PhysicalLocation." .
+  rdfs:range h2hoa:HazardContext ;
+  rdfs:comment "Inverse of locatedIn." .
+
+h2hoa:HazardContext
+  rdfs:subClassOf
+    [ a owl:Restriction ;
+      owl:onProperty h2hoa:locatedIn ;
+      owl:someValuesFrom h2hoa:PhysicalLocation ;
+      rdfs:comment "Every HazardContext is anchored in at least one PhysicalLocation."
+    ] .
+
+h2hoa:HazardSourceContext a owl:Class ;
+  rdfs:subClassOf h2hoa:HazardContext ;
+  rdfs:comment "Contextual entity type whose instances ground the ho61508:HazardSource role." .
+
+h2hoa:carries a owl:ObjectProperty ;
+  owl:inverseOf ho61508:carriedBy ;
+  rdfs:domain h2hoa:HazardSourceContext ;
+  rdfs:range ho61508:HazardSource ;
+  rdfs:comment "Relates a hazard-source context to the HazardSource role it carries." .
 
 h2hoa:StorageVessel a owl:Class ;
-  rdfs:subClassOf h2hoa:HazardSourceEndurant ;
+  rdfs:subClassOf h2hoa:HazardSourceContext ;
   rdfs:comment "Component or system whose main function is to store hydrogen or related media (gas or liquid)." .
 
 h2hoa:LH2Storage a owl:Class ;
@@ -189,11 +201,11 @@ h2hoa:HighPressureH2Storage a owl:Class ;
   rdfs:comment "Storage vessel containing hydrogen at elevated pressure." .
 
 h2hoa:Piping a owl:Class ;
-  rdfs:subClassOf h2hoa:HazardSourceEndurant ;
+  rdfs:subClassOf h2hoa:HazardSourceContext ;
   rdfs:comment "Piping or pipework used to transport hydrogen between system components." .
 
 h2hoa:ProcessEquipment a owl:Class ;
-  rdfs:subClassOf h2hoa:HazardSourceEndurant ;
+  rdfs:subClassOf h2hoa:HazardSourceContext ;
   rdfs:comment "Equipment that processes, conditions, or uses hydrogen (for example, compressors, valves, reformers, and fuel cells)." .
 
 h2hoa:Valve a owl:Class ;
@@ -217,7 +229,7 @@ h2hoa:Inverter a owl:Class ;
   rdfs:comment "Inverter unit." .
 
 h2hoa:EnvironmentalConfinement a owl:Class ;
-  rdfs:subClassOf h2hoa:HazardSourceEndurant ;
+  rdfs:subClassOf h2hoa:HazardSourceContext ;
   rdfs:comment "Structures or surroundings that confine hydrogen or combustion products, such as buildings, enclosures, or congested layouts." .
 
 #################################################################
@@ -231,6 +243,7 @@ h2hoa:EnvironmentalConfinement a owl:Class ;
      h2ho:ExternalEvent
      h2ho:Malfunction
      h2ho:LossOfFunction
+     h2ho:HumanError
    ) .
 
 h2hoa:LossOfContainment a owl:Class ;
@@ -257,7 +270,6 @@ h2hoa:Cryopumping a owl:Class ;
   rdfs:subClassOf h2ho:LossOfFunction ;
   rdfs:comment "LossOfFunction event in which condensation of ambient gases at cryogenic temperatures reduces gas volume and creates a vacuum that draws in additional air or gas. Cryopumping may contribute to blockages, cryogenic material degradation, or subsequent overpressure." .
 
-### H2HO-A loss of function disjunctions
 [] a owl:AllDisjointClasses ;
    owl:members (
      h2hoa:PipePlug
@@ -282,7 +294,6 @@ h2hoa:LH2Release a owl:Class ;
   rdfs:subClassOf h2hoa:HydrogenRelease ;
   rdfs:comment "Release of liquid hydrogen (LH2), potentially forming cryogenic and flammable hazards." .
 
-# H2HO-A pressure release disjunctions
 [] a owl:AllDisjointClasses ;
    owl:members (
      h2hoa:HighPressureRelease
@@ -314,7 +325,6 @@ h2hoa:EscalationIgnition a owl:Class ;
   rdfs:subClassOf h2ho:Ignition ;
   rdfs:comment "An ignition event representing escalation within a causal flammability hazard chain, typically driven by a prior ignition, where no distinct intermediate ignition event occurs beyond the ongoing combustion itself." .
 
-# H2HO-A ignition disjunctions
 [] a owl:AllDisjointClasses ;
    owl:members (
      h2hoa:FlameIgnition
@@ -324,6 +334,9 @@ h2hoa:EscalationIgnition a owl:Class ;
      h2hoa:AutoIgnition
      h2hoa:EscalationIgnition
    ) .
+
+h2hoa:HighEnergyIgnition a owl:Class ;
+  rdfs:subClassOf h2ho:Ignition .
 
 h2hoa:ElectricalFailure a owl:Class ;
   rdfs:subClassOf h2ho:Malfunction ;
@@ -411,15 +424,15 @@ h2hoa:ComposedHazardousEvent rdfs:subClassOf
 #################################################################
 
 h2hoa:HydrogenJet a owl:Class ;
-  rdfs:subClassOf h2hoa:FlammableCondition ;
+  rdfs:subClassOf h2ho:FlammableCondition ;
   rdfs:comment "HazardousSituation in which hydrogen emerges as a momentum-driven jet, for example after a pressurised release. Portions of the jet are within flammable limits and can produce a jet fire if ignited." .
 
 h2hoa:FlammableVaporCloud a owl:Class ;
-  rdfs:subClassOf h2hoa:FlammableCondition ;
+  rdfs:subClassOf h2ho:FlammableCondition ;
   rdfs:comment "HazardousSituation in which a dispersed hydrogen–air cloud is within flammable limits. Relevant for fireball and vapour cloud explosion scenarios." .
 
 h2hoa:CryogenicHydrogenPool a owl:Class ;
-  rdfs:subClassOf h2hoa:FlammableCondition ;
+  rdfs:subClassOf h2ho:FlammableCondition ;
   rdfs:comment """
 HazardousSituation in which liquid hydrogen has accumulated as a cryogenic pool
 on a surface following a spill or release.
@@ -433,11 +446,11 @@ The situation itself does not imply ignition or combustion.
 """ .
 
 h2hoa:DeflagrationCondition a owl:Class ;
-  rdfs:subClassOf h2hoa:FlammableCondition ;
+  rdfs:subClassOf h2ho:FlammableCondition ;
   rdfs:comment "HazardousSituation in which a hydrogen–air condition can support subsonic flame propagation (deflagration), based on concentration, confinement, and turbulence." .
 
 h2hoa:DetonationCondition a owl:Class ;
-  rdfs:subClassOf h2hoa:FlammableCondition ;
+  rdfs:subClassOf h2ho:FlammableCondition ;
   rdfs:comment "HazardousSituation in which a hydrogen–air condition can support detonation, for example when mixture composition and confinement exceed detonation limits." .
 
 h2hoa:LiquidHydrogenExposureSituation a owl:Class ;
@@ -494,16 +507,38 @@ h2hoa:ComposedHazardousSituation rdfs:subClassOf
 
 #################################################################
 # F: Exposed application role specifications
-# Application layer definitions and restrictions on exposed
-# endurants
+# Application layer definitions and restrictions on exposed 
+# context
 #################################################################
 
 [] a owl:AllDisjointClasses ;
   owl:members (
-    h2ho:Environment
-    h2ho:Property
-    h2ho:Person
+    h2ho:ExposedEnvironment
+    h2ho:ExposedProperty
+    h2ho:ExposedPerson
   ) .
+
+h2hoa:ExposedContext a owl:Class ;
+  rdfs:subClassOf h2hoa:HazardContext ;
+  rdfs:comment "Contextual entity type whose instances ground the ho61508:Exposed role." .
+
+h2hoa:affectedBy a owl:ObjectProperty ;
+  owl:inverseOf ho61508:affects ;
+  rdfs:domain h2hoa:ExposedContext ;
+  rdfs:range ho61508:Exposed ;
+  rdfs:comment "Relates an ExposedContext to the Exposed role that affects it." .
+
+h2hoa:Property a owl:Class ;
+  rdfs:subClassOf h2hoa:ExposedContext ;
+  rdfs:comment "Application-level contextual representation of exposed property." .
+
+h2hoa:Person a owl:Class ;
+  rdfs:subClassOf h2hoa:ExposedContext ;
+  rdfs:comment "Application-level contextual representation of exposed persons." .
+
+h2hoa:Environment a owl:Class ;
+  rdfs:subClassOf h2hoa:ExposedContext ;
+  rdfs:comment "Application-level contextual representation of the exposed environment." .
 
 #################################################################
 # G: HarmfulEvent application extensions
@@ -1144,6 +1179,16 @@ Loss of function and containment can cause overpressure or flow deviations and m
     owl:allValuesFrom h2hoa:LossOfFunctionTrigger
   ] .
 
+h2hoa:DetonationHazard
+  rdfs:subClassOf [
+    a owl:Restriction ;
+    rdfs:comment """
+DL: DetonationHazard ⊑ ∀ ho61508:triggeredBy.HighEnergyIgnition
+If a detonation hazard is triggered, it is by a high-energy ignition event.
+""" ;
+    owl:onProperty h2hoa:triggeredBy ;
+    owl:allValuesFrom h2hoa:HighEnergyIgnition
+  ] .
 
 ##################################################################
 # L: HazardousEvent resultsIn HazardousSituation application restrictions
@@ -1156,13 +1201,13 @@ h2hoa:HydrogenRelease
     [
       a owl:Restriction ;
       owl:onProperty ho61508:resultsIn ;
-      owl:someValuesFrom h2hoa:FlammableCondition ;
+      owl:someValuesFrom h2ho:FlammableCondition ;
       rdfs:comment "A HydrogenRelease produces at least one flammable hydrogen air condition through dispersion and mixing."
     ] ,
     [
       a owl:Restriction ;
       owl:onProperty ho61508:resultsIn ;
-      owl:allValuesFrom h2hoa:FlammableCondition ;
+      owl:allValuesFrom h2ho:FlammableCondition ;
       rdfs:comment "If a HydrogenRelease resultsIn a HazardousSituation, that situation must be a FlammableCondition."
     ] .
 
@@ -1232,7 +1277,7 @@ h2ho:LossOfFunction
 # enable which ho61508:HazardousEvent
 ##################################################################
 
-h2hoa:FlammableCondition
+h2ho:FlammableCondition
   rdfs:subClassOf
     [
       a owl:Restriction ;
@@ -1248,6 +1293,7 @@ h2hoa:MaterialDegradationEnablesEvent
   owl:equivalentClass [
     a owl:Class ;
     owl:unionOf (
+      h2hoa:Ignition
       h2hoa:HydrogenRelease
       h2ho:LossOfFunction
       h2ho:Malfunction
@@ -1318,7 +1364,7 @@ Open world assumption applies: this does not force which hazard, only that one e
 """ ;
   ] .
 
-h2hoa:FlammableCondition
+h2ho:FlammableCondition
   rdfs:subClassOf
     [
       a owl:Restriction ;
@@ -1413,29 +1459,29 @@ h2hoa:DetonationCondition
 # P: HazardousSituation exposes Exposed application restrictions
 ##################################################################
 
-h2hoa:ExposableEndurant
-  a owl:Class ;
-  rdfs:comment """
-Named set of gufo:Endurants that may play the ho61508:Exposed role.
-""" ;
-  owl:equivalentClass [
-    a owl:Class ;
-    owl:unionOf (
-      h2ho:Environment
-      h2ho:Property
-      h2ho:Person
-    )
-  ] .
+h2hoa:Person
+  rdfs:subClassOf
+    [ a owl:Restriction ;
+      owl:onProperty h2hoa:affectedBy ;
+      owl:allValuesFrom h2ho:ExposedPerson ;
+      rdfs:comment "A Person may be affected only by ExposedPerson roles."
+    ] .
 
-ho61508:Exposed
-  rdfs:subClassOf [
-    a owl:Restriction ;
-    rdfs:comment """
-Anything that plays the ho61508:Exposed role must be an ExposableEndurant.
-""" ;
-    owl:onProperty ho61508:affectedBy ;
-    owl:allValuesFrom h2hoa:ExposableEndurant
-  ] .
+h2hoa:Property
+  rdfs:subClassOf
+    [ a owl:Restriction ;
+      owl:onProperty h2hoa:affectedBy ;
+      owl:allValuesFrom h2ho:ExposedProperty ;
+      rdfs:comment "A Property may be affected only by ExposedProperty roles."
+    ] .
+
+h2hoa:Environment
+  rdfs:subClassOf
+    [ a owl:Restriction ;
+      owl:onProperty h2hoa:affectedBy ;
+      owl:allValuesFrom h2ho:ExposedEnvironment ;
+      rdfs:comment "An Environment may be affected only by ExposedEnvironment roles."
+    ] .
 
 #################################################################
 # Q: Hazard manifestsIn HarmfulEvent application restrictions
@@ -1636,7 +1682,7 @@ h2hoa:CombustionLeadsToSituation
   owl:equivalentClass [
     a owl:Class ;
     owl:unionOf (
-      h2hoa:FlammableCondition
+      h2ho:FlammableCondition
       h2ho:ExposureSituation
       h2hoa:DamagedEquipmentDegradation
     )
