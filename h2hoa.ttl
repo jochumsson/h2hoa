@@ -21,10 +21,10 @@
   dcterms:source "ISO 15916:2015 - Basic considerations for the safety of hydrogen systems."@en ;
   owl:imports <https://w3id.org/jochumsson/ho61508> ;
   owl:imports <https://w3id.org/jochumsson/h2ho> ;
-  owl:versionInfo "1.0.0" ;
-  owl:versionIRI <https://w3id.org/jochumsson/h2hoa/1.0.0> ;
+  owl:versionInfo "1.1.0" ;
+  owl:versionIRI <https://w3id.org/jochumsson/h2hoa/1.1.0> ;
   dcterms:issued "2026-03-22"^^xsd:date ;
-  dcterms:modified "2026-03-22"^^xsd:date .
+  dcterms:modified "2026-06-03"^^xsd:date .
 
 #################################################################
 # H2HOA - start of the ontology marker
@@ -39,8 +39,8 @@
 # Ontology Based on IEC 61508", but are added at a later stage during
 # application ontology development and knowledge base construction,
 # as discussed in the paper: "An Ontological Approach for Hazard 
-# Analysis Representation Aligned with IEC61508: A Hydrogen System 
-# Case Study".
+# Analysis Representation Aligned with IEC61508: Lessons from a 
+# Hydrogen Case Study".
 #
 # These rules belong to the application layer: scenario modelling,
 # causal sequence construction, and hazard analysis.
@@ -56,7 +56,7 @@
 # This file is organised into the following sections:
 # A: Hazard application extensions
 # B: HazardSource application role specifications
-# C: Endurant extensions that carry HazardSource as a role
+# C: Domain entities (HazardousComponent, ExposedEntity, PhysicalLocation)
 # D: HazardousEvent application extensions
 # E: HazardousSituation application extensions
 # F: Exposed application role specifications
@@ -136,60 +136,55 @@ h2hoa:DetonationHazard a owl:Class ;
 
 
 #################################################################
-# C: Contextual endurant extensions that carry HazardSource as a role
+# C: Domain entities that participate in hazard scenarios (Section 5.1)
 #
 #################################################################
 
-h2hoa:composes a owl:ObjectProperty ;
-  owl:inverseOf h2hoa:composedOf ;
-  rdfs:domain h2hoa:HazardContext ;
-  rdfs:range h2hoa:HazardContext ;
-  rdfs:comment "Inverse of composedOf." .
-
 h2hoa:PhysicalLocation a owl:Class ;
   rdfs:subClassOf gufo:SpaceRegion ;
-  rdfs:comment "Physical location or facility region that structurally anchors a hazard context." .
+  rdfs:comment "Physical location or facility region by which the hazard analysis is separated (e.g. equipment room, pipeline corridor)." .
 
-h2hoa:HazardContext a owl:Class ;
+h2hoa:HazardousComponent a owl:Class ;
   rdfs:subClassOf gufo:Endurant ;
-  rdfs:comment "Structural abstraction for contextual entity types whose instances represent hazard context grounded in real-world entities." .
+  rdfs:comment "Physical component associated with Hazard (via HazardSource), HazardousEvent, or HazardousSituation in hazard analysis." .
 
-h2hoa:composedOf a owl:ObjectProperty ;
-  rdfs:domain h2hoa:HazardContext ;
-  rdfs:range h2hoa:HazardContext ;
-  rdfs:comment "Relates a hazard context to contextual elements that form part of it." .
+h2hoa:ExposedEntity a owl:Class ;
+  rdfs:subClassOf gufo:Endurant ;
+  rdfs:comment "Physical entity exposed to Hazard or through HazardousSituation (person, property, environment)." .
 
 h2hoa:locatedIn a owl:ObjectProperty ;
-  rdfs:domain h2hoa:HazardContext ;
+  rdfs:domain [
+      a owl:Class ;
+      owl:unionOf ( h2hoa:HazardousComponent h2hoa:ExposedEntity )
+    ] ;
   rdfs:range h2hoa:PhysicalLocation ;
-  rdfs:comment "Relates a hazard context to the physical location in which it is situated." .
+  rdfs:comment "Relates a domain entity to the physical location in which it is situated." .
 
-h2hoa:hasLocatedContext a owl:ObjectProperty ;
+h2hoa:hasLocatedEntity a owl:ObjectProperty ;
   owl:inverseOf h2hoa:locatedIn ;
   rdfs:domain h2hoa:PhysicalLocation ;
-  rdfs:range h2hoa:HazardContext ;
+  rdfs:range [
+      a owl:Class ;
+      owl:unionOf ( h2hoa:HazardousComponent h2hoa:ExposedEntity )
+    ] ;
   rdfs:comment "Inverse of locatedIn." .
 
-h2hoa:HazardContext
+h2hoa:HazardousComponent
   rdfs:subClassOf
     [ a owl:Restriction ;
       owl:onProperty h2hoa:locatedIn ;
       owl:someValuesFrom h2hoa:PhysicalLocation ;
-      rdfs:comment "Every HazardContext is anchored in at least one PhysicalLocation."
+      rdfs:comment "Every HazardousComponent is situated in at least one PhysicalLocation."
     ] .
-
-h2hoa:HazardSourceContext a owl:Class ;
-  rdfs:subClassOf h2hoa:HazardContext ;
-  rdfs:comment "Contextual entity type whose instances ground the ho61508:HazardSource role." .
 
 h2hoa:carries a owl:ObjectProperty ;
   owl:inverseOf ho61508:carriedBy ;
-  rdfs:domain h2hoa:HazardSourceContext ;
+  rdfs:domain h2hoa:HazardousComponent ;
   rdfs:range ho61508:HazardSource ;
-  rdfs:comment "Relates a hazard-source context to the HazardSource role it carries." .
+  rdfs:comment "Relates a hazardous component to the HazardSource role it carries." .
 
 h2hoa:StorageVessel a owl:Class ;
-  rdfs:subClassOf h2hoa:HazardSourceContext ;
+  rdfs:subClassOf h2hoa:HazardousComponent ;
   rdfs:comment "Component or system whose main function is to store hydrogen or related media (gas or liquid)." .
 
 h2hoa:LH2Storage a owl:Class ;
@@ -201,11 +196,11 @@ h2hoa:HighPressureH2Storage a owl:Class ;
   rdfs:comment "Storage vessel containing hydrogen at elevated pressure." .
 
 h2hoa:Piping a owl:Class ;
-  rdfs:subClassOf h2hoa:HazardSourceContext ;
+  rdfs:subClassOf h2hoa:HazardousComponent ;
   rdfs:comment "Piping or pipework used to transport hydrogen between system components." .
 
 h2hoa:ProcessEquipment a owl:Class ;
-  rdfs:subClassOf h2hoa:HazardSourceContext ;
+  rdfs:subClassOf h2hoa:HazardousComponent ;
   rdfs:comment "Equipment that processes, conditions, or uses hydrogen (for example, compressors, valves, reformers, and fuel cells)." .
 
 h2hoa:Valve a owl:Class ;
@@ -229,7 +224,7 @@ h2hoa:Inverter a owl:Class ;
   rdfs:comment "Inverter unit." .
 
 h2hoa:EnvironmentalConfinement a owl:Class ;
-  rdfs:subClassOf h2hoa:HazardSourceContext ;
+  rdfs:subClassOf h2hoa:HazardousComponent ;
   rdfs:comment "Structures or surroundings that confine hydrogen or combustion products, such as buildings, enclosures, or congested layouts." .
 
 #################################################################
@@ -402,13 +397,13 @@ Supports entirely disjoint hazardous event types, where composition provides a m
 h2hoa:composedOfEvent a owl:ObjectProperty ;
   rdfs:domain h2hoa:ComposedHazardousEvent ;
   rdfs:range  ho61508:HazardousEvent ;
-  rdfs:comment "Relates a composed hazardous event to its component hazardous events (analysis-level decomposition)." .
+  rdfs:comment "Analytic mereological aggregation: a composed hazardous event groups component events for hazard analysis. Components cannot themselves compose further events (acyclic aggregation, not arbitrary part-whole chains)." .
 
 h2hoa:composesEvent a owl:ObjectProperty ;
   owl:inverseOf h2hoa:composedOfEvent ;
   rdfs:domain ho61508:HazardousEvent ;
   rdfs:range  h2hoa:ComposedHazardousEvent ;
-  rdfs:comment "Inverse of composedOfEvent, useful for querying which composed events a component participates in." .
+  rdfs:comment "Inverse of composedOfEvent." .
 
 h2hoa:ComposedHazardousEvent rdfs:subClassOf
   [ a owl:Restriction ;
@@ -466,7 +461,7 @@ h2hoa:CryogenicMaterialDegradation a owl:Class ;
   rdfs:comment "HazardousSituation in which materials, components, or equipment experience degradation due to cryogenic conditions. Examples include freezing of atmospheric gases (air and nitrogen) into solid deposits, loss of ductility, brittleness, and condensate accumulation. CryogenicMaterialDegradation increases the likelihood of LossOfFunction events such as PipePlug, ValveJam, or Cryopumping, and may ultimately enable LossOfContainment or Rupture during warm-up or pressure rise. This situation corresponds to the mechanisms described in ISO 15916 §6.2.3: solidification of gases, cryopumping vacuum effects, freezing-induced blockages, and oxygen-enriched condensate formation on cold surfaces." .
 
 h2hoa:DamagedEquipmentDegradation a owl:Class ;
-  rdfs:subClassOf h2ho:MaterialDegradation ;
+  rdfs:subClassOf h2ho:MaterialDegradation , ho61508:HazardousSituation ;
   rdfs:comment "HazardousSituation in which equipment is physically degraded or impaired (mechanically, thermally, electrically, or cryogenically), reducing functional integrity and potentially enabling LossOfFunction or LossOfContainment events." .
 
 h2hoa:ComposedHazardousSituation a owl:Class ;
@@ -483,19 +478,13 @@ that the constituent situations are mutually exclusive.
 h2hoa:composedOfSituation a owl:ObjectProperty ;
   rdfs:domain h2hoa:ComposedHazardousSituation ;
   rdfs:range  ho61508:HazardousSituation ;
-  rdfs:comment """
-Relates a composed hazardous situation to the hazardous situations
-that constitute it in hazard analysis.
-""" .
+  rdfs:comment "Analytic mereological aggregation of hazardous situations for hazard analysis (acyclic; does not imply physical part-whole or temporal ordering)." .
 
 h2hoa:composesSituation a owl:ObjectProperty ;
   owl:inverseOf h2hoa:composedOfSituation ;
   rdfs:domain ho61508:HazardousSituation ;
   rdfs:range  h2hoa:ComposedHazardousSituation ;
-  rdfs:comment """
-Indicates that a hazardous situation is a constituent
-of a composed hazardous situation.
-""" .
+  rdfs:comment "Inverse of composedOfSituation." .
 
 h2hoa:ComposedHazardousSituation rdfs:subClassOf
   [ a owl:Restriction ;
@@ -507,8 +496,7 @@ h2hoa:ComposedHazardousSituation rdfs:subClassOf
 
 #################################################################
 # F: Exposed application role specifications
-# Application layer definitions and restrictions on exposed 
-# context
+# Application layer definitions and restrictions on exposed entities
 #################################################################
 
 [] a owl:AllDisjointClasses ;
@@ -518,27 +506,23 @@ h2hoa:ComposedHazardousSituation rdfs:subClassOf
     h2ho:ExposedPerson
   ) .
 
-h2hoa:ExposedContext a owl:Class ;
-  rdfs:subClassOf h2hoa:HazardContext ;
-  rdfs:comment "Contextual entity type whose instances ground the ho61508:Exposed role." .
-
 h2hoa:affectedBy a owl:ObjectProperty ;
   owl:inverseOf ho61508:affects ;
-  rdfs:domain h2hoa:ExposedContext ;
+  rdfs:domain h2hoa:ExposedEntity ;
   rdfs:range ho61508:Exposed ;
-  rdfs:comment "Relates an ExposedContext to the Exposed role that affects it." .
+  rdfs:comment "Relates an exposed domain entity to the Exposed role that affects it." .
 
 h2hoa:Property a owl:Class ;
-  rdfs:subClassOf h2hoa:ExposedContext ;
-  rdfs:comment "Application-level contextual representation of exposed property." .
+  rdfs:subClassOf h2hoa:ExposedEntity ;
+  rdfs:comment "Property (buildings, equipment, infrastructure) that may be exposed in hazard scenarios." .
 
 h2hoa:Person a owl:Class ;
-  rdfs:subClassOf h2hoa:ExposedContext ;
-  rdfs:comment "Application-level contextual representation of exposed persons." .
+  rdfs:subClassOf h2hoa:ExposedEntity ;
+  rdfs:comment "Person that may be exposed in hazard scenarios." .
 
 h2hoa:Environment a owl:Class ;
-  rdfs:subClassOf h2hoa:ExposedContext ;
-  rdfs:comment "Application-level contextual representation of the exposed environment." .
+  rdfs:subClassOf h2hoa:ExposedEntity ;
+  rdfs:comment "Surrounding environment that may be exposed in hazard scenarios." .
 
 #################################################################
 # G: HarmfulEvent application extensions
@@ -896,8 +880,8 @@ A ToxicityHazard may inhere only in the listed hazard source types.
     ] .
 
 #################################################################
-# J: Endurant carries HazardSource application restrictions
-# Application layer specification of which gufo:Endurant carries
+# J: HazardousComponent carries HazardSource application restrictions
+# Application layer specification of which HazardousComponent carries
 # ho61508:HazardSources
 #################################################################
 

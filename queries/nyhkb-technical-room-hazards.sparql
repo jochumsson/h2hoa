@@ -1,7 +1,8 @@
+# Application query: hazards in the technical room (equipment room) via components and hazard sources
 PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
-PREFIX h2hoa:   <https://w3id.org/jochumsson/h2hoa#>
-PREFIX nyhkb:   <https://w3id.org/jochumsson/nyhkb#>
-PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX h2hoa: <https://w3id.org/jochumsson/h2hoa#>
+PREFIX nyhkb: <https://w3id.org/jochumsson/nyhkb#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT DISTINCT ?component ?hazardSource ?hazard ?hazardComment
 WHERE {

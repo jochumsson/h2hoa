@@ -1,0 +1,20 @@
+# IEC 61508-1 7.4.2.3: hazards, triggering events, and associated hazardous situations
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
+PREFIX h2hoa: <https://w3id.org/jochumsson/h2hoa#>
+
+SELECT ?hazard ?event ?situation ?hazardComment
+WHERE {
+  ?hazard h2hoa:triggeredBy ?event .
+
+  OPTIONAL {
+    ?hazard ho61508:manifestsIn ?situation .
+    ?situation rdf:type/rdfs:subClassOf* ho61508:HazardousSituation .
+  }
+
+  OPTIONAL { ?hazard rdfs:comment ?hazardComment . }
+
+  ?hazard rdf:type/rdfs:subClassOf* ho61508:Hazard .
+  ?event rdf:type/rdfs:subClassOf* ho61508:HazardousEvent .
+}

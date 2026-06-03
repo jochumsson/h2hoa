@@ -1,0 +1,43 @@
+# IEC 61508-1 7.4.2.11: documented hazard-related information in the knowledge base
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
+PREFIX h2hoa: <https://w3id.org/jochumsson/h2hoa#>
+
+SELECT ?subject ?predicate ?object ?comment
+WHERE {
+  VALUES ?predicate {
+    ho61508:inheresIn
+    ho61508:manifestsIn
+    ho61508:triggers
+    h2hoa:triggeredBy
+    ho61508:resultsIn
+    ho61508:enables
+    ho61508:involves
+    ho61508:exposes
+    ho61508:causes
+    ho61508:leadsTo
+    h2hoa:carries
+    h2hoa:locatedIn
+  }
+
+  ?subject ?predicate ?object .
+
+  {
+    ?subject rdf:type/rdfs:subClassOf* ho61508:Hazard .
+  }
+  UNION
+  {
+    ?subject rdf:type/rdfs:subClassOf* ho61508:HazardousEvent .
+  }
+  UNION
+  {
+    ?subject rdf:type/rdfs:subClassOf* ho61508:HazardousSituation .
+  }
+  UNION
+  {
+    ?subject rdf:type/rdfs:subClassOf* ho61508:HarmfulEvent .
+  }
+
+  OPTIONAL { ?subject rdfs:comment ?comment . }
+}

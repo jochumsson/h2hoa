@@ -23,15 +23,16 @@
   dcterms:contributor "Kristina Lundqvist" ;
   dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
   owl:imports <https://w3id.org/jochumsson/h2hoa> ;
-  owl:versionInfo "1.0.0" ;
-  dcterms:issued "2026-03-22"^^xsd:date .
+  owl:versionInfo "1.1.0" ;
+  dcterms:issued "2026-03-22"^^xsd:date ;
+  dcterms:modified "2026-06-03"^^xsd:date .
 
 #################################################################
 # Physical locations
 #################################################################
 
 nyhkb:TechnicalRoom a h2hoa:PhysicalLocation ;
-  rdfs:comment "Technical room (teknikutrymme), physical location for equipment where hydrogen is produced and used." .
+  rdfs:comment "Technical room (teknikutrymme), corresponding to the equipment room in the Nykvarn risk analysis: hydrogen production and consumption (electrolyser, fuel cell, and related equipment)." .
 
 nyhkb:PipelineCorridor a h2hoa:PhysicalLocation ;
   rdfs:comment "Physical corridor where piping runs between technical room and external building, including above-ground segments." .
@@ -43,7 +44,7 @@ nyhkb:ExternalBuildingStorageRoom a h2hoa:PhysicalLocation ;
   rdfs:comment "External building storage room, housing the main hydrogen storage vessels and related system and safety components." .
 
 #################################################################
-# HazardSource contexts
+# Hazardous components (domain entities carrying HazardSource roles)
 #################################################################
 
 # Technical room
@@ -105,7 +106,7 @@ nyhkb:HighPressureH2Storage01 a h2hoa:HighPressureH2Storage ;
   h2hoa:carries nyhkb:HighPressureH2StorageHazardSource01 .
 
 #################################################################
-# Exposed contexts
+# Exposed entities (domain entities playing Exposed roles)
 #################################################################
 
 nyhkb:Person01 a h2hoa:Person ;

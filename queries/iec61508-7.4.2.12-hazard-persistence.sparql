@@ -1,0 +1,47 @@
+# IEC 61508-1 7.4.2.12: persisted hazard-analysis assertions (RDF graph content)
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
+PREFIX h2hoa: <https://w3id.org/jochumsson/h2hoa#>
+PREFIX nyhkb: <https://w3id.org/jochumsson/nyhkb#>
+
+SELECT ?assertionType (COUNT(?s) AS ?count)
+WHERE {
+  {
+    BIND("Hazard" AS ?assertionType)
+    ?s rdf:type/rdfs:subClassOf* ho61508:Hazard .
+  }
+  UNION
+  {
+    BIND("HazardousEvent" AS ?assertionType)
+    ?s rdf:type/rdfs:subClassOf* ho61508:HazardousEvent .
+  }
+  UNION
+  {
+    BIND("HazardousSituation" AS ?assertionType)
+    ?s rdf:type/rdfs:subClassOf* ho61508:HazardousSituation .
+  }
+  UNION
+  {
+    BIND("HarmfulEvent" AS ?assertionType)
+    ?s rdf:type/rdfs:subClassOf* ho61508:HarmfulEvent .
+  }
+  UNION
+  {
+    BIND("HazardousComponent" AS ?assertionType)
+    ?s rdf:type/rdfs:subClassOf* h2hoa:HazardousComponent .
+  }
+  UNION
+  {
+    BIND("ExposedEntity" AS ?assertionType)
+    ?s rdf:type/rdfs:subClassOf* h2hoa:ExposedEntity .
+  }
+  UNION
+  {
+    BIND("PhysicalLocation" AS ?assertionType)
+    ?s rdf:type/rdfs:subClassOf* h2hoa:PhysicalLocation .
+  }
+
+  FILTER(STRSTARTS(STR(?s), STR(nyhkb:)))
+}
+GROUP BY ?assertionType

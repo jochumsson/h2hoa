@@ -1,3 +1,4 @@
+# IEC 61508-1 7.4.2.10: hazardous components, hazard sources, hazards, and triggering events
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
