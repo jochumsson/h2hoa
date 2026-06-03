@@ -36,7 +36,7 @@
   dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
   dcterms:source "H2solo AB (2023-03-10). Risk assessment and explosion protection documentation LBE, Appendix E, property Ytterberga 2:5."@en ;
   owl:imports <https://w3id.org/jochumsson/h2hoa> ;
-  owl:versionInfo "1.2.1" ;
+  owl:versionInfo "1.2.2" ;
   dcterms:issued "2026-03-22T00:00:00"^^xsd:dateTime ;
   dcterms:modified "2026-06-03T00:00:00"^^xsd:dateTime .
 
@@ -54,8 +54,8 @@ nyhkb:Location_PipelineRoute a h2hoa:PhysicalLocation ;
   rdfs:comment "Hydrogen piping between technical room and external building, above ground, through building, and in pipe culvert (Appendix E, section 5.2.1)." ;
   dcterms:source "Appendix E, section 5.2.1"@en .
 
-nyhkb:Location_CompressorConsumptionRoom a h2hoa:PhysicalLocation ;
-  rdfs:label "Compressor and consumption room"@en ;
+nyhkb:Location_CompressorRoom a h2hoa:PhysicalLocation ;
+  rdfs:label "Compressor room"@en ;
   rdfs:comment "Room in the external building with compressor, valves, buffer cylinder, and ATEX equipment (Appendix E, section 5.3.1.1)." ;
   dcterms:source "Appendix E, section 5.3.1.1"@en .
 
@@ -136,21 +136,21 @@ nyhkb:Component_CompressorRoom_Enclosure a h2hoa:EnvironmentalConfinement ;
   rdfs:label "Compressor room enclosure"@en ;
   rdfs:comment "Enclosure in external building where explosive atmosphere is likely during normal operation (Appendix E, section 5.3.2.1)." ;
   dcterms:source "Appendix E, section 5.3.2.1"@en ;
-  h2hoa:locatedIn nyhkb:Location_CompressorConsumptionRoom ;
+  h2hoa:locatedIn nyhkb:Location_CompressorRoom ;
   h2hoa:carries nyhkb:HazardSource_CompressorRoom_Confinement .
 
 nyhkb:Component_H2Compressor a h2hoa:ProcessEquipment ;
   rdfs:label "Hydrogen compressor"@en ;
   rdfs:comment "Compressor raising pressure from ~35 bar to ~350 bar (Appendix E, section 5.3.1.1)." ;
   dcterms:source "Appendix E, section 5.3.1.1"@en ;
-  h2hoa:locatedIn nyhkb:Location_CompressorConsumptionRoom ;
+  h2hoa:locatedIn nyhkb:Location_CompressorRoom ;
   h2hoa:carries nyhkb:HazardSource_Compressor .
 
 nyhkb:Component_BufferCylinder a h2hoa:StorageVessel ;
   rdfs:label "Buffer cylinder (portable gas bottle)"@en ;
   rdfs:comment "Small buffer hydrogen cylinder; emptied via needle valve HA-102 to vent line (Appendix E, section 5.3.1.1, section 5.1)." ;
   dcterms:source "Appendix E, section 5.3.1.1"@en ;
-  h2hoa:locatedIn nyhkb:Location_CompressorConsumptionRoom ;
+  h2hoa:locatedIn nyhkb:Location_CompressorRoom ;
   h2hoa:carries nyhkb:HazardSource_BufferCylinder .
 
 nyhkb:Component_H2Cylinder_1650L a h2hoa:HighPressureH2Storage ;
@@ -348,10 +348,17 @@ nyhkb:Hazard_Pressure_H2Cylinder a h2ho:PressureHazard ;
 
 nyhkb:Hazard_Thermal_H2Cylinder a h2ho:ThermalHazard ;
   rdfs:label "Thermal hazard – hydrogen cylinder (external fire)"@en ;
-  rdfs:comment "Empirical scenario ID: ES-EB-ST-02. See empirical-hazard-scenarios.txt. Cylinder heating from external fire in adjacent room (Appendix E, section 5.3.2.2)." ;
+  rdfs:comment "Empirical scenario ID: ES-EB-ST-02. See empirical-hazard-scenarios.txt. Cylinder heating from external fire in adjacent compressor room (Appendix E, section 5.3.2.2); manifests as thermal exposure during heating." ;
   dcterms:source "Appendix E, section 5.3.2.2"@en ;
   ho61508:inheresIn nyhkb:HazardSource_H2Cylinder ;
   ho61508:manifestsIn nyhkb:HarmfulEvent_ThermalExposure_ExternalBuilding .
+
+nyhkb:Hazard_Detonation_H2Cylinder a h2hoa:DetonationHazard ;
+  rdfs:label "Detonation – hydrogen cylinder (catastrophic failure)"@en ;
+  rdfs:comment "Empirical scenario ID: ES-EB-ST-02. See empirical-hazard-scenarios.txt. Major explosion after vessel failure following external fire (Appendix E, section 5.3.2.2)." ;
+  dcterms:source "Appendix E, section 5.3.2.2"@en ;
+  ho61508:inheresIn nyhkb:HazardSource_H2Cylinder ;
+  ho61508:manifestsIn nyhkb:HarmfulEvent_Detonation_ExternalBuilding .
 
 #################################################################
 # Hazardous situations
@@ -437,10 +444,13 @@ nyhkb:Situation_FlammableCloud_CompressorRoom a h2hoa:FlammableVaporCloud ;
 
 nyhkb:Situation_HydrogenJet_H2CylinderRoom a h2hoa:HydrogenJet ;
   rdfs:label "Hydrogen jet – hydrogen cylinder room"@en ;
+  rdfs:comment "Empirical scenario ID: ES-EB-ST-01, ES-EB-ST-02. See empirical-hazard-scenarios.txt." ;
   dcterms:source "Appendix E, section 5.3.2.1; section 5.3.2.2"@en ;
   ho61508:involves nyhkb:Hazard_JetFire_H2Cylinder ;
   ho61508:exposes nyhkb:ExposedRole_Person , nyhkb:ExposedRole_Property , nyhkb:ExposedRole_Environment ;
-  ho61508:enables nyhkb:Event_StaticSparkIgnition_CompressorRoom .
+  ho61508:enables
+    nyhkb:Event_StaticSparkIgnition_CompressorRoom ,
+    nyhkb:Event_HighEnergyIgnition_H2CylinderRoom .
 
 nyhkb:Situation_FlammableCloud_TechnicalRoom a h2hoa:FlammableVaporCloud ;
   rdfs:label "Flammable vapor cloud – technical room"@en ;
@@ -449,9 +459,9 @@ nyhkb:Situation_FlammableCloud_TechnicalRoom a h2hoa:FlammableVaporCloud ;
   ho61508:exposes nyhkb:ExposedRole_Person , nyhkb:ExposedRole_Property ;
   ho61508:enables nyhkb:Event_HotSurfaceIgnition_TechnicalRoom , nyhkb:Event_StaticSparkIgnition_TechnicalRoom .
 
-nyhkb:Situation_EquipmentDamage_ExternalFire a h2hoa:DamagedEquipmentDegradation ;
-  rdfs:label "Equipment damage – external fire impact"@en ;
-  rdfs:comment "Equipment degradation from external fire impacting storage/compressor rooms (Appendix E, section 5.3.2.2)." ;
+nyhkb:Situation_EquipmentDamage_CompressorRoom a h2hoa:DamagedEquipmentDegradation ;
+  rdfs:label "Equipment damage – compressor room"@en ;
+  rdfs:comment "Empirical scenario ID: ES-EB-ST-02. See empirical-hazard-scenarios.txt. Equipment degradation from external fire in the compressor room (Appendix E, section 5.3.2.2)." ;
   dcterms:source "Appendix E, section 5.3.2.2"@en ;
   ho61508:exposes nyhkb:ExposedRole_Property , nyhkb:ExposedRole_Environment , nyhkb:ExposedRole_Person ;
   ho61508:enables nyhkb:Event_Rupture_BufferCylinder , nyhkb:Event_Rupture_H2Cylinder .
@@ -498,7 +508,7 @@ nyhkb:Event_Rupture_BufferCylinder a h2hoa:Rupture ;
 
 nyhkb:Event_Rupture_H2Cylinder a h2hoa:Rupture ;
   rdfs:label "Rupture – hydrogen cylinder"@en ;
-  rdfs:comment "Catastrophic failure under external fire / overpressure (Appendix E, section 5.3.2.2)." ;
+  rdfs:comment "Empirical scenario ID: ES-EB-ST-02. See empirical-hazard-scenarios.txt. Catastrophic failure under external fire / overpressure (Appendix E, section 5.3.2.2)." ;
   dcterms:source "Appendix E, section 5.3.2.2"@en ;
   ho61508:resultsIn nyhkb:Situation_HydrogenJet_H2CylinderRoom ;
   ho61508:triggers nyhkb:Hazard_Pressure_H2Cylinder .
@@ -556,6 +566,12 @@ nyhkb:Event_HighEnergyIgnition_TechnicalRoom a h2hoa:HighEnergyIgnition ;
   dcterms:source "Appendix E, section 5.1.4"@en ;
   ho61508:triggers nyhkb:Hazard_Detonation_TechnicalRoom .
 
+nyhkb:Event_HighEnergyIgnition_H2CylinderRoom a h2hoa:HighEnergyIgnition ;
+  rdfs:label "Ignition – high energy (hydrogen cylinder room)"@en ;
+  rdfs:comment "Empirical scenario ID: ES-EB-ST-02. See empirical-hazard-scenarios.txt. Catastrophic ignition after vessel rupture and release (Appendix E, section 5.3.2.2)." ;
+  dcterms:source "Appendix E, section 5.3.2.2"@en ;
+  ho61508:triggers nyhkb:Hazard_Detonation_H2Cylinder .
+
 nyhkb:Event_EscalationIgnition_CompressorRoom a h2hoa:EscalationIgnition ;
   rdfs:label "Escalation ignition – compressor room"@en ;
   dcterms:source "Appendix E, section 5.3.2"@en ;
@@ -568,7 +584,7 @@ nyhkb:Event_ExternalFire_CompressorRoom a h2ho:ExternalEvent ;
   rdfs:label "External fire - compressor room"@en ;
   rdfs:comment "External fire impacting adjacent rooms and hydrogen cylinder (Appendix E, section 5.3.2.2 cause)." ;
   dcterms:source "Appendix E, section 5.3.2.2 cause"@en ;
-  ho61508:resultsIn nyhkb:Situation_EquipmentDamage_ExternalFire .
+  ho61508:resultsIn nyhkb:Situation_EquipmentDamage_CompressorRoom .
 
 #################################################################
 # Harmful events and harm
@@ -649,9 +665,18 @@ nyhkb:HarmfulEvent_PressureExposure_CompressorRoom a h2hoa:HighPressureExposureE
 
 nyhkb:HarmfulEvent_ThermalExposure_ExternalBuilding a h2hoa:ThermalExposureEvent ;
   rdfs:label "Thermal exposure – external building"@en ;
-  rdfs:comment "Empirical scenario ID: ES-EB-ST-02. See empirical-hazard-scenarios.txt." ;
+  rdfs:comment "Empirical scenario ID: ES-EB-ST-02 (heating phase). See empirical-hazard-scenarios.txt." ;
   dcterms:source "Appendix E, section 5.3.2.2"@en ;
-  ho61508:causes nyhkb:Harm_ThermalDamage_ExternalBuilding , nyhkb:Harm_BlastTrauma_H2Cylinder .
+  ho61508:causes nyhkb:Harm_ThermalDamage_ExternalBuilding .
+
+nyhkb:HarmfulEvent_Detonation_ExternalBuilding a h2hoa:Detonation ;
+  rdfs:label "Detonation – external building"@en ;
+  rdfs:comment "Empirical scenario ID: ES-EB-ST-02. See empirical-hazard-scenarios.txt. Major explosion after hydrogen cylinder failure (Appendix E, section 5.3.2.2)." ;
+  dcterms:source "Appendix E, section 5.3.2.2"@en ;
+  ho61508:causes
+    nyhkb:Harm_ThermalDamage_ExternalBuilding ,
+    nyhkb:Harm_BlastTrauma_H2Cylinder ,
+    nyhkb:Harm_EnvironmentalDamage_ExternalBuilding .
 
 nyhkb:Harm_BurnInjury_TechnicalRoom a h2hoa:BurnInjury ;
   rdfs:label "Burn injury – technical room"@en ;
@@ -711,19 +736,7 @@ nyhkb:Harm_ThermalDamage_ExternalBuilding a h2hoa:PropertyDamage ;
   rdfs:label "Thermal damage - equipment/building"@en ;
   dcterms:source "Appendix E, section 5.3.2.2"@en .
 
-#################################################################
-# Deprecated IRIs (v1.1.0) — owl:sameAs for backward compatibility
-#################################################################
-
-nyhkb:TechnicalRoom owl:sameAs nyhkb:Location_TechnicalRoom .
-nyhkb:PipelineCorridor owl:sameAs nyhkb:Location_PipelineRoute .
-nyhkb:ExternalBuildingUtilityRoom owl:sameAs nyhkb:Location_CompressorConsumptionRoom .
-nyhkb:ExternalBuildingStorageRoom owl:sameAs nyhkb:Location_H2CylinderRoom .
-
-nyhkb:Electrolyser01 owl:sameAs nyhkb:Component_Electrolyser .
-nyhkb:FuelCell01 owl:sameAs nyhkb:Component_FuelCell .
-nyhkb:Person01 owl:sameAs nyhkb:ExposedEntity_Personnel .
-nyhkb:DeflagrationHazard01 owl:sameAs nyhkb:Hazard_Deflagration_TechnicalRoom .
-nyhkb:DeflagrationCondition01 owl:sameAs nyhkb:Situation_ExplosiveAtmosphere_TechnicalRoom .
-nyhkb:LowPressureRelease01 owl:sameAs nyhkb:Event_LowPressureRelease_TechnicalRoom .
-nyhkb:HotSurfaceIgnition01 owl:sameAs nyhkb:Event_HotSurfaceIgnition_TechnicalRoom .
+nyhkb:Harm_EnvironmentalDamage_ExternalBuilding a h2hoa:EnvironmentalDamage ;
+  rdfs:label "Environmental damage – external building"@en ;
+  rdfs:comment "Empirical scenario ID: ES-EB-ST-02. See empirical-hazard-scenarios.txt." ;
+  dcterms:source "Appendix E, section 5.3.2.2"@en .

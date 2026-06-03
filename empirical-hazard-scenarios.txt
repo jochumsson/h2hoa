@@ -244,7 +244,7 @@ Hazardous event         Ignition (friction, hot surface, static spark, or escala
 Consequence             Explosion or jet fire; pressure effects; burn and fragmentation
                         injuries; fire spread to adjacent rooms and the neighbouring building.
 
-NYHKB (interpretation)  Location_CompressorConsumptionRoom;
+NYHKB (interpretation)  Location_CompressorRoom;
                         Event_HighPressureRelease_CompressorRoom;
                         Situation_ExplosiveAtmosphere_CompressorRoom (DeflagrationCondition),
                         Situation_FlammableCloud_CompressorRoom,
@@ -355,11 +355,11 @@ Consequence             Major explosion; serious injury; widespread property and
                         environmental damage over a large area.
 
 NYHKB (interpretation)  Event_ExternalFire_CompressorRoom;
-                        Situation_EquipmentDamage_ExternalFire;
+                        Situation_EquipmentDamage_CompressorRoom;
                         Event_Rupture_H2Cylinder → Situation_HydrogenJet_H2CylinderRoom;
                         Hazard_Thermal_H2Cylinder;
-                        HarmfulEvent_ThermalExposure_ExternalBuilding;
-                        Harm_ThermalDamage_ExternalBuilding, Harm_BlastTrauma_H2Cylinder.
+                        HarmfulEvent_Detonation_ExternalBuilding;
+                        Harm_ThermalDamage_ExternalBuilding, Harm_Injury_Personell, Harm_Damage_Environment.
 
 ================================================================================
 End of empirical hazard scenarios
