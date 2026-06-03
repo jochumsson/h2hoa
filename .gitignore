@@ -4,3 +4,7 @@ kb-inferred.ttl
 kb-materialized.ttl
 query-results.csv
 results-*.csv
+
+# nykvarn analys/: README and folder are tracked; omit bulky local copies only
+nykvarn analys/*.pdf
+nykvarn analys/_bilaga_e_extract.txt

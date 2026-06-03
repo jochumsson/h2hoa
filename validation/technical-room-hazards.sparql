@@ -5,7 +5,7 @@ PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT DISTINCT ?component ?hazardSource ?hazard ?hazardComment
 WHERE {
-  ?component h2hoa:locatedIn nyhkb:TechnicalRoom .
+  ?component h2hoa:locatedIn nyhkb:Location_TechnicalRoom .
   ?component h2hoa:carries ?hazardSource .
   ?hazard ho61508:inheresIn ?hazardSource .
 

@@ -23,8 +23,8 @@
   owl:imports <https://w3id.org/jochumsson/h2ho> ;
   owl:versionInfo "1.1.0" ;
   owl:versionIRI <https://w3id.org/jochumsson/h2hoa/1.1.0> ;
-  dcterms:issued "2026-03-22"^^xsd:date ;
-  dcterms:modified "2026-06-03"^^xsd:date .
+  dcterms:issued "2026-03-22T00:00:00"^^xsd:dateTime ;
+  dcterms:modified "2026-06-03T00:00:00"^^xsd:dateTime .
 
 #################################################################
 # H2HOA - start of the ontology marker
@@ -210,6 +210,10 @@ h2hoa:Valve a owl:Class ;
 h2hoa:Electrolyser a owl:Class ;
   rdfs:subClassOf h2hoa:ProcessEquipment ;
   rdfs:comment "Equipment that produces hydrogen through electrolysis. It can carry the ho61508:HazardSource role when participating in accident scenarios." .
+
+h2hoa:Dryer a owl:Class ;
+  rdfs:subClassOf h2hoa:ProcessEquipment ;
+  rdfs:comment "Dryer in the hydrogen production chain; removes moisture from hydrogen after electrolysis before compression or use." .
 
 h2hoa:FuelCell a owl:Class ;
   rdfs:subClassOf h2hoa:ProcessEquipment ;
@@ -935,7 +939,7 @@ h2hoa:ProcessEquipment
     [
       a owl:Restriction ;
       rdfs:comment """
-ProcessEquipment endurants carry at least one ProcessEquipmentHazardSource role.
+Hazardous process equipment carries at least one ProcessEquipmentHazardSource role.
 DL: ProcessEquipment ⊑ ∃ carries.ProcessEquipmentHazardSource
 """ ;
       owl:onProperty h2hoa:carries ;

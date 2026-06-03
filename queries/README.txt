@@ -1,7 +1,7 @@
 SPARQL queries supporting Section 6.2 (NYHKB querying) and IEC 61508-1 clause 7.4.2.
 
-Run against merged TBox + ABox (h2hoa.ttl + nyhkb.ttl), optionally after reasoning and inverse
-materialization (see run-validaton.py in validation/).
+Run against merged H2HO + H2HOA + NYHKB (backup/h2ho.ttl + h2hoa.ttl + nyhkb.ttl), after
+reasoning and inverse materialization (see run-validaton.py).
 
   listing-1-hazard-triggers.sparql          Paper Listing 1; IEC 61508-1 7.4.2.3 (triggers)
   iec61508-7.4.2.3-hazard-identification.sparql   7.4.2.3 hazards, events, situations
@@ -13,3 +13,5 @@ materialization (see run-validaton.py in validation/).
   nyhkb-technical-room-hazards.sparql             Application query (technical room scope)
 
 Equivalent copies for ROBOT verify live under validation/.
+
+Empirical hazard narratives (Section 6.1 / Table 3 format): ../empirical-hazard-scenarios.txt

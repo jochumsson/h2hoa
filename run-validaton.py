@@ -3,7 +3,7 @@ import argparse
 import os
 import subprocess
 import sys
-from typing import List
+from typing import List, Optional
 
 from rdflib import Graph, URIRef
 
@@ -32,13 +32,29 @@ def require_file(path: str, label: str) -> None:
         sys.exit(1)
 
 
-def materialize_inverse_properties(path_in: str, path_out: str) -> None:
+def materialize_inverse_properties(
+    path_in: str, path_out: str, subclass_source: Optional[str] = None
+) -> None:
     print("\n--- MATERIALIZE INVERSE PROPERTIES ---")
     print(f"Input:  {path_in}")
     print(f"Output: {path_out}")
 
     g = Graph()
     g.parse(path_in)
+
+    RDFS = URIRef("http://www.w3.org/2000/01/rdf-schema#subClassOf")
+    if subclass_source:
+        tbox = Graph()
+        tbox.parse(subclass_source)
+        subclass_added = 0
+        for s, _, o in tbox.triples((None, RDFS, None)):
+            if (s, RDFS, o) not in g:
+                g.add((s, RDFS, o))
+                subclass_added += 1
+        print(
+            f"Restored {subclass_added} rdfs:subClassOf axioms from {subclass_source} "
+            "(for SPARQL type paths; reasoner may omit these)."
+        )
 
     HO = "https://w3id.org/jochumsson/ho61508#"
     H2HOA = "https://w3id.org/jochumsson/h2hoa#"
@@ -81,8 +97,9 @@ def main() -> None:
 
     p.add_argument("--robot", default="robot.jar", help="Path to robot.jar")
     p.add_argument("--reasoner", default="hermit", help="Reasoner to use")
-    p.add_argument("--tbox", default="h2hoa.ttl", help="TBox ontology file")
-    p.add_argument("--abox", default="nyhkb.ttl", help="ABox knowledge base file")
+    p.add_argument("--h2ho", default="backup/h2ho.ttl", help="H2HO core ontology (event/hazard types)")
+    p.add_argument("--tbox", default="h2hoa.ttl", help="Application TBox (H2HOA)")
+    p.add_argument("--abox", default="nyhkb.ttl", help="ABox knowledge base (NYHKB)")
     p.add_argument("--query", required=True, help="SPARQL SELECT query file")
 
     p.add_argument("--merged-out", default="kb-merged.ttl", help="Merged ontology output")
@@ -99,6 +116,7 @@ def main() -> None:
     args = p.parse_args()
 
     require_file(args.robot, "robot.jar")
+    require_file(args.h2ho, "H2HO")
     require_file(args.tbox, "TBox")
     require_file(args.abox, "ABox")
     require_file(args.query, "SPARQL query")
@@ -106,11 +124,12 @@ def main() -> None:
     merged_cmd = [
         "java", "-jar", args.robot,
         "merge",
+        "--input", args.h2ho,
         "--input", args.tbox,
         "--input", args.abox,
         "--output", args.merged_out,
     ]
-    run_or_die(merged_cmd, "MERGE (TBOX + ABOX)")
+    run_or_die(merged_cmd, "MERGE (H2HO + H2HOA + NYHKB)")
 
     target = args.merged_out
 
@@ -139,10 +158,9 @@ def main() -> None:
                     "java", "-jar", args.robot,
                     "explain",
                     "--input", args.merged_out,
-                    "--reasoner", args.reasoner,
+                    "--reasoner", "elk",
                     "-M", "inconsistency",
                     "--explanation", args.explain_md,
-                    "--output", args.explain_owl,
                 ]
                 run_capture(explain_cmd, "EXPLAIN (INCONSISTENCY)")
 
@@ -160,7 +178,10 @@ def main() -> None:
         print("\n--- SKIPPING REASONING ---")
 
     if not args.skip_materialize_inverses:
-        materialize_inverse_properties(target, args.materialized_out)
+        subclass_source = args.merged_out if not args.skip_reasoning else None
+        materialize_inverse_properties(
+            target, args.materialized_out, subclass_source=subclass_source
+        )
         target = args.materialized_out
     else:
         print("\n--- SKIPPING INVERSE MATERIALIZATION ---")
@@ -181,7 +202,7 @@ def main() -> None:
         with open(args.query_out, "r", encoding="utf-8") as f:
             print(f.read())
 
-    print("\n✅ VALIDATION COMPLETE")
+    print("\nVALIDATION COMPLETE")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,366 @@
+================================================================================
+Empirical hazard scenarios — Nykvarn (H2solo Ytterberga 2:5)
+================================================================================
+
+Purpose
+  This file provides publishable, English empirical data for Section 6.1 of the
+  study. It paraphrases and structures hazard narratives from a 2023 LBE risk
+  assessment (Appendix E, Safety Partner, 2023-03-10) that cannot be
+  redistributed with the paper. Content is interpreted to match the Table 3
+  layout in the paper and the NYHKB instantiation (H2HOA).
+
+Provenance
+  Source: H2solo AB risk assessment and explosion protection documentation
+  (Appendix E), scope sections 5.1–5.3 (technical room, piping, external
+  building). Facility: on-site hydrogen production (~35 bar), compression to
+  350 bar storage (1650 L COPV), return feed to fuel cell (~3–6 bar).
+
+Disclaimer
+  These scenarios are qualitative engineering summaries, not a full risk
+  register. Likelihood and risk-reduction measures from the original analysis
+  are omitted here; only elements needed for ontological instantiation are kept.
+  Wording is the authors' interpretation for the research artefact.
+
+Link to knowledge base (NYHKB)
+  Each scenario has a stable ID (ES-*). Hazards, harmful events, and key
+  situations in nyhkb.ttl (version 1.2.1) reference these IDs in rdfs:comment
+  (search: "Empirical scenario ID"). The KB decomposes one empirical row into
+  several typed individuals; the index lists primary hazards only.
+
+Shared KB elements (not separate ES-* rows)
+  Piping releases ES-PL-01, ES-PL-02, and ES-PL-03 share Event_LowPressureRelease_
+  PipelineRoute and Event_HighPressureRelease_PipelineRoute in NYHKB. One release
+  can result in jet (ES-PL-01), culvert deflagration (ES-PL-02), and corridor
+  fireball (ES-PL-03) situations.
+
+Scenario index — hazards
+--------------------------------------------------------------------------------
+ID          Location (handling place)     Hazard type (summary)          NYHKB hazards (primary)
+ES-TR-01    Technical room              Release → jet / defl. / fireball Hazard_JetFire_TechnicalRoom, Hazard_Deflagration_TechnicalRoom, Hazard_Fireball_TechnicalRoom
+ES-TR-02    Technical room              Detonation (extreme)           Hazard_Detonation_TechnicalRoom
+ES-PL-01    Piping route                Above-ground leak → jet fire   Hazard_JetFire_PipelineRoute
+ES-PL-02    Piping route / culvert      Culvert accumulation → defl. Hazard_Deflagration_PipeCulvert
+ES-PL-03    Piping route                Delayed cloud ignition         Hazard_Fireball_PipelineRoute
+ES-EB-CR-01 Compressor room             Release in ATEX room           Hazard_Deflagration_CompressorRoom, Hazard_JetFire_CompressorRoom, Hazard_Fireball_CompressorRoom
+ES-EB-CR-02 Compressor room             Buffer bottle vent release     Hazard_JetFire_BufferCylinder
+ES-EB-CR-03 Compressor room             Compressor pressure exposure   Hazard_Pressure_Compressor
+ES-EB-ST-01 Hydrogen cylinder room      Mechanical damage to COPV      Hazard_JetFire_H2Cylinder, Hazard_Pressure_H2Cylinder
+ES-EB-ST-02 Hydrogen cylinder room      External fire → vessel failure Hazard_Thermal_H2Cylinder
+
+Scenario index — harmful events (NYHKB)
+--------------------------------------------------------------------------------
+ES-TR-01    HarmfulEvent_JetFire_TechnicalRoom, HarmfulEvent_Deflagration_TechnicalRoom, HarmfulEvent_Fireball_TechnicalRoom
+ES-TR-02    (detonation harmful event not separately instantiated)
+ES-PL-01    HarmfulEvent_JetFire_PipelineRoute
+ES-PL-02    HarmfulEvent_Deflagration_PipeCulvert
+ES-PL-03    HarmfulEvent_Fireball_PipelineRoute
+ES-EB-CR-01 HarmfulEvent_JetFire_CompressorRoom, HarmfulEvent_Deflagration_CompressorRoom, HarmfulEvent_Fireball_CompressorRoom
+ES-EB-CR-02 HarmfulEvent_JetFire_BufferCylinder
+ES-EB-CR-03 HarmfulEvent_PressureExposure_CompressorRoom
+ES-EB-ST-01 HarmfulEvent_JetFire_H2CylinderRoom, HarmfulEvent_PressureExposure_H2CylinderRoom
+ES-EB-ST-02 HarmfulEvent_ThermalExposure_ExternalBuilding
+
+Paper cross-reference
+  ES-TR-01 corresponds to Table 3 (equipment room representative scenario).
+  Table 4 in the paper applies the H2HOA instantiation questions to ES-TR-01.
+
+================================================================================
+ES-TR-01 — Uncontrolled hydrogen release in the technical room
+================================================================================
+(Table 3 representative scenario; Appendix E section 5.1.2.1–5.1.2.2)
+
+Element                 Description
+--------------------------------------------------------------------------------
+Physical location       Technical room (equipment room) inside the existing
+                        building: electrolyser, dryer, and fuel cell for on-site
+                        hydrogen production and consumption at approximately
+                        35 bar; no bulk storage; separate mechanical ventilation
+                        and gas detection planned.
+
+Hazard                  Uncontrolled release of hydrogen from production or
+                        consumption equipment.
+
+Cause                   Incorrect installation of hydrogen production or
+                        consumption equipment, or external physical impact on
+                        equipment (e.g. mechanical damage in the occupied room).
+
+Hazardous situation     Formation of a flammable or explosive hydrogen–air
+                        atmosphere in or near the confined equipment enclosure
+                        after release. The original analysis judges formation
+                        unlikely under normal design (small production rate,
+                        vent routing outdoors, competent installation).
+
+Hazardous event         Ignition of the explosive atmosphere by nearby ignition
+                        sources (hot surfaces, static discharge, or electrical
+                        sparking in the vicinity).
+
+Consequence             Fire or explosion (jet fire, deflagration, or fireball per
+                        Table 4) causing burn injury, blast/fragment effects, and
+                        damage to people, equipment, and the building.
+
+NYHKB (interpretation)  Location_TechnicalRoom; Event_LowPressureRelease_TechnicalRoom;
+                        Situation_ExplosiveAtmosphere_TechnicalRoom,
+                        Situation_FlammableCloud_TechnicalRoom;
+                        Event_HotSurfaceIgnition_TechnicalRoom,
+                        Event_StaticSparkIgnition_TechnicalRoom;
+                        Hazard_JetFire_TechnicalRoom, Hazard_Deflagration_TechnicalRoom,
+                        Hazard_Fireball_TechnicalRoom;
+                        HarmfulEvent_JetFire_TechnicalRoom,
+                        HarmfulEvent_Deflagration_TechnicalRoom,
+                        HarmfulEvent_Fireball_TechnicalRoom; harm to personnel and property.
+
+================================================================================
+ES-TR-02 — Detonation under severe confinement (technical room)
+================================================================================
+(Appendix E section 5.1.4; low-probability extreme case)
+
+Element                 Description
+--------------------------------------------------------------------------------
+Physical location       Technical room with confined equipment layout.
+
+Hazard                  Detonation of hydrogen–air mixture under severe
+                        confinement (extreme scenario).
+
+Cause                   High-energy ignition source acting on an explosive
+                        atmosphere in unfavourable confinement.
+
+Hazardous situation     Detonation conditions in the equipment space.
+
+Hazardous event         High-energy ignition.
+
+Consequence             Severe explosion with major injury, structural damage,
+                        and equipment loss.
+
+NYHKB (interpretation)  Situation_DetonationCondition_TechnicalRoom;
+                        Event_HighEnergyIgnition_TechnicalRoom;
+                        Hazard_Detonation_TechnicalRoom.
+
+================================================================================
+ES-PL-01 — Uncontrolled release from above-ground piping
+================================================================================
+(Appendix E section 5.2.2.1)
+
+Element                 Description
+--------------------------------------------------------------------------------
+Physical location       Hydrogen piping route between technical room and external
+                        building (above ground, through building fabric); pressures
+                        approximately 35 bar, 350 bar, and 3–6 bar on different legs.
+
+Hazard                  Uncontrolled hydrogen release from piping.
+
+Cause                   External mechanical impact on exposed piping (e.g. impact
+                        during works or vehicle contact where applicable).
+
+Hazardous situation     Hydrogen jet and/or flammable cloud along the piping corridor.
+
+Hazardous event         Ignition by static electricity or hot surfaces near the leak.
+
+Consequence             Jet fire threatening personnel and property; possible fire
+                        spread toward adjacent building volumes.
+
+NYHKB (interpretation)  Location_PipelineRoute; Component_H2Piping;
+                        Event_HighPressureRelease_PipelineRoute or
+                        Event_LowPressureRelease_PipelineRoute;
+                        Situation_HydrogenJet_PipelineRoute;
+                        Hazard_JetFire_PipelineRoute; HarmfulEvent_JetFire_PipelineRoute.
+
+================================================================================
+ES-PL-02 — Release and ignition in the pipe culvert
+================================================================================
+(Appendix E section 5.2.2.1)
+
+Element                 Description
+--------------------------------------------------------------------------------
+Physical location       Underground pipe culvert carrying hydrogen piping between
+                        technical room and external building.
+
+Hazard                  Uncontrolled release with accumulation in a confined culvert.
+
+Cause                   Excavation damage, other external impact, or leakage on
+                        the buried section.
+
+Hazardous situation     Explosive atmosphere in the closed culvert volume with
+                        potential pressure build-up before ignition.
+
+Hazardous event         Ignition (e.g. static electricity).
+
+Consequence             Deflagration or explosive overpressure; burn and blast
+                        trauma; damage to infrastructure and surroundings.
+
+NYHKB (interpretation)  Component_PipeCulvert; Situation_ExplosiveAtmosphere_PipeCulvert;
+                        Event_LowPressureRelease_PipelineRoute,
+                        Event_HighPressureRelease_PipelineRoute,
+                        Event_StaticSparkIgnition_PipelineRoute;
+                        Hazard_Deflagration_PipeCulvert;
+                        HarmfulEvent_Deflagration_PipeCulvert.
+
+================================================================================
+ES-PL-03 — Delayed ignition of dispersed cloud along piping route
+================================================================================
+(Appendix E section 5.2.2)
+
+Element                 Description
+--------------------------------------------------------------------------------
+Physical location       Piping corridor and surroundings between buildings.
+
+Hazard                  Fireball from ignition of a dispersed hydrogen cloud after
+                        delayed ignition.
+
+Cause                   Release followed by delayed ignition when a flammable cloud
+                        has spread along the route.
+
+Hazardous situation     Flammable vapor cloud along the piping route.
+
+Hazardous event         Ignition of the cloud.
+
+Consequence             Fireball affecting personnel and property along the corridor.
+
+NYHKB (interpretation)  Situation_FlammableCloud_PipelineRoute;
+                        Hazard_Fireball_PipelineRoute; HarmfulEvent_Fireball_PipelineRoute.
+
+================================================================================
+ES-EB-CR-01 — Uncontrolled release in the compressor and consumption room
+================================================================================
+(Appendix E section 5.3.2.1, 5.3.2.3)
+
+Element                 Description
+--------------------------------------------------------------------------------
+Physical location       Compressor and consumption room in the external building:
+                        compressor (35→350 bar), valves, safety relief paths, ATEX
+                        equipment; explosive atmosphere judged likely in normal operation.
+
+Hazard                  Uncontrolled hydrogen release with ignition of explosive
+                        atmosphere (deflagration, jet fire, or fireball).
+
+Cause                   Long-term wear, faulty installation, seal or connection
+                        failure, or friction/heating at the compressor; unclassified
+                        electrical equipment, static electricity, or hot surfaces.
+
+Hazardous situation     Explosive or flammable atmosphere in the enclosed compressor room.
+
+Hazardous event         Ignition (friction, hot surface, static spark, or escalation
+                        from an initial fire).
+
+Consequence             Explosion or jet fire; pressure effects; burn and fragmentation
+                        injuries; fire spread to adjacent rooms and the neighbouring building.
+
+NYHKB (interpretation)  Location_CompressorConsumptionRoom;
+                        Event_HighPressureRelease_CompressorRoom;
+                        Situation_ExplosiveAtmosphere_CompressorRoom (DeflagrationCondition),
+                        Situation_FlammableCloud_CompressorRoom,
+                        Situation_HydrogenJet_CompressorRoom;
+                        Hazard_Deflagration_CompressorRoom, Hazard_JetFire_CompressorRoom,
+                        Hazard_Fireball_CompressorRoom (inheresIn compressor / room confinement);
+                        HarmfulEvent_Deflagration_CompressorRoom,
+                        HarmfulEvent_JetFire_CompressorRoom,
+                        HarmfulEvent_Fireball_CompressorRoom.
+
+================================================================================
+ES-EB-CR-02 — Release from the buffer gas cylinder (5 L)
+================================================================================
+(Appendix E section 5.3.1.1; vent via needle valve HA-102)
+
+Element                 Description
+--------------------------------------------------------------------------------
+Physical location       Compressor and consumption room; connected 5 L portable
+                        buffer cylinder on the process piping.
+
+Hazard                  Uncontrolled release from the buffer cylinder vent path.
+
+Cause                   Operational venting or failure during buffer supply when
+                        line pressure is low.
+
+Hazardous situation     Hydrogen jet in the compressor room.
+
+Hazardous event         Ignition near the release.
+
+Consequence             Jet fire in the compressor space.
+
+NYHKB (interpretation)  Component_BufferCylinder; HazardSource_BufferCylinder;
+                        Hazard_JetFire_BufferCylinder; Event_Rupture_BufferCylinder;
+                        HarmfulEvent_JetFire_BufferCylinder.
+
+================================================================================
+ES-EB-CR-03 — Pressure exposure from compressor operation
+================================================================================
+(Appendix E section 5.3.1.1)
+
+Element                 Description
+--------------------------------------------------------------------------------
+Physical location       Compressor and consumption room.
+
+Hazard                  Pressure hazard associated with compressor and pressurised
+                        piping (non-flammability mechanical hazard).
+
+Cause                   Malfunction or failure of pressure-containing equipment.
+
+Hazardous situation     (Not modelled as flammable atmosphere; pressure exposure
+                        to occupants in the room.)
+
+Hazardous event         Loss of pressure integrity without immediate ignition.
+
+Consequence             Pressure wave or overpressure exposure to people in the room.
+
+NYHKB (interpretation)  Hazard_Pressure_Compressor;
+                        HarmfulEvent_PressureExposure_CompressorRoom.
+
+================================================================================
+ES-EB-ST-01 — Mechanical damage to the stored hydrogen cylinder
+================================================================================
+(Appendix E section 5.3.2.1)
+
+Element                 Description
+--------------------------------------------------------------------------------
+Physical location       Dedicated hydrogen cylinder room (1650 L, 350 bar, Type IV COPV).
+
+Hazard                  Uncontrolled high-pressure release from the storage cylinder.
+
+Cause                   External mechanical impact damaging the cylinder shell or
+                        connections (judged unlikely for normal valve arrangements alone).
+
+Hazardous situation     High-pressure hydrogen jet.
+
+Hazardous event         (Immediate release; ignition may follow.)
+
+Consequence             Jet fire, blast, and severe harm to people and structures.
+
+NYHKB (interpretation)  Location_H2CylinderRoom; Component_H2Cylinder_1650L;
+                        Situation_HydrogenJet_H2CylinderRoom;
+                        Hazard_JetFire_H2Cylinder, Hazard_Pressure_H2Cylinder;
+                        HarmfulEvent_JetFire_H2CylinderRoom,
+                        HarmfulEvent_PressureExposure_H2CylinderRoom.
+
+================================================================================
+ES-EB-ST-02 — External fire impinging on the hydrogen cylinder
+================================================================================
+(Appendix E section 5.3.2.2)
+
+Element                 Description
+--------------------------------------------------------------------------------
+Physical location       Hydrogen cylinder room; adjacent compressor room or
+                        neighbouring building fire as initiating context.
+
+Hazard                  Thermal and pressure failure of the hydrogen cylinder due
+                        to external fire heating.
+
+Cause                   Fire in an adjacent room or nearby building heating the COPV
+                        beyond relief capacity.
+
+Hazardous situation     Equipment damage and rising vessel pressure / weakening.
+
+Hazardous event         Rupture or catastrophic failure of the cylinder when pressure
+                        relief is insufficient.
+
+Consequence             Major explosion; serious injury; widespread property and
+                        environmental damage over a large area.
+
+NYHKB (interpretation)  Event_ExternalFire_CompressorRoom;
+                        Situation_EquipmentDamage_ExternalFire;
+                        Event_Rupture_H2Cylinder → Situation_HydrogenJet_H2CylinderRoom;
+                        Hazard_Thermal_H2Cylinder;
+                        HarmfulEvent_ThermalExposure_ExternalBuilding;
+                        Harm_ThermalDamage_ExternalBuilding, Harm_BlastTrauma_H2Cylinder.
+
+================================================================================
+End of empirical hazard scenarios
+================================================================================
