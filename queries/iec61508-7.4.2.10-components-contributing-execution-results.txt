@@ -1,0 +1,82 @@
+--- QUERY ---
+
+# IEC 61508-1 7.4.2.10: hazardous components, hazard sources, hazards, and triggering events
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
+PREFIX h2hoa: <https://w3id.org/jochumsson/h2hoa#>
+
+SELECT ?component ?location ?hazardSource ?hazard ?event
+WHERE {
+  ?event ho61508:triggers ?hazard .
+  ?hazard ho61508:inheresIn ?hazardSource .
+  ?hazardSource ho61508:carriedBy ?component .
+
+  OPTIONAL { ?component h2hoa:locatedIn ?location . }
+
+  ?component rdf:type/rdfs:subClassOf* h2hoa:HazardousComponent .
+  ?hazardSource rdf:type/rdfs:subClassOf* ho61508:HazardSource .
+  ?hazard rdf:type/rdfs:subClassOf* ho61508:Hazard .
+  ?event rdf:type/rdfs:subClassOf* ho61508:HazardousEvent .
+}
+
+--- FORMATTED QUERY RESULTS ---
+
++----------------------------+----------------+-----------------------------------+------------------------------+--------------------------------------+
+| Component                  | Location       | Hazard Source                     | Hazard                       | Event                                |
++----------------------------+----------------+-----------------------------------+------------------------------+--------------------------------------+
+| TechnicalRoom_Enclosure    | TechnicalRoom  | TechnicalRoom_Confinement         | Fireball_TechnicalRoom       | StaticSparkIgnition_TechnicalRoom    |
+| TechnicalRoom_Enclosure    | TechnicalRoom  | TechnicalRoom_Confinement         | Deflagration_TechnicalRoom   | StaticSparkIgnition_TechnicalRoom    |
+| TechnicalRoom_Enclosure    | TechnicalRoom  | TechnicalRoom_Confinement         | Deflagration_TechnicalRoom   | HotSurfaceIgnition_TechnicalRoom     |
+| H2Cylinder_1650L           | H2CylinderRoom | H2Cylinder                        | Pressure_H2Cylinder          | Rupture_H2Cylinder                   |
+| Electrolyser               | TechnicalRoom  | Electrolyser                      | JetFire_TechnicalRoom        | HotSurfaceIgnition_TechnicalRoom     |
+| H2Cylinder_1650L           | H2CylinderRoom | H2Cylinder                        | Detonation_H2Cylinder        | HighEnergyIgnition_H2CylinderRoom    |
+| TechnicalRoom_Enclosure    | TechnicalRoom  | TechnicalRoom_Confinement         | Fireball_TechnicalRoom       | HotSurfaceIgnition_TechnicalRoom     |
+| Electrolyser               | TechnicalRoom  | Electrolyser                      | JetFire_TechnicalRoom        | StaticSparkIgnition_TechnicalRoom    |
+| H2Piping                   | PipelineRoute  | H2Piping                          | Fireball_PipelineRoute       | StaticSparkIgnition_PipelineRoute    |
+| H2Compressor               | CompressorRoom | Compressor                        | JetFire_CompressorRoom       | FrictionIgnition_CompressorRoom      |
+| CompressorRoom_Enclosure   | CompressorRoom | CompressorRoom_Confinement        | Deflagration_CompressorRoom  | StaticSparkIgnition_CompressorRoom   |
+| CompressorRoom_Enclosure   | CompressorRoom | CompressorRoom_Confinement        | Deflagration_CompressorRoom  | HotSurfaceIgnition_CompressorRoom    |
+| H2Compressor               | CompressorRoom | Compressor                        | JetFire_CompressorRoom       | StaticSparkIgnition_CompressorRoom   |
+| CompressorRoom_Enclosure   | CompressorRoom | CompressorRoom_Confinement        | Fireball_CompressorRoom      | EscalationIgnition_CompressorRoom    |
+| CompressorRoom_Enclosure   | CompressorRoom | CompressorRoom_Confinement        | Fireball_CompressorRoom      | StaticSparkIgnition_CompressorRoom   |
+| H2Compressor               | CompressorRoom | Compressor                        | JetFire_CompressorRoom       | EscalationIgnition_CompressorRoom    |
+| TechnicalRoom_Enclosure    | TechnicalRoom  | TechnicalRoom_Confinement         | Detonation_TechnicalRoom     | HighEnergyIgnition_TechnicalRoom     |
+| PipeCulvert                | PipelineRoute  | PipeCulvert                       | Deflagration_PipeCulvert     | StaticSparkIgnition_PipelineRoute    |
+| H2Compressor               | CompressorRoom | Compressor                        | JetFire_CompressorRoom       | HotSurfaceIgnition_CompressorRoom    |
+| CompressorRoom_Enclosure   | CompressorRoom | CompressorRoom_Confinement        | Deflagration_CompressorRoom  | EscalationIgnition_CompressorRoom    |
+| CompressorRoom_Enclosure   | CompressorRoom | CompressorRoom_Confinement        | Fireball_CompressorRoom      | FrictionIgnition_CompressorRoom      |
+| CompressorRoom_Enclosure   | CompressorRoom | CompressorRoom_Confinement        | Deflagration_CompressorRoom  | FrictionIgnition_CompressorRoom      |
+| CompressorRoom_Enclosure   | CompressorRoom | CompressorRoom_Confinement        | Fireball_CompressorRoom      | HotSurfaceIgnition_CompressorRoom    |
+| H2Piping                   | PipelineRoute  | H2Piping                          | JetFire_PipelineRoute        | StaticSparkIgnition_PipelineRoute    |
++----------------------------+----------------+-----------------------------------+------------------------------+--------------------------------------+
+
+--- RAW QUERY RESULTS ---
+component,location,hazardSource,hazard,event
+https://w3id.org/jochumsson/nyhkb#Component_TechnicalRoom_Enclosure,https://w3id.org/jochumsson/nyhkb#Location_TechnicalRoom,https://w3id.org/jochumsson/nyhkb#HazardSource_TechnicalRoom_Confinement,https://w3id.org/jochumsson/nyhkb#Hazard_Fireball_TechnicalRoom,https://w3id.org/jochumsson/nyhkb#Event_StaticSparkIgnition_TechnicalRoom
+https://w3id.org/jochumsson/nyhkb#Component_TechnicalRoom_Enclosure,https://w3id.org/jochumsson/nyhkb#Location_TechnicalRoom,https://w3id.org/jochumsson/nyhkb#HazardSource_TechnicalRoom_Confinement,https://w3id.org/jochumsson/nyhkb#Hazard_Deflagration_TechnicalRoom,https://w3id.org/jochumsson/nyhkb#Event_StaticSparkIgnition_TechnicalRoom
+https://w3id.org/jochumsson/nyhkb#Component_TechnicalRoom_Enclosure,https://w3id.org/jochumsson/nyhkb#Location_TechnicalRoom,https://w3id.org/jochumsson/nyhkb#HazardSource_TechnicalRoom_Confinement,https://w3id.org/jochumsson/nyhkb#Hazard_Deflagration_TechnicalRoom,https://w3id.org/jochumsson/nyhkb#Event_HotSurfaceIgnition_TechnicalRoom
+https://w3id.org/jochumsson/nyhkb#Component_H2Cylinder_1650L,https://w3id.org/jochumsson/nyhkb#Location_H2CylinderRoom,https://w3id.org/jochumsson/nyhkb#HazardSource_H2Cylinder,https://w3id.org/jochumsson/nyhkb#Hazard_Pressure_H2Cylinder,https://w3id.org/jochumsson/nyhkb#Event_Rupture_H2Cylinder
+https://w3id.org/jochumsson/nyhkb#Component_Electrolyser,https://w3id.org/jochumsson/nyhkb#Location_TechnicalRoom,https://w3id.org/jochumsson/nyhkb#HazardSource_Electrolyser,https://w3id.org/jochumsson/nyhkb#Hazard_JetFire_TechnicalRoom,https://w3id.org/jochumsson/nyhkb#Event_HotSurfaceIgnition_TechnicalRoom
+https://w3id.org/jochumsson/nyhkb#Component_H2Cylinder_1650L,https://w3id.org/jochumsson/nyhkb#Location_H2CylinderRoom,https://w3id.org/jochumsson/nyhkb#HazardSource_H2Cylinder,https://w3id.org/jochumsson/nyhkb#Hazard_Detonation_H2Cylinder,https://w3id.org/jochumsson/nyhkb#Event_HighEnergyIgnition_H2CylinderRoom
+https://w3id.org/jochumsson/nyhkb#Component_TechnicalRoom_Enclosure,https://w3id.org/jochumsson/nyhkb#Location_TechnicalRoom,https://w3id.org/jochumsson/nyhkb#HazardSource_TechnicalRoom_Confinement,https://w3id.org/jochumsson/nyhkb#Hazard_Fireball_TechnicalRoom,https://w3id.org/jochumsson/nyhkb#Event_HotSurfaceIgnition_TechnicalRoom
+https://w3id.org/jochumsson/nyhkb#Component_Electrolyser,https://w3id.org/jochumsson/nyhkb#Location_TechnicalRoom,https://w3id.org/jochumsson/nyhkb#HazardSource_Electrolyser,https://w3id.org/jochumsson/nyhkb#Hazard_JetFire_TechnicalRoom,https://w3id.org/jochumsson/nyhkb#Event_StaticSparkIgnition_TechnicalRoom
+https://w3id.org/jochumsson/nyhkb#Component_H2Piping,https://w3id.org/jochumsson/nyhkb#Location_PipelineRoute,https://w3id.org/jochumsson/nyhkb#HazardSource_H2Piping,https://w3id.org/jochumsson/nyhkb#Hazard_Fireball_PipelineRoute,https://w3id.org/jochumsson/nyhkb#Event_StaticSparkIgnition_PipelineRoute
+https://w3id.org/jochumsson/nyhkb#Component_H2Compressor,https://w3id.org/jochumsson/nyhkb#Location_CompressorRoom,https://w3id.org/jochumsson/nyhkb#HazardSource_Compressor,https://w3id.org/jochumsson/nyhkb#Hazard_JetFire_CompressorRoom,https://w3id.org/jochumsson/nyhkb#Event_FrictionIgnition_CompressorRoom
+https://w3id.org/jochumsson/nyhkb#Component_CompressorRoom_Enclosure,https://w3id.org/jochumsson/nyhkb#Location_CompressorRoom,https://w3id.org/jochumsson/nyhkb#HazardSource_CompressorRoom_Confinement,https://w3id.org/jochumsson/nyhkb#Hazard_Deflagration_CompressorRoom,https://w3id.org/jochumsson/nyhkb#Event_StaticSparkIgnition_CompressorRoom
+https://w3id.org/jochumsson/nyhkb#Component_CompressorRoom_Enclosure,https://w3id.org/jochumsson/nyhkb#Location_CompressorRoom,https://w3id.org/jochumsson/nyhkb#HazardSource_CompressorRoom_Confinement,https://w3id.org/jochumsson/nyhkb#Hazard_Deflagration_CompressorRoom,https://w3id.org/jochumsson/nyhkb#Event_HotSurfaceIgnition_CompressorRoom
+https://w3id.org/jochumsson/nyhkb#Component_H2Compressor,https://w3id.org/jochumsson/nyhkb#Location_CompressorRoom,https://w3id.org/jochumsson/nyhkb#HazardSource_Compressor,https://w3id.org/jochumsson/nyhkb#Hazard_JetFire_CompressorRoom,https://w3id.org/jochumsson/nyhkb#Event_StaticSparkIgnition_CompressorRoom
+https://w3id.org/jochumsson/nyhkb#Component_CompressorRoom_Enclosure,https://w3id.org/jochumsson/nyhkb#Location_CompressorRoom,https://w3id.org/jochumsson/nyhkb#HazardSource_CompressorRoom_Confinement,https://w3id.org/jochumsson/nyhkb#Hazard_Fireball_CompressorRoom,https://w3id.org/jochumsson/nyhkb#Event_EscalationIgnition_CompressorRoom
+https://w3id.org/jochumsson/nyhkb#Component_CompressorRoom_Enclosure,https://w3id.org/jochumsson/nyhkb#Location_CompressorRoom,https://w3id.org/jochumsson/nyhkb#HazardSource_CompressorRoom_Confinement,https://w3id.org/jochumsson/nyhkb#Hazard_Fireball_CompressorRoom,https://w3id.org/jochumsson/nyhkb#Event_StaticSparkIgnition_CompressorRoom
+https://w3id.org/jochumsson/nyhkb#Component_H2Compressor,https://w3id.org/jochumsson/nyhkb#Location_CompressorRoom,https://w3id.org/jochumsson/nyhkb#HazardSource_Compressor,https://w3id.org/jochumsson/nyhkb#Hazard_JetFire_CompressorRoom,https://w3id.org/jochumsson/nyhkb#Event_EscalationIgnition_CompressorRoom
+https://w3id.org/jochumsson/nyhkb#Component_TechnicalRoom_Enclosure,https://w3id.org/jochumsson/nyhkb#Location_TechnicalRoom,https://w3id.org/jochumsson/nyhkb#HazardSource_TechnicalRoom_Confinement,https://w3id.org/jochumsson/nyhkb#Hazard_Detonation_TechnicalRoom,https://w3id.org/jochumsson/nyhkb#Event_HighEnergyIgnition_TechnicalRoom
+https://w3id.org/jochumsson/nyhkb#Component_PipeCulvert,https://w3id.org/jochumsson/nyhkb#Location_PipelineRoute,https://w3id.org/jochumsson/nyhkb#HazardSource_PipeCulvert,https://w3id.org/jochumsson/nyhkb#Hazard_Deflagration_PipeCulvert,https://w3id.org/jochumsson/nyhkb#Event_StaticSparkIgnition_PipelineRoute
+https://w3id.org/jochumsson/nyhkb#Component_H2Compressor,https://w3id.org/jochumsson/nyhkb#Location_CompressorRoom,https://w3id.org/jochumsson/nyhkb#HazardSource_Compressor,https://w3id.org/jochumsson/nyhkb#Hazard_JetFire_CompressorRoom,https://w3id.org/jochumsson/nyhkb#Event_HotSurfaceIgnition_CompressorRoom
+https://w3id.org/jochumsson/nyhkb#Component_CompressorRoom_Enclosure,https://w3id.org/jochumsson/nyhkb#Location_CompressorRoom,https://w3id.org/jochumsson/nyhkb#HazardSource_CompressorRoom_Confinement,https://w3id.org/jochumsson/nyhkb#Hazard_Deflagration_CompressorRoom,https://w3id.org/jochumsson/nyhkb#Event_EscalationIgnition_CompressorRoom
+https://w3id.org/jochumsson/nyhkb#Component_CompressorRoom_Enclosure,https://w3id.org/jochumsson/nyhkb#Location_CompressorRoom,https://w3id.org/jochumsson/nyhkb#HazardSource_CompressorRoom_Confinement,https://w3id.org/jochumsson/nyhkb#Hazard_Fireball_CompressorRoom,https://w3id.org/jochumsson/nyhkb#Event_FrictionIgnition_CompressorRoom
+https://w3id.org/jochumsson/nyhkb#Component_CompressorRoom_Enclosure,https://w3id.org/jochumsson/nyhkb#Location_CompressorRoom,https://w3id.org/jochumsson/nyhkb#HazardSource_CompressorRoom_Confinement,https://w3id.org/jochumsson/nyhkb#Hazard_Deflagration_CompressorRoom,https://w3id.org/jochumsson/nyhkb#Event_FrictionIgnition_CompressorRoom
+https://w3id.org/jochumsson/nyhkb#Component_CompressorRoom_Enclosure,https://w3id.org/jochumsson/nyhkb#Location_CompressorRoom,https://w3id.org/jochumsson/nyhkb#HazardSource_CompressorRoom_Confinement,https://w3id.org/jochumsson/nyhkb#Hazard_Fireball_CompressorRoom,https://w3id.org/jochumsson/nyhkb#Event_HotSurfaceIgnition_CompressorRoom
+https://w3id.org/jochumsson/nyhkb#Component_H2Piping,https://w3id.org/jochumsson/nyhkb#Location_PipelineRoute,https://w3id.org/jochumsson/nyhkb#HazardSource_H2Piping,https://w3id.org/jochumsson/nyhkb#Hazard_JetFire_PipelineRoute,https://w3id.org/jochumsson/nyhkb#Event_StaticSparkIgnition_PipelineRoute
+
+
+VALIDATION COMPLETE

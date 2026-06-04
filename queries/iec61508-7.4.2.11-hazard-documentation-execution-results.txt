@@ -1,0 +1,287 @@
+--- QUERY ---
+
+# IEC 61508-1 7.4.2.11: documented hazard-related information in the knowledge base
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
+PREFIX h2hoa: <https://w3id.org/jochumsson/h2hoa#>
+
+SELECT ?subject ?predicate ?object ?comment
+WHERE {
+  VALUES ?predicate {
+    ho61508:inheresIn
+    ho61508:manifestsIn
+    ho61508:triggers
+    h2hoa:triggeredBy
+    ho61508:resultsIn
+    ho61508:enables
+    ho61508:involves
+    ho61508:exposes
+    ho61508:causes
+    ho61508:leadsTo
+    h2hoa:carries
+    h2hoa:locatedIn
+  }
+
+  ?subject ?predicate ?object .
+
+  {
+    ?subject rdf:type/rdfs:subClassOf* ho61508:Hazard .
+  }
+  UNION
+  {
+    ?subject rdf:type/rdfs:subClassOf* ho61508:HazardousEvent .
+  }
+  UNION
+  {
+    ?subject rdf:type/rdfs:subClassOf* ho61508:HazardousSituation .
+  }
+  UNION
+  {
+    ?subject rdf:type/rdfs:subClassOf* ho61508:HarmfulEvent .
+  }
+
+  OPTIONAL { ?subject rdfs:comment ?comment . }
+}
+
+--- FORMATTED QUERY RESULTS ---
+
+1. Hazard Sources, Hazards and Documentation:
++-----------------------------+------------------------------+------------------------------------------+
+| Hazard                      | Hazard Source                | Documentation                            |
++-----------------------------+------------------------------+------------------------------------------+
+| JetFire_TechnicalRoom       | Electrolyser                | ES-TR-01                                 |
+| Fireball_TechnicalRoom      | TechnicalRoom_Confinement   | ES-TR-01                                 |
+| Deflagration_TechnicalRoom  | TechnicalRoom_Confinement   | ES-TR-01                                 |
+| Detonation_TechnicalRoom    | TechnicalRoom_Confinement   | ES-TR-02                                 |
+| Pressure_H2Cylinder         | H2Cylinder                  | ES-EB-ST-01                              |
++-----------------------------+------------------------------+------------------------------------------+
+
+2. Triggering Events, Hazards and Documentation:
++------------------------------------+----------------------------+------------------------------------------+
+| Triggering Event                   | Hazard                     | Documentation                            |
++------------------------------------+----------------------------+------------------------------------------+
+| StaticSparkIgnition_TechnicalRoom  | Fireball_TechnicalRoom     | ES-TR-01                                 |
+| StaticSparkIgnition_TechnicalRoom  | Deflagration_TechnicalRoom | ES-TR-01                                 |
+| HotSurfaceIgnition_TechnicalRoom   | JetFire_TechnicalRoom      | ES-TR-01                                 |
+| HighEnergyIgnition_TechnicalRoom   | Detonation_TechnicalRoom   | ES-TR-02                                 |
++------------------------------------+----------------------------+------------------------------------------+
+
+3. Event Sequences and Documentation:
++-----------------------------------+--------------------------------------+--------------------------------------+------------------+
+| Prior Event                       | Hazardous Situation                  | Enabling Event                       | Documentation    |
++-----------------------------------+--------------------------------------+--------------------------------------+------------------+
+| LowPressureRelease_TechnicalRoom  | ExplosiveAtmosphere_TechnicalRoom    | StaticSparkIgnition_TechnicalRoom    | ES-TR-01         |
+| LowPressureRelease_TechnicalRoom  | ExplosiveAtmosphere_TechnicalRoom    | HotSurfaceIgnition_TechnicalRoom     | ES-TR-01         |
+| HighPressureRelease_PipelineRoute | HydrogenJet_PipelineRoute            | StaticSparkIgnition_PipelineRoute    | ES-PL-01         |
+| ExternalFire_CompressorRoom       | EquipmentDamage_CompressorRoom       | Rupture_H2Cylinder                   | ES-EB-ST-02      |
++-----------------------------------+--------------------------------------+--------------------------------------+------------------+
+
+4. Harmful Events, Harm and Documentation:
++--------------------------------+--------------------------------------+------------------------------------------+
+| Harmful Event                  | Harm                                 | Documentation                            |
++--------------------------------+--------------------------------------+------------------------------------------+
+| Fireball_TechnicalRoom         | BurnInjury_TechnicalRoom             | ES-TR-01                                 |
+| Fireball_TechnicalRoom         | PropertyDamage_TechnicalRoom         | ES-TR-01                                 |
+| Deflagration_TechnicalRoom     | BlastTrauma_TechnicalRoom            | ES-TR-01                                 |
+| JetFire_TechnicalRoom          | BurnInjury_TechnicalRoom             | ES-TR-01                                 |
+| Detonation_H2Cylinder          | BlastTrauma_H2Cylinder               | ES-EB-ST-02                              |
+| Detonation_H2Cylinder          | PropertyDamage_H2CylinderRoom        | ES-EB-ST-02                              |
++--------------------------------+--------------------------------------+------------------------------------------+
+
+
+--- RAW QUERY RESULTS ---
+
+subject,predicate,object,comment
+https://w3id.org/jochumsson/nyhkb#Hazard_JetFire_BufferCylinder,https://w3id.org/jochumsson/ho61508#inheresIn,https://w3id.org/jochumsson/nyhkb#HazardSource_BufferCylinder,Empirical scenario ID: ES-EB-CR-02. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#Hazard_Detonation_TechnicalRoom,https://w3id.org/jochumsson/ho61508#inheresIn,https://w3id.org/jochumsson/nyhkb#HazardSource_TechnicalRoom_Confinement,"Empirical scenario ID: ES-TR-02. See empirical-hazard-scenarios.txt. Low-probability detonation under severe confinement (Appendix E, section 5.1.4)."
+https://w3id.org/jochumsson/nyhkb#Hazard_Deflagration_CompressorRoom,https://w3id.org/jochumsson/ho61508#inheresIn,https://w3id.org/jochumsson/nyhkb#HazardSource_CompressorRoom_Confinement,Empirical scenario ID: ES-EB-CR-01. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#Hazard_Pressure_H2Cylinder,https://w3id.org/jochumsson/ho61508#inheresIn,https://w3id.org/jochumsson/nyhkb#HazardSource_H2Cylinder,Empirical scenario ID: ES-EB-ST-01. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#Hazard_JetFire_H2Cylinder,https://w3id.org/jochumsson/ho61508#inheresIn,https://w3id.org/jochumsson/nyhkb#HazardSource_H2Cylinder,Empirical scenario ID: ES-EB-ST-01. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#Hazard_Deflagration_PipeCulvert,https://w3id.org/jochumsson/ho61508#inheresIn,https://w3id.org/jochumsson/nyhkb#HazardSource_PipeCulvert,"Empirical scenario ID: ES-PL-02. See empirical-hazard-scenarios.txt. Accumulation and ignition in culvert; pressure-build-up risk (Appendix E, section 5.2.2.1)."
+https://w3id.org/jochumsson/nyhkb#Hazard_Pressure_Compressor,https://w3id.org/jochumsson/ho61508#inheresIn,https://w3id.org/jochumsson/nyhkb#HazardSource_Compressor,Empirical scenario ID: ES-EB-CR-03. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#Hazard_Fireball_CompressorRoom,https://w3id.org/jochumsson/ho61508#inheresIn,https://w3id.org/jochumsson/nyhkb#HazardSource_CompressorRoom_Confinement,Empirical scenario ID: ES-EB-CR-01. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#Hazard_Deflagration_TechnicalRoom,https://w3id.org/jochumsson/ho61508#inheresIn,https://w3id.org/jochumsson/nyhkb#HazardSource_TechnicalRoom_Confinement,"Empirical scenario ID: ES-TR-01. See empirical-hazard-scenarios.txt. Deflagration from flammable hydrogen–air mixture in enclosed equipment room (Appendix E, section 5.1.2.1; paper Table 3–4)."
+https://w3id.org/jochumsson/nyhkb#Hazard_Thermal_H2Cylinder,https://w3id.org/jochumsson/ho61508#inheresIn,https://w3id.org/jochumsson/nyhkb#HazardSource_H2Cylinder,"Empirical scenario ID: ES-EB-ST-02. See empirical-hazard-scenarios.txt. Cylinder heating from external fire in adjacent compressor room (Appendix E, section 5.3.2.2); manifests as thermal exposure during heating."
+https://w3id.org/jochumsson/nyhkb#Hazard_Detonation_H2Cylinder,https://w3id.org/jochumsson/ho61508#inheresIn,https://w3id.org/jochumsson/nyhkb#HazardSource_H2Cylinder,"Empirical scenario ID: ES-EB-ST-02. See empirical-hazard-scenarios.txt. Major explosion after vessel failure following external fire (Appendix E, section 5.3.2.2)."
+https://w3id.org/jochumsson/nyhkb#Hazard_Fireball_PipelineRoute,https://w3id.org/jochumsson/ho61508#inheresIn,https://w3id.org/jochumsson/nyhkb#HazardSource_H2Piping,"Empirical scenario ID: ES-PL-03. See empirical-hazard-scenarios.txt. Delayed ignition of dispersed cloud along piping corridor (Appendix E, section 5.2.2)."
+https://w3id.org/jochumsson/nyhkb#Hazard_JetFire_TechnicalRoom,https://w3id.org/jochumsson/ho61508#inheresIn,https://w3id.org/jochumsson/nyhkb#HazardSource_Electrolyser,"Empirical scenario ID: ES-TR-01. See empirical-hazard-scenarios.txt. Jet fire from pressurised release and ignition at production equipment (interpretation of Appendix E, section 5.1.2)."
+https://w3id.org/jochumsson/nyhkb#Hazard_JetFire_CompressorRoom,https://w3id.org/jochumsson/ho61508#inheresIn,https://w3id.org/jochumsson/nyhkb#HazardSource_Compressor,Empirical scenario ID: ES-EB-CR-01. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#Hazard_JetFire_PipelineRoute,https://w3id.org/jochumsson/ho61508#inheresIn,https://w3id.org/jochumsson/nyhkb#HazardSource_H2Piping,Empirical scenario ID: ES-PL-01. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#Hazard_Fireball_TechnicalRoom,https://w3id.org/jochumsson/ho61508#inheresIn,https://w3id.org/jochumsson/nyhkb#HazardSource_TechnicalRoom_Confinement,Empirical scenario ID: ES-TR-01 (Table 4 extension). See empirical-hazard-scenarios.txt. Delayed ignition of dispersed hydrogen cloud in equipment room (paper Table 4).
+https://w3id.org/jochumsson/nyhkb#Hazard_Detonation_H2Cylinder,https://w3id.org/jochumsson/ho61508#manifestsIn,https://w3id.org/jochumsson/nyhkb#HarmfulEvent_Detonation_ExternalBuilding,"Empirical scenario ID: ES-EB-ST-02. See empirical-hazard-scenarios.txt. Major explosion after vessel failure following external fire (Appendix E, section 5.3.2.2)."
+https://w3id.org/jochumsson/nyhkb#Hazard_Fireball_PipelineRoute,https://w3id.org/jochumsson/ho61508#manifestsIn,https://w3id.org/jochumsson/nyhkb#HarmfulEvent_Fireball_PipelineRoute,"Empirical scenario ID: ES-PL-03. See empirical-hazard-scenarios.txt. Delayed ignition of dispersed cloud along piping corridor (Appendix E, section 5.2.2)."
+https://w3id.org/jochumsson/nyhkb#Hazard_Deflagration_TechnicalRoom,https://w3id.org/jochumsson/ho61508#manifestsIn,https://w3id.org/jochumsson/nyhkb#HarmfulEvent_Deflagration_TechnicalRoom,"Empirical scenario ID: ES-TR-01. See empirical-hazard-scenarios.txt. Deflagration from flammable hydrogen–air mixture in enclosed equipment room (Appendix E, section 5.1.2.1; paper Table 3–4)."
+https://w3id.org/jochumsson/nyhkb#Hazard_Fireball_TechnicalRoom,https://w3id.org/jochumsson/ho61508#manifestsIn,https://w3id.org/jochumsson/nyhkb#HarmfulEvent_Fireball_TechnicalRoom,Empirical scenario ID: ES-TR-01 (Table 4 extension). See empirical-hazard-scenarios.txt. Delayed ignition of dispersed hydrogen cloud in equipment room (paper Table 4).
+https://w3id.org/jochumsson/nyhkb#Hazard_Pressure_Compressor,https://w3id.org/jochumsson/ho61508#manifestsIn,https://w3id.org/jochumsson/nyhkb#HarmfulEvent_PressureExposure_CompressorRoom,Empirical scenario ID: ES-EB-CR-03. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#Hazard_Pressure_H2Cylinder,https://w3id.org/jochumsson/ho61508#manifestsIn,https://w3id.org/jochumsson/nyhkb#HarmfulEvent_PressureExposure_H2CylinderRoom,Empirical scenario ID: ES-EB-ST-01. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#Hazard_JetFire_BufferCylinder,https://w3id.org/jochumsson/ho61508#manifestsIn,https://w3id.org/jochumsson/nyhkb#HarmfulEvent_JetFire_BufferCylinder,Empirical scenario ID: ES-EB-CR-02. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#Hazard_JetFire_PipelineRoute,https://w3id.org/jochumsson/ho61508#manifestsIn,https://w3id.org/jochumsson/nyhkb#HarmfulEvent_JetFire_PipelineRoute,Empirical scenario ID: ES-PL-01. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#Hazard_JetFire_TechnicalRoom,https://w3id.org/jochumsson/ho61508#manifestsIn,https://w3id.org/jochumsson/nyhkb#HarmfulEvent_JetFire_TechnicalRoom,"Empirical scenario ID: ES-TR-01. See empirical-hazard-scenarios.txt. Jet fire from pressurised release and ignition at production equipment (interpretation of Appendix E, section 5.1.2)."
+https://w3id.org/jochumsson/nyhkb#Hazard_JetFire_H2Cylinder,https://w3id.org/jochumsson/ho61508#manifestsIn,https://w3id.org/jochumsson/nyhkb#HarmfulEvent_JetFire_H2CylinderRoom,Empirical scenario ID: ES-EB-ST-01. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#Hazard_JetFire_CompressorRoom,https://w3id.org/jochumsson/ho61508#manifestsIn,https://w3id.org/jochumsson/nyhkb#HarmfulEvent_JetFire_CompressorRoom,Empirical scenario ID: ES-EB-CR-01. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#Hazard_Deflagration_PipeCulvert,https://w3id.org/jochumsson/ho61508#manifestsIn,https://w3id.org/jochumsson/nyhkb#HarmfulEvent_Deflagration_PipeCulvert,"Empirical scenario ID: ES-PL-02. See empirical-hazard-scenarios.txt. Accumulation and ignition in culvert; pressure-build-up risk (Appendix E, section 5.2.2.1)."
+https://w3id.org/jochumsson/nyhkb#Hazard_Deflagration_CompressorRoom,https://w3id.org/jochumsson/ho61508#manifestsIn,https://w3id.org/jochumsson/nyhkb#HarmfulEvent_Deflagration_CompressorRoom,Empirical scenario ID: ES-EB-CR-01. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#Hazard_Thermal_H2Cylinder,https://w3id.org/jochumsson/ho61508#manifestsIn,https://w3id.org/jochumsson/nyhkb#HarmfulEvent_ThermalExposure_ExternalBuilding,"Empirical scenario ID: ES-EB-ST-02. See empirical-hazard-scenarios.txt. Cylinder heating from external fire in adjacent compressor room (Appendix E, section 5.3.2.2); manifests as thermal exposure during heating."
+https://w3id.org/jochumsson/nyhkb#Hazard_Fireball_CompressorRoom,https://w3id.org/jochumsson/ho61508#manifestsIn,https://w3id.org/jochumsson/nyhkb#HarmfulEvent_Fireball_CompressorRoom,Empirical scenario ID: ES-EB-CR-01. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#Event_StaticSparkIgnition_TechnicalRoom,https://w3id.org/jochumsson/ho61508#triggers,https://w3id.org/jochumsson/nyhkb#Hazard_Fireball_TechnicalRoom,
+https://w3id.org/jochumsson/nyhkb#Event_StaticSparkIgnition_TechnicalRoom,https://w3id.org/jochumsson/ho61508#triggers,https://w3id.org/jochumsson/nyhkb#Hazard_Deflagration_TechnicalRoom,
+https://w3id.org/jochumsson/nyhkb#Event_HotSurfaceIgnition_TechnicalRoom,https://w3id.org/jochumsson/ho61508#triggers,https://w3id.org/jochumsson/nyhkb#Hazard_Deflagration_TechnicalRoom,
+https://w3id.org/jochumsson/nyhkb#Event_Rupture_H2Cylinder,https://w3id.org/jochumsson/ho61508#triggers,https://w3id.org/jochumsson/nyhkb#Hazard_Pressure_H2Cylinder,"Empirical scenario ID: ES-EB-ST-02. See empirical-hazard-scenarios.txt. Catastrophic failure under external fire / overpressure (Appendix E, section 5.3.2.2)."
+https://w3id.org/jochumsson/nyhkb#Event_HotSurfaceIgnition_TechnicalRoom,https://w3id.org/jochumsson/ho61508#triggers,https://w3id.org/jochumsson/nyhkb#Hazard_JetFire_TechnicalRoom,
+https://w3id.org/jochumsson/nyhkb#Event_HighEnergyIgnition_H2CylinderRoom,https://w3id.org/jochumsson/ho61508#triggers,https://w3id.org/jochumsson/nyhkb#Hazard_Detonation_H2Cylinder,"Empirical scenario ID: ES-EB-ST-02. See empirical-hazard-scenarios.txt. Catastrophic ignition after vessel rupture and release (Appendix E, section 5.3.2.2)."
+https://w3id.org/jochumsson/nyhkb#Event_HotSurfaceIgnition_TechnicalRoom,https://w3id.org/jochumsson/ho61508#triggers,https://w3id.org/jochumsson/nyhkb#Hazard_Fireball_TechnicalRoom,
+https://w3id.org/jochumsson/nyhkb#Event_StaticSparkIgnition_TechnicalRoom,https://w3id.org/jochumsson/ho61508#triggers,https://w3id.org/jochumsson/nyhkb#Hazard_JetFire_TechnicalRoom,
+https://w3id.org/jochumsson/nyhkb#Event_StaticSparkIgnition_PipelineRoute,https://w3id.org/jochumsson/ho61508#triggers,https://w3id.org/jochumsson/nyhkb#Hazard_Fireball_PipelineRoute,
+https://w3id.org/jochumsson/nyhkb#Event_FrictionIgnition_CompressorRoom,https://w3id.org/jochumsson/ho61508#triggers,https://w3id.org/jochumsson/nyhkb#Hazard_JetFire_CompressorRoom,
+https://w3id.org/jochumsson/nyhkb#Event_StaticSparkIgnition_CompressorRoom,https://w3id.org/jochumsson/ho61508#triggers,https://w3id.org/jochumsson/nyhkb#Hazard_Deflagration_CompressorRoom,
+https://w3id.org/jochumsson/nyhkb#Event_HotSurfaceIgnition_CompressorRoom,https://w3id.org/jochumsson/ho61508#triggers,https://w3id.org/jochumsson/nyhkb#Hazard_Deflagration_CompressorRoom,
+https://w3id.org/jochumsson/nyhkb#Event_StaticSparkIgnition_CompressorRoom,https://w3id.org/jochumsson/ho61508#triggers,https://w3id.org/jochumsson/nyhkb#Hazard_JetFire_CompressorRoom,
+https://w3id.org/jochumsson/nyhkb#Event_EscalationIgnition_CompressorRoom,https://w3id.org/jochumsson/ho61508#triggers,https://w3id.org/jochumsson/nyhkb#Hazard_Fireball_CompressorRoom,
+https://w3id.org/jochumsson/nyhkb#Event_StaticSparkIgnition_CompressorRoom,https://w3id.org/jochumsson/ho61508#triggers,https://w3id.org/jochumsson/nyhkb#Hazard_Fireball_CompressorRoom,
+https://w3id.org/jochumsson/nyhkb#Event_EscalationIgnition_CompressorRoom,https://w3id.org/jochumsson/ho61508#triggers,https://w3id.org/jochumsson/nyhkb#Hazard_JetFire_CompressorRoom,
+https://w3id.org/jochumsson/nyhkb#Event_HighEnergyIgnition_TechnicalRoom,https://w3id.org/jochumsson/ho61508#triggers,https://w3id.org/jochumsson/nyhkb#Hazard_Detonation_TechnicalRoom,
+https://w3id.org/jochumsson/nyhkb#Event_StaticSparkIgnition_PipelineRoute,https://w3id.org/jochumsson/ho61508#triggers,https://w3id.org/jochumsson/nyhkb#Hazard_Deflagration_PipeCulvert,
+https://w3id.org/jochumsson/nyhkb#Event_HotSurfaceIgnition_CompressorRoom,https://w3id.org/jochumsson/ho61508#triggers,https://w3id.org/jochumsson/nyhkb#Hazard_JetFire_CompressorRoom,
+https://w3id.org/jochumsson/nyhkb#Event_EscalationIgnition_CompressorRoom,https://w3id.org/jochumsson/ho61508#triggers,https://w3id.org/jochumsson/nyhkb#Hazard_Deflagration_CompressorRoom,
+https://w3id.org/jochumsson/nyhkb#Event_FrictionIgnition_CompressorRoom,https://w3id.org/jochumsson/ho61508#triggers,https://w3id.org/jochumsson/nyhkb#Hazard_Fireball_CompressorRoom,
+https://w3id.org/jochumsson/nyhkb#Event_FrictionIgnition_CompressorRoom,https://w3id.org/jochumsson/ho61508#triggers,https://w3id.org/jochumsson/nyhkb#Hazard_Deflagration_CompressorRoom,
+https://w3id.org/jochumsson/nyhkb#Event_HotSurfaceIgnition_CompressorRoom,https://w3id.org/jochumsson/ho61508#triggers,https://w3id.org/jochumsson/nyhkb#Hazard_Fireball_CompressorRoom,
+https://w3id.org/jochumsson/nyhkb#Event_StaticSparkIgnition_PipelineRoute,https://w3id.org/jochumsson/ho61508#triggers,https://w3id.org/jochumsson/nyhkb#Hazard_JetFire_PipelineRoute,
+https://w3id.org/jochumsson/nyhkb#Hazard_Fireball_TechnicalRoom,https://w3id.org/jochumsson/h2hoa#triggeredBy,https://w3id.org/jochumsson/nyhkb#Event_StaticSparkIgnition_TechnicalRoom,Empirical scenario ID: ES-TR-01 (Table 4 extension). See empirical-hazard-scenarios.txt. Delayed ignition of dispersed hydrogen cloud in equipment room (paper Table 4).
+https://w3id.org/jochumsson/nyhkb#Hazard_Deflagration_TechnicalRoom,https://w3id.org/jochumsson/h2hoa#triggeredBy,https://w3id.org/jochumsson/nyhkb#Event_StaticSparkIgnition_TechnicalRoom,"Empirical scenario ID: ES-TR-01. See empirical-hazard-scenarios.txt. Deflagration from flammable hydrogen–air mixture in enclosed equipment room (Appendix E, section 5.1.2.1; paper Table 3–4)."
+https://w3id.org/jochumsson/nyhkb#Hazard_Fireball_TechnicalRoom,https://w3id.org/jochumsson/h2hoa#triggeredBy,https://w3id.org/jochumsson/nyhkb#Event_HotSurfaceIgnition_TechnicalRoom,Empirical scenario ID: ES-TR-01 (Table 4 extension). See empirical-hazard-scenarios.txt. Delayed ignition of dispersed hydrogen cloud in equipment room (paper Table 4).
+https://w3id.org/jochumsson/nyhkb#Hazard_JetFire_CompressorRoom,https://w3id.org/jochumsson/h2hoa#triggeredBy,https://w3id.org/jochumsson/nyhkb#Event_StaticSparkIgnition_CompressorRoom,Empirical scenario ID: ES-EB-CR-01. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#Hazard_JetFire_TechnicalRoom,https://w3id.org/jochumsson/h2hoa#triggeredBy,https://w3id.org/jochumsson/nyhkb#Event_StaticSparkIgnition_TechnicalRoom,"Empirical scenario ID: ES-TR-01. See empirical-hazard-scenarios.txt. Jet fire from pressurised release and ignition at production equipment (interpretation of Appendix E, section 5.1.2)."
+https://w3id.org/jochumsson/nyhkb#Hazard_Detonation_H2Cylinder,https://w3id.org/jochumsson/h2hoa#triggeredBy,https://w3id.org/jochumsson/nyhkb#Event_HighEnergyIgnition_H2CylinderRoom,"Empirical scenario ID: ES-EB-ST-02. See empirical-hazard-scenarios.txt. Major explosion after vessel failure following external fire (Appendix E, section 5.3.2.2)."
+https://w3id.org/jochumsson/nyhkb#Hazard_Deflagration_CompressorRoom,https://w3id.org/jochumsson/h2hoa#triggeredBy,https://w3id.org/jochumsson/nyhkb#Event_StaticSparkIgnition_CompressorRoom,Empirical scenario ID: ES-EB-CR-01. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#Hazard_Pressure_H2Cylinder,https://w3id.org/jochumsson/h2hoa#triggeredBy,https://w3id.org/jochumsson/nyhkb#Event_Rupture_H2Cylinder,Empirical scenario ID: ES-EB-ST-01. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#Hazard_Deflagration_TechnicalRoom,https://w3id.org/jochumsson/h2hoa#triggeredBy,https://w3id.org/jochumsson/nyhkb#Event_HotSurfaceIgnition_TechnicalRoom,"Empirical scenario ID: ES-TR-01. See empirical-hazard-scenarios.txt. Deflagration from flammable hydrogen–air mixture in enclosed equipment room (Appendix E, section 5.1.2.1; paper Table 3–4)."
+https://w3id.org/jochumsson/nyhkb#Hazard_Fireball_CompressorRoom,https://w3id.org/jochumsson/h2hoa#triggeredBy,https://w3id.org/jochumsson/nyhkb#Event_FrictionIgnition_CompressorRoom,Empirical scenario ID: ES-EB-CR-01. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#Hazard_Detonation_TechnicalRoom,https://w3id.org/jochumsson/h2hoa#triggeredBy,https://w3id.org/jochumsson/nyhkb#Event_HighEnergyIgnition_TechnicalRoom,"Empirical scenario ID: ES-TR-02. See empirical-hazard-scenarios.txt. Low-probability detonation under severe confinement (Appendix E, section 5.1.4)."
+https://w3id.org/jochumsson/nyhkb#Hazard_JetFire_CompressorRoom,https://w3id.org/jochumsson/h2hoa#triggeredBy,https://w3id.org/jochumsson/nyhkb#Event_FrictionIgnition_CompressorRoom,Empirical scenario ID: ES-EB-CR-01. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#Hazard_JetFire_TechnicalRoom,https://w3id.org/jochumsson/h2hoa#triggeredBy,https://w3id.org/jochumsson/nyhkb#Event_HotSurfaceIgnition_TechnicalRoom,"Empirical scenario ID: ES-TR-01. See empirical-hazard-scenarios.txt. Jet fire from pressurised release and ignition at production equipment (interpretation of Appendix E, section 5.1.2)."
+https://w3id.org/jochumsson/nyhkb#Hazard_Fireball_PipelineRoute,https://w3id.org/jochumsson/h2hoa#triggeredBy,https://w3id.org/jochumsson/nyhkb#Event_StaticSparkIgnition_PipelineRoute,"Empirical scenario ID: ES-PL-03. See empirical-hazard-scenarios.txt. Delayed ignition of dispersed cloud along piping corridor (Appendix E, section 5.2.2)."
+https://w3id.org/jochumsson/nyhkb#Hazard_Fireball_CompressorRoom,https://w3id.org/jochumsson/h2hoa#triggeredBy,https://w3id.org/jochumsson/nyhkb#Event_StaticSparkIgnition_CompressorRoom,Empirical scenario ID: ES-EB-CR-01. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#Hazard_Deflagration_CompressorRoom,https://w3id.org/jochumsson/h2hoa#triggeredBy,https://w3id.org/jochumsson/nyhkb#Event_HotSurfaceIgnition_CompressorRoom,Empirical scenario ID: ES-EB-CR-01. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#Hazard_JetFire_CompressorRoom,https://w3id.org/jochumsson/h2hoa#triggeredBy,https://w3id.org/jochumsson/nyhkb#Event_EscalationIgnition_CompressorRoom,Empirical scenario ID: ES-EB-CR-01. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#Hazard_Deflagration_PipeCulvert,https://w3id.org/jochumsson/h2hoa#triggeredBy,https://w3id.org/jochumsson/nyhkb#Event_StaticSparkIgnition_PipelineRoute,"Empirical scenario ID: ES-PL-02. See empirical-hazard-scenarios.txt. Accumulation and ignition in culvert; pressure-build-up risk (Appendix E, section 5.2.2.1)."
+https://w3id.org/jochumsson/nyhkb#Hazard_JetFire_PipelineRoute,https://w3id.org/jochumsson/h2hoa#triggeredBy,https://w3id.org/jochumsson/nyhkb#Event_StaticSparkIgnition_PipelineRoute,Empirical scenario ID: ES-PL-01. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#Hazard_Deflagration_CompressorRoom,https://w3id.org/jochumsson/h2hoa#triggeredBy,https://w3id.org/jochumsson/nyhkb#Event_EscalationIgnition_CompressorRoom,Empirical scenario ID: ES-EB-CR-01. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#Hazard_Fireball_CompressorRoom,https://w3id.org/jochumsson/h2hoa#triggeredBy,https://w3id.org/jochumsson/nyhkb#Event_HotSurfaceIgnition_CompressorRoom,Empirical scenario ID: ES-EB-CR-01. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#Hazard_JetFire_CompressorRoom,https://w3id.org/jochumsson/h2hoa#triggeredBy,https://w3id.org/jochumsson/nyhkb#Event_HotSurfaceIgnition_CompressorRoom,Empirical scenario ID: ES-EB-CR-01. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#Hazard_Deflagration_CompressorRoom,https://w3id.org/jochumsson/h2hoa#triggeredBy,https://w3id.org/jochumsson/nyhkb#Event_FrictionIgnition_CompressorRoom,Empirical scenario ID: ES-EB-CR-01. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#Hazard_Fireball_CompressorRoom,https://w3id.org/jochumsson/h2hoa#triggeredBy,https://w3id.org/jochumsson/nyhkb#Event_EscalationIgnition_CompressorRoom,Empirical scenario ID: ES-EB-CR-01. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#Event_HighPressureRelease_PipelineRoute,https://w3id.org/jochumsson/ho61508#resultsIn,https://w3id.org/jochumsson/nyhkb#Situation_HydrogenJet_PipelineRoute,
+https://w3id.org/jochumsson/nyhkb#Event_LowPressureRelease_PipelineRoute,https://w3id.org/jochumsson/ho61508#resultsIn,https://w3id.org/jochumsson/nyhkb#Situation_FlammableCloud_PipelineRoute,
+https://w3id.org/jochumsson/nyhkb#Event_HighPressureRelease_CompressorRoom,https://w3id.org/jochumsson/ho61508#resultsIn,https://w3id.org/jochumsson/nyhkb#Situation_HydrogenJet_CompressorRoom,
+https://w3id.org/jochumsson/nyhkb#Event_Rupture_H2Cylinder,https://w3id.org/jochumsson/ho61508#resultsIn,https://w3id.org/jochumsson/nyhkb#Situation_HydrogenJet_H2CylinderRoom,"Empirical scenario ID: ES-EB-ST-02. See empirical-hazard-scenarios.txt. Catastrophic failure under external fire / overpressure (Appendix E, section 5.3.2.2)."
+https://w3id.org/jochumsson/nyhkb#Event_LowPressureRelease_PipelineRoute,https://w3id.org/jochumsson/ho61508#resultsIn,https://w3id.org/jochumsson/nyhkb#Situation_ExplosiveAtmosphere_PipeCulvert,
+https://w3id.org/jochumsson/nyhkb#Event_HighPressureRelease_PipelineRoute,https://w3id.org/jochumsson/ho61508#resultsIn,https://w3id.org/jochumsson/nyhkb#Situation_ExplosiveAtmosphere_PipeCulvert,
+https://w3id.org/jochumsson/nyhkb#Event_ExternalFire_CompressorRoom,https://w3id.org/jochumsson/ho61508#resultsIn,https://w3id.org/jochumsson/nyhkb#Situation_EquipmentDamage_CompressorRoom,"External fire impacting adjacent rooms and hydrogen cylinder (Appendix E, section 5.3.2.2 cause)."
+https://w3id.org/jochumsson/nyhkb#Event_HighPressureRelease_CompressorRoom,https://w3id.org/jochumsson/ho61508#resultsIn,https://w3id.org/jochumsson/nyhkb#Situation_ExplosiveAtmosphere_CompressorRoom,
+https://w3id.org/jochumsson/nyhkb#Event_LowPressureRelease_TechnicalRoom,https://w3id.org/jochumsson/ho61508#resultsIn,https://w3id.org/jochumsson/nyhkb#Situation_FlammableCloud_TechnicalRoom,"Cause: incorrect installation or external impact on production equipment (Appendix E, section 5.1.2.1 cause)."
+https://w3id.org/jochumsson/nyhkb#Event_LowPressureRelease_TechnicalRoom,https://w3id.org/jochumsson/ho61508#resultsIn,https://w3id.org/jochumsson/nyhkb#Situation_ExplosiveAtmosphere_TechnicalRoom,"Cause: incorrect installation or external impact on production equipment (Appendix E, section 5.1.2.1 cause)."
+https://w3id.org/jochumsson/nyhkb#Event_Rupture_BufferCylinder,https://w3id.org/jochumsson/ho61508#resultsIn,https://w3id.org/jochumsson/nyhkb#Situation_HydrogenJet_CompressorRoom,
+https://w3id.org/jochumsson/nyhkb#Event_HighPressureRelease_PipelineRoute,https://w3id.org/jochumsson/ho61508#resultsIn,https://w3id.org/jochumsson/nyhkb#Situation_FlammableCloud_PipelineRoute,
+https://w3id.org/jochumsson/nyhkb#Event_HighPressureRelease_CompressorRoom,https://w3id.org/jochumsson/ho61508#resultsIn,https://w3id.org/jochumsson/nyhkb#Situation_FlammableCloud_CompressorRoom,
+https://w3id.org/jochumsson/nyhkb#Situation_FlammableCloud_TechnicalRoom,https://w3id.org/jochumsson/ho61508#enables,https://w3id.org/jochumsson/nyhkb#Event_HotSurfaceIgnition_TechnicalRoom,
+https://w3id.org/jochumsson/nyhkb#Situation_FlammableCloud_CompressorRoom,https://w3id.org/jochumsson/ho61508#enables,https://w3id.org/jochumsson/nyhkb#Event_HotSurfaceIgnition_CompressorRoom,
+https://w3id.org/jochumsson/nyhkb#Situation_FlammableCloud_CompressorRoom,https://w3id.org/jochumsson/ho61508#enables,https://w3id.org/jochumsson/nyhkb#Event_EscalationIgnition_CompressorRoom,
+https://w3id.org/jochumsson/nyhkb#Situation_HydrogenJet_PipelineRoute,https://w3id.org/jochumsson/ho61508#enables,https://w3id.org/jochumsson/nyhkb#Event_StaticSparkIgnition_PipelineRoute,
+https://w3id.org/jochumsson/nyhkb#Situation_EquipmentDamage_CompressorRoom,https://w3id.org/jochumsson/ho61508#enables,https://w3id.org/jochumsson/nyhkb#Event_Rupture_H2Cylinder,"Empirical scenario ID: ES-EB-ST-02. See empirical-hazard-scenarios.txt. Equipment degradation from external fire in the compressor room (Appendix E, section 5.3.2.2)."
+https://w3id.org/jochumsson/nyhkb#Situation_HydrogenJet_TechnicalRoom,https://w3id.org/jochumsson/ho61508#enables,https://w3id.org/jochumsson/nyhkb#Event_HotSurfaceIgnition_TechnicalRoom,
+https://w3id.org/jochumsson/nyhkb#Situation_ExplosiveAtmosphere_CompressorRoom,https://w3id.org/jochumsson/ho61508#enables,https://w3id.org/jochumsson/nyhkb#Event_FrictionIgnition_CompressorRoom,
+https://w3id.org/jochumsson/nyhkb#Situation_HydrogenJet_H2CylinderRoom,https://w3id.org/jochumsson/ho61508#enables,https://w3id.org/jochumsson/nyhkb#Event_HighEnergyIgnition_H2CylinderRoom,"Empirical scenario ID: ES-EB-ST-01, ES-EB-ST-02. See empirical-hazard-scenarios.txt."
+https://w3id.org/jochumsson/nyhkb#Situation_EquipmentDamage_CompressorRoom,https://w3id.org/jochumsson/ho61508#enables,https://w3id.org/jochumsson/nyhkb#Event_Rupture_BufferCylinder,"Empirical scenario ID: ES-EB-ST-02. See empirical-hazard-scenarios.txt. Equipment degradation from external fire in the compressor room (Appendix E, section 5.3.2.2)."
+https://w3id.org/jochumsson/nyhkb#Situation_FlammableCloud_PipelineRoute,https://w3id.org/jochumsson/ho61508#enables,https://w3id.org/jochumsson/nyhkb#Event_StaticSparkIgnition_PipelineRoute,
+https://w3id.org/jochumsson/nyhkb#Situation_ExplosiveAtmosphere_CompressorRoom,https://w3id.org/jochumsson/ho61508#enables,https://w3id.org/jochumsson/nyhkb#Event_HotSurfaceIgnition_CompressorRoom,
+https://w3id.org/jochumsson/nyhkb#Situation_DetonationCondition_TechnicalRoom,https://w3id.org/jochumsson/ho61508#enables,https://w3id.org/jochumsson/nyhkb#Event_HighEnergyIgnition_TechnicalRoom,
+https://w3id.org/jochumsson/nyhkb#Situation_ExplosiveAtmosphere_TechnicalRoom,https://w3id.org/jochumsson/ho61508#enables,https://w3id.org/jochumsson/nyhkb#Event_StaticSparkIgnition_TechnicalRoom,"Explosive atmosphere after uncontrolled release (paper Table 3; Appendix E, section 5.1.2.1)."
+https://w3id.org/jochumsson/nyhkb#Situation_ExplosiveAtmosphere_CompressorRoom,https://w3id.org/jochumsson/ho61508#enables,https://w3id.org/jochumsson/nyhkb#Event_StaticSparkIgnition_CompressorRoom,
+https://w3id.org/jochumsson/nyhkb#Situation_FlammableCloud_TechnicalRoom,https://w3id.org/jochumsson/ho61508#enables,https://w3id.org/jochumsson/nyhkb#Event_StaticSparkIgnition_TechnicalRoom,
+https://w3id.org/jochumsson/nyhkb#Situation_EquipmentDamage_TechnicalRoom,https://w3id.org/jochumsson/ho61508#enables,https://w3id.org/jochumsson/nyhkb#Event_StaticSparkIgnition_TechnicalRoom,
+https://w3id.org/jochumsson/nyhkb#Situation_FlammableCloud_CompressorRoom,https://w3id.org/jochumsson/ho61508#enables,https://w3id.org/jochumsson/nyhkb#Event_StaticSparkIgnition_CompressorRoom,
+https://w3id.org/jochumsson/nyhkb#Situation_FlammableCloud_CompressorRoom,https://w3id.org/jochumsson/ho61508#enables,https://w3id.org/jochumsson/nyhkb#Event_FrictionIgnition_CompressorRoom,
+https://w3id.org/jochumsson/nyhkb#Situation_EquipmentDamage_TechnicalRoom,https://w3id.org/jochumsson/ho61508#enables,https://w3id.org/jochumsson/nyhkb#Event_LowPressureRelease_TechnicalRoom,
+https://w3id.org/jochumsson/nyhkb#Situation_HydrogenJet_H2CylinderRoom,https://w3id.org/jochumsson/ho61508#enables,https://w3id.org/jochumsson/nyhkb#Event_StaticSparkIgnition_CompressorRoom,"Empirical scenario ID: ES-EB-ST-01, ES-EB-ST-02. See empirical-hazard-scenarios.txt."
+https://w3id.org/jochumsson/nyhkb#Situation_HydrogenJet_TechnicalRoom,https://w3id.org/jochumsson/ho61508#enables,https://w3id.org/jochumsson/nyhkb#Event_StaticSparkIgnition_TechnicalRoom,
+https://w3id.org/jochumsson/nyhkb#Situation_HydrogenJet_CompressorRoom,https://w3id.org/jochumsson/ho61508#enables,https://w3id.org/jochumsson/nyhkb#Event_FrictionIgnition_CompressorRoom,
+https://w3id.org/jochumsson/nyhkb#Situation_ExplosiveAtmosphere_TechnicalRoom,https://w3id.org/jochumsson/ho61508#enables,https://w3id.org/jochumsson/nyhkb#Event_HotSurfaceIgnition_TechnicalRoom,"Explosive atmosphere after uncontrolled release (paper Table 3; Appendix E, section 5.1.2.1)."
+https://w3id.org/jochumsson/nyhkb#Situation_ExplosiveAtmosphere_PipeCulvert,https://w3id.org/jochumsson/ho61508#enables,https://w3id.org/jochumsson/nyhkb#Event_StaticSparkIgnition_PipelineRoute,
+https://w3id.org/jochumsson/nyhkb#Situation_HydrogenJet_H2CylinderRoom,https://w3id.org/jochumsson/ho61508#involves,https://w3id.org/jochumsson/nyhkb#Hazard_JetFire_H2Cylinder,"Empirical scenario ID: ES-EB-ST-01, ES-EB-ST-02. See empirical-hazard-scenarios.txt."
+https://w3id.org/jochumsson/nyhkb#Situation_HydrogenJet_CompressorRoom,https://w3id.org/jochumsson/ho61508#involves,https://w3id.org/jochumsson/nyhkb#Hazard_JetFire_CompressorRoom,
+https://w3id.org/jochumsson/nyhkb#Situation_HydrogenJet_PipelineRoute,https://w3id.org/jochumsson/ho61508#involves,https://w3id.org/jochumsson/nyhkb#Hazard_JetFire_PipelineRoute,
+https://w3id.org/jochumsson/nyhkb#Situation_FlammableCloud_PipelineRoute,https://w3id.org/jochumsson/ho61508#involves,https://w3id.org/jochumsson/nyhkb#Hazard_Fireball_PipelineRoute,
+https://w3id.org/jochumsson/nyhkb#Situation_HydrogenJet_TechnicalRoom,https://w3id.org/jochumsson/ho61508#involves,https://w3id.org/jochumsson/nyhkb#Hazard_JetFire_TechnicalRoom,
+https://w3id.org/jochumsson/nyhkb#Situation_EquipmentDamage_TechnicalRoom,https://w3id.org/jochumsson/ho61508#involves,https://w3id.org/jochumsson/nyhkb#Hazard_JetFire_TechnicalRoom,
+https://w3id.org/jochumsson/nyhkb#Situation_ExplosiveAtmosphere_PipeCulvert,https://w3id.org/jochumsson/ho61508#involves,https://w3id.org/jochumsson/nyhkb#Hazard_Deflagration_PipeCulvert,
+https://w3id.org/jochumsson/nyhkb#Situation_FlammableCloud_TechnicalRoom,https://w3id.org/jochumsson/ho61508#involves,https://w3id.org/jochumsson/nyhkb#Hazard_Fireball_TechnicalRoom,
+https://w3id.org/jochumsson/nyhkb#Situation_FlammableCloud_CompressorRoom,https://w3id.org/jochumsson/ho61508#involves,https://w3id.org/jochumsson/nyhkb#Hazard_Fireball_CompressorRoom,
+https://w3id.org/jochumsson/nyhkb#Situation_DetonationCondition_TechnicalRoom,https://w3id.org/jochumsson/ho61508#involves,https://w3id.org/jochumsson/nyhkb#Hazard_Detonation_TechnicalRoom,
+https://w3id.org/jochumsson/nyhkb#Situation_ExplosiveAtmosphere_TechnicalRoom,https://w3id.org/jochumsson/ho61508#involves,https://w3id.org/jochumsson/nyhkb#Hazard_Deflagration_TechnicalRoom,"Explosive atmosphere after uncontrolled release (paper Table 3; Appendix E, section 5.1.2.1)."
+https://w3id.org/jochumsson/nyhkb#Situation_ExplosiveAtmosphere_CompressorRoom,https://w3id.org/jochumsson/ho61508#involves,https://w3id.org/jochumsson/nyhkb#Hazard_Deflagration_CompressorRoom,
+https://w3id.org/jochumsson/nyhkb#Situation_HydrogenJet_TechnicalRoom,https://w3id.org/jochumsson/ho61508#exposes,https://w3id.org/jochumsson/nyhkb#ExposedRole_Property,
+https://w3id.org/jochumsson/nyhkb#Situation_DetonationCondition_TechnicalRoom,https://w3id.org/jochumsson/ho61508#exposes,https://w3id.org/jochumsson/nyhkb#ExposedRole_Person,
+https://w3id.org/jochumsson/nyhkb#Situation_HydrogenJet_H2CylinderRoom,https://w3id.org/jochumsson/ho61508#exposes,https://w3id.org/jochumsson/nyhkb#ExposedRole_Environment,"Empirical scenario ID: ES-EB-ST-01, ES-EB-ST-02. See empirical-hazard-scenarios.txt."
+https://w3id.org/jochumsson/nyhkb#Situation_FlammableCloud_CompressorRoom,https://w3id.org/jochumsson/ho61508#exposes,https://w3id.org/jochumsson/nyhkb#ExposedRole_Property,
+https://w3id.org/jochumsson/nyhkb#Situation_ExplosiveAtmosphere_CompressorRoom,https://w3id.org/jochumsson/ho61508#exposes,https://w3id.org/jochumsson/nyhkb#ExposedRole_Person,
+https://w3id.org/jochumsson/nyhkb#Situation_HydrogenJet_H2CylinderRoom,https://w3id.org/jochumsson/ho61508#exposes,https://w3id.org/jochumsson/nyhkb#ExposedRole_Property,"Empirical scenario ID: ES-EB-ST-01, ES-EB-ST-02. See empirical-hazard-scenarios.txt."
+https://w3id.org/jochumsson/nyhkb#Situation_FlammableCloud_TechnicalRoom,https://w3id.org/jochumsson/ho61508#exposes,https://w3id.org/jochumsson/nyhkb#ExposedRole_Property,
+https://w3id.org/jochumsson/nyhkb#Situation_HydrogenJet_TechnicalRoom,https://w3id.org/jochumsson/ho61508#exposes,https://w3id.org/jochumsson/nyhkb#ExposedRole_Person,
+https://w3id.org/jochumsson/nyhkb#Situation_FlammableCloud_PipelineRoute,https://w3id.org/jochumsson/ho61508#exposes,https://w3id.org/jochumsson/nyhkb#ExposedRole_Property,
+https://w3id.org/jochumsson/nyhkb#Situation_EquipmentDamage_TechnicalRoom,https://w3id.org/jochumsson/ho61508#exposes,https://w3id.org/jochumsson/nyhkb#ExposedRole_Property,
+https://w3id.org/jochumsson/nyhkb#Situation_EquipmentDamage_CompressorRoom,https://w3id.org/jochumsson/ho61508#exposes,https://w3id.org/jochumsson/nyhkb#ExposedRole_Person,"Empirical scenario ID: ES-EB-ST-02. See empirical-hazard-scenarios.txt. Equipment degradation from external fire in the compressor room (Appendix E, section 5.3.2.2)."
+https://w3id.org/jochumsson/nyhkb#Situation_FlammableCloud_CompressorRoom,https://w3id.org/jochumsson/ho61508#exposes,https://w3id.org/jochumsson/nyhkb#ExposedRole_Person,
+https://w3id.org/jochumsson/nyhkb#Situation_DetonationCondition_TechnicalRoom,https://w3id.org/jochumsson/ho61508#exposes,https://w3id.org/jochumsson/nyhkb#ExposedRole_Property,
+https://w3id.org/jochumsson/nyhkb#Situation_ExplosiveAtmosphere_PipeCulvert,https://w3id.org/jochumsson/ho61508#exposes,https://w3id.org/jochumsson/nyhkb#ExposedRole_Person,
+https://w3id.org/jochumsson/nyhkb#Situation_HydrogenJet_CompressorRoom,https://w3id.org/jochumsson/ho61508#exposes,https://w3id.org/jochumsson/nyhkb#ExposedRole_Property,
+https://w3id.org/jochumsson/nyhkb#Situation_EquipmentDamage_CompressorRoom,https://w3id.org/jochumsson/ho61508#exposes,https://w3id.org/jochumsson/nyhkb#ExposedRole_Environment,"Empirical scenario ID: ES-EB-ST-02. See empirical-hazard-scenarios.txt. Equipment degradation from external fire in the compressor room (Appendix E, section 5.3.2.2)."
+https://w3id.org/jochumsson/nyhkb#Situation_HydrogenJet_H2CylinderRoom,https://w3id.org/jochumsson/ho61508#exposes,https://w3id.org/jochumsson/nyhkb#ExposedRole_Person,"Empirical scenario ID: ES-EB-ST-01, ES-EB-ST-02. See empirical-hazard-scenarios.txt."
+https://w3id.org/jochumsson/nyhkb#Situation_ExplosiveAtmosphere_TechnicalRoom,https://w3id.org/jochumsson/ho61508#exposes,https://w3id.org/jochumsson/nyhkb#ExposedRole_Property,"Explosive atmosphere after uncontrolled release (paper Table 3; Appendix E, section 5.1.2.1)."
+https://w3id.org/jochumsson/nyhkb#Situation_ExplosiveAtmosphere_TechnicalRoom,https://w3id.org/jochumsson/ho61508#exposes,https://w3id.org/jochumsson/nyhkb#ExposedRole_Person,"Explosive atmosphere after uncontrolled release (paper Table 3; Appendix E, section 5.1.2.1)."
+https://w3id.org/jochumsson/nyhkb#Situation_ExplosiveAtmosphere_PipeCulvert,https://w3id.org/jochumsson/ho61508#exposes,https://w3id.org/jochumsson/nyhkb#ExposedRole_Property,
+https://w3id.org/jochumsson/nyhkb#Situation_HydrogenJet_PipelineRoute,https://w3id.org/jochumsson/ho61508#exposes,https://w3id.org/jochumsson/nyhkb#ExposedRole_Person,
+https://w3id.org/jochumsson/nyhkb#Situation_EquipmentDamage_TechnicalRoom,https://w3id.org/jochumsson/ho61508#exposes,https://w3id.org/jochumsson/nyhkb#ExposedRole_Environment,
+https://w3id.org/jochumsson/nyhkb#Situation_HydrogenJet_CompressorRoom,https://w3id.org/jochumsson/ho61508#exposes,https://w3id.org/jochumsson/nyhkb#ExposedRole_Person,
+https://w3id.org/jochumsson/nyhkb#Situation_ExplosiveAtmosphere_CompressorRoom,https://w3id.org/jochumsson/ho61508#exposes,https://w3id.org/jochumsson/nyhkb#ExposedRole_Property,
+https://w3id.org/jochumsson/nyhkb#Situation_EquipmentDamage_CompressorRoom,https://w3id.org/jochumsson/ho61508#exposes,https://w3id.org/jochumsson/nyhkb#ExposedRole_Property,"Empirical scenario ID: ES-EB-ST-02. See empirical-hazard-scenarios.txt. Equipment degradation from external fire in the compressor room (Appendix E, section 5.3.2.2)."
+https://w3id.org/jochumsson/nyhkb#Situation_FlammableCloud_TechnicalRoom,https://w3id.org/jochumsson/ho61508#exposes,https://w3id.org/jochumsson/nyhkb#ExposedRole_Person,
+https://w3id.org/jochumsson/nyhkb#Situation_FlammableCloud_PipelineRoute,https://w3id.org/jochumsson/ho61508#exposes,https://w3id.org/jochumsson/nyhkb#ExposedRole_Person,
+https://w3id.org/jochumsson/nyhkb#Situation_EquipmentDamage_TechnicalRoom,https://w3id.org/jochumsson/ho61508#exposes,https://w3id.org/jochumsson/nyhkb#ExposedRole_Person,
+https://w3id.org/jochumsson/nyhkb#Situation_HydrogenJet_PipelineRoute,https://w3id.org/jochumsson/ho61508#exposes,https://w3id.org/jochumsson/nyhkb#ExposedRole_Property,
+https://w3id.org/jochumsson/nyhkb#HarmfulEvent_JetFire_PipelineRoute,https://w3id.org/jochumsson/ho61508#causes,https://w3id.org/jochumsson/nyhkb#Harm_PropertyDamage_PipelineRoute,
+https://w3id.org/jochumsson/nyhkb#HarmfulEvent_Detonation_ExternalBuilding,https://w3id.org/jochumsson/ho61508#causes,https://w3id.org/jochumsson/nyhkb#Harm_ThermalDamage_ExternalBuilding,"Empirical scenario ID: ES-EB-ST-02. See empirical-hazard-scenarios.txt. Major explosion after hydrogen cylinder failure (Appendix E, section 5.3.2.2)."
+https://w3id.org/jochumsson/nyhkb#HarmfulEvent_Deflagration_PipeCulvert,https://w3id.org/jochumsson/ho61508#causes,https://w3id.org/jochumsson/nyhkb#Harm_BlastTrauma_PipelineRoute,Empirical scenario ID: ES-PL-02. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#HarmfulEvent_Fireball_TechnicalRoom,https://w3id.org/jochumsson/ho61508#causes,https://w3id.org/jochumsson/nyhkb#Harm_BurnInjury_TechnicalRoom,Empirical scenario ID: ES-TR-01 (Table 4 extension). See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#HarmfulEvent_Detonation_ExternalBuilding,https://w3id.org/jochumsson/ho61508#causes,https://w3id.org/jochumsson/nyhkb#Harm_BlastTrauma_H2Cylinder,"Empirical scenario ID: ES-EB-ST-02. See empirical-hazard-scenarios.txt. Major explosion after hydrogen cylinder failure (Appendix E, section 5.3.2.2)."
+https://w3id.org/jochumsson/nyhkb#HarmfulEvent_Deflagration_CompressorRoom,https://w3id.org/jochumsson/ho61508#causes,https://w3id.org/jochumsson/nyhkb#Harm_BurnInjury_CompressorRoom,Empirical scenario ID: ES-EB-CR-01. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#HarmfulEvent_Fireball_PipelineRoute,https://w3id.org/jochumsson/ho61508#causes,https://w3id.org/jochumsson/nyhkb#Harm_BurnInjury_PipelineRoute,
+https://w3id.org/jochumsson/nyhkb#HarmfulEvent_Deflagration_PipeCulvert,https://w3id.org/jochumsson/ho61508#causes,https://w3id.org/jochumsson/nyhkb#Harm_BurnInjury_PipelineRoute,Empirical scenario ID: ES-PL-02. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#HarmfulEvent_PressureExposure_CompressorRoom,https://w3id.org/jochumsson/ho61508#causes,https://w3id.org/jochumsson/nyhkb#Harm_PropertyDamage_CompressorRoom,Empirical scenario ID: ES-EB-CR-03. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#HarmfulEvent_Deflagration_TechnicalRoom,https://w3id.org/jochumsson/ho61508#causes,https://w3id.org/jochumsson/nyhkb#Harm_PropertyDamage_TechnicalRoom,
+https://w3id.org/jochumsson/nyhkb#HarmfulEvent_Fireball_TechnicalRoom,https://w3id.org/jochumsson/ho61508#causes,https://w3id.org/jochumsson/nyhkb#Harm_PropertyDamage_TechnicalRoom,Empirical scenario ID: ES-TR-01 (Table 4 extension). See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#HarmfulEvent_Fireball_CompressorRoom,https://w3id.org/jochumsson/ho61508#causes,https://w3id.org/jochumsson/nyhkb#Harm_PropertyDamage_CompressorRoom,Empirical scenario ID: ES-EB-CR-01. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#HarmfulEvent_Fireball_PipelineRoute,https://w3id.org/jochumsson/ho61508#causes,https://w3id.org/jochumsson/nyhkb#Harm_PropertyDamage_PipelineRoute,
+https://w3id.org/jochumsson/nyhkb#HarmfulEvent_JetFire_H2CylinderRoom,https://w3id.org/jochumsson/ho61508#causes,https://w3id.org/jochumsson/nyhkb#Harm_PropertyDamage_H2CylinderRoom,Empirical scenario ID: ES-EB-ST-01. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#HarmfulEvent_JetFire_BufferCylinder,https://w3id.org/jochumsson/ho61508#causes,https://w3id.org/jochumsson/nyhkb#Harm_BurnInjury_CompressorRoom,Empirical scenario ID: ES-EB-CR-02. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#HarmfulEvent_PressureExposure_H2CylinderRoom,https://w3id.org/jochumsson/ho61508#causes,https://w3id.org/jochumsson/nyhkb#Harm_BlastTrauma_H2Cylinder,Empirical scenario ID: ES-EB-ST-01. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#HarmfulEvent_PressureExposure_H2CylinderRoom,https://w3id.org/jochumsson/ho61508#causes,https://w3id.org/jochumsson/nyhkb#Harm_PropertyDamage_H2CylinderRoom,Empirical scenario ID: ES-EB-ST-01. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#HarmfulEvent_JetFire_PipelineRoute,https://w3id.org/jochumsson/ho61508#causes,https://w3id.org/jochumsson/nyhkb#Harm_BurnInjury_PipelineRoute,
+https://w3id.org/jochumsson/nyhkb#HarmfulEvent_JetFire_BufferCylinder,https://w3id.org/jochumsson/ho61508#causes,https://w3id.org/jochumsson/nyhkb#Harm_PropertyDamage_CompressorRoom,Empirical scenario ID: ES-EB-CR-02. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#HarmfulEvent_Deflagration_CompressorRoom,https://w3id.org/jochumsson/ho61508#causes,https://w3id.org/jochumsson/nyhkb#Harm_PropertyDamage_CompressorRoom,Empirical scenario ID: ES-EB-CR-01. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#HarmfulEvent_PressureExposure_CompressorRoom,https://w3id.org/jochumsson/ho61508#causes,https://w3id.org/jochumsson/nyhkb#Harm_BlastTrauma_CompressorRoom,Empirical scenario ID: ES-EB-CR-03. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#HarmfulEvent_ThermalExposure_ExternalBuilding,https://w3id.org/jochumsson/ho61508#causes,https://w3id.org/jochumsson/nyhkb#Harm_ThermalDamage_ExternalBuilding,Empirical scenario ID: ES-EB-ST-02 (heating phase). See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#HarmfulEvent_Deflagration_TechnicalRoom,https://w3id.org/jochumsson/ho61508#causes,https://w3id.org/jochumsson/nyhkb#Harm_BurnInjury_TechnicalRoom,
+https://w3id.org/jochumsson/nyhkb#HarmfulEvent_Deflagration_TechnicalRoom,https://w3id.org/jochumsson/ho61508#causes,https://w3id.org/jochumsson/nyhkb#Harm_BlastTrauma_TechnicalRoom,
+https://w3id.org/jochumsson/nyhkb#HarmfulEvent_JetFire_CompressorRoom,https://w3id.org/jochumsson/ho61508#causes,https://w3id.org/jochumsson/nyhkb#Harm_BurnInjury_CompressorRoom,Empirical scenario ID: ES-EB-CR-01. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#HarmfulEvent_Detonation_ExternalBuilding,https://w3id.org/jochumsson/ho61508#causes,https://w3id.org/jochumsson/nyhkb#Harm_EnvironmentalDamage_ExternalBuilding,"Empirical scenario ID: ES-EB-ST-02. See empirical-hazard-scenarios.txt. Major explosion after hydrogen cylinder failure (Appendix E, section 5.3.2.2)."
+https://w3id.org/jochumsson/nyhkb#HarmfulEvent_JetFire_TechnicalRoom,https://w3id.org/jochumsson/ho61508#causes,https://w3id.org/jochumsson/nyhkb#Harm_BurnInjury_TechnicalRoom,
+https://w3id.org/jochumsson/nyhkb#HarmfulEvent_JetFire_CompressorRoom,https://w3id.org/jochumsson/ho61508#causes,https://w3id.org/jochumsson/nyhkb#Harm_PropertyDamage_CompressorRoom,Empirical scenario ID: ES-EB-CR-01. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#HarmfulEvent_Deflagration_CompressorRoom,https://w3id.org/jochumsson/ho61508#causes,https://w3id.org/jochumsson/nyhkb#Harm_BlastTrauma_CompressorRoom,Empirical scenario ID: ES-EB-CR-01. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#HarmfulEvent_Fireball_CompressorRoom,https://w3id.org/jochumsson/ho61508#causes,https://w3id.org/jochumsson/nyhkb#Harm_BurnInjury_CompressorRoom,Empirical scenario ID: ES-EB-CR-01. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#HarmfulEvent_JetFire_H2CylinderRoom,https://w3id.org/jochumsson/ho61508#causes,https://w3id.org/jochumsson/nyhkb#Harm_BlastTrauma_H2Cylinder,Empirical scenario ID: ES-EB-ST-01. See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#HarmfulEvent_JetFire_TechnicalRoom,https://w3id.org/jochumsson/ho61508#causes,https://w3id.org/jochumsson/nyhkb#Harm_PropertyDamage_TechnicalRoom,
+https://w3id.org/jochumsson/nyhkb#HarmfulEvent_JetFire_TechnicalRoom,https://w3id.org/jochumsson/ho61508#leadsTo,https://w3id.org/jochumsson/nyhkb#Situation_EquipmentDamage_TechnicalRoom,
+https://w3id.org/jochumsson/nyhkb#HarmfulEvent_Fireball_TechnicalRoom,https://w3id.org/jochumsson/ho61508#leadsTo,https://w3id.org/jochumsson/nyhkb#Situation_EquipmentDamage_TechnicalRoom,Empirical scenario ID: ES-TR-01 (Table 4 extension). See empirical-hazard-scenarios.txt.
+https://w3id.org/jochumsson/nyhkb#HarmfulEvent_Deflagration_TechnicalRoom,https://w3id.org/jochumsson/ho61508#leadsTo,https://w3id.org/jochumsson/nyhkb#Situation_EquipmentDamage_TechnicalRoom,

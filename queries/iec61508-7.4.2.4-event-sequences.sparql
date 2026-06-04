@@ -2,7 +2,6 @@
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX ho61508: <https://w3id.org/jochumsson/ho61508#>
-PREFIX h2hoa: <https://w3id.org/jochumsson/h2hoa#>
 
 SELECT ?priorEvent ?situation ?enablingEvent ?triggeredHazard
 WHERE {
