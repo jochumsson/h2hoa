@@ -5,7 +5,7 @@ Empirical hazard scenarios — Nykvarn (H2solo Ytterberga 2:5)
 Purpose
   This file provides publishable, English empirical data for Section 6.1 of the
   study. It paraphrases and structures hazard narratives from a 2023 LBE risk
-  assessment (Appendix E, Safety Partner, 2023-03-10) that cannot be
+  assessment (Appendix E, 2023-03-10) that cannot be
   redistributed with the paper. Content is interpreted to match the Table 3
   layout in the paper and the NYHKB instantiation (H2HOA).
 
