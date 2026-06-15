@@ -1171,7 +1171,7 @@ h2hoa:DetonationHazard
   rdfs:subClassOf [
     a owl:Restriction ;
     rdfs:comment """
-DL: DetonationHazard ⊑ ∀ ho61508:triggeredBy.HighEnergyIgnition
+DL: DetonationHazard ⊑ ∀ h2hoa:triggeredBy.HighEnergyIgnition
 If a detonation hazard is triggered, it is by a high-energy ignition event.
 """ ;
     owl:onProperty h2hoa:triggeredBy ;
@@ -1477,6 +1477,12 @@ h2hoa:Environment
 # manifestsIn which ho61508:HarmfulEvents
 #################################################################
 
+h2hoa:manifestedBy a owl:ObjectProperty ;
+  owl:inverseOf ho61508:manifestsIn ;
+  rdfs:domain ho61508:HarmfulEvent ;
+  rdfs:range ho61508:Hazard ;
+  rdfs:comment "Application-layer convenience inverse of ho61508:manifestsIn for harmful-event-centric querying (paper Eq. 1 and 3)." .
+
 h2ho:FlammabilityHazard
   rdfs:subClassOf
     [
@@ -1649,6 +1655,22 @@ h2ho:ThermalHazard
       owl:onProperty ho61508:manifestsIn ;
       owl:allValuesFrom h2hoa:ThermalExposureEvent
     ] .
+
+h2ho:Combustion
+  rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty h2hoa:manifestedBy ;
+    owl:allValuesFrom h2ho:FlammabilityHazard ;
+    rdfs:comment "DL: Combustion ⊑ ∀ manifestedBy.FlammabilityHazard"
+  ] .
+
+h2hoa:Detonation
+  rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty h2hoa:manifestedBy ;
+    owl:allValuesFrom h2hoa:DetonationHazard ;
+    rdfs:comment "DL: Detonation ⊑ ∀ manifestedBy.DetonationHazard"
+  ] .
 
 #################################################################
 # R: HarmfulEvent leadsTo HazardousSituation application restrictions

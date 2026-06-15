@@ -62,7 +62,7 @@ def materialize_inverse_properties(
     inverse_pairs = [
         (URIRef(HO + "triggers"), URIRef(H2HOA + "triggeredBy")),
         (URIRef(HO + "inheresIn"), URIRef(HO + "inheres")),
-        (URIRef(HO + "manifestsIn"), URIRef(HO + "manifestedBy")),
+        (URIRef(HO + "manifestsIn"), URIRef(H2HOA + "manifestedBy")),
         (URIRef(HO + "causes"), URIRef(HO + "causedBy")),
         (URIRef(HO + "carriedBy"), URIRef(H2HOA + "carries")),
         (URIRef(HO + "affects"), URIRef(H2HOA + "affectedBy")),
