@@ -23,7 +23,7 @@ Disclaimer
 
 Link to knowledge base (NYHKB)
   Each scenario has a stable ID (ES-*). Hazards, harmful events, and key
-  situations in nyhkb.ttl (version 1.2.1) reference these IDs in rdfs:comment
+  situations in nyhkb.ttl (version 1.2.2) reference these IDs in rdfs:comment
   (search: "Empirical scenario ID"). The KB decomposes one empirical row into
   several typed individuals; the index lists primary hazards only.
 
@@ -58,7 +58,7 @@ ES-EB-CR-01 HarmfulEvent_JetFire_CompressorRoom, HarmfulEvent_Deflagration_Compr
 ES-EB-CR-02 HarmfulEvent_JetFire_BufferCylinder
 ES-EB-CR-03 HarmfulEvent_PressureExposure_CompressorRoom
 ES-EB-ST-01 HarmfulEvent_JetFire_H2CylinderRoom, HarmfulEvent_PressureExposure_H2CylinderRoom
-ES-EB-ST-02 HarmfulEvent_ThermalExposure_ExternalBuilding
+ES-EB-ST-02 HarmfulEvent_ThermalExposure_ExternalBuilding, HarmfulEvent_Detonation_ExternalBuilding
 
 Paper cross-reference
   ES-TR-01 corresponds to Table 3 (equipment room representative scenario).
@@ -358,8 +358,10 @@ NYHKB (interpretation)  Event_ExternalFire_CompressorRoom;
                         Situation_EquipmentDamage_CompressorRoom;
                         Event_Rupture_H2Cylinder → Situation_HydrogenJet_H2CylinderRoom;
                         Hazard_Thermal_H2Cylinder;
+                        HarmfulEvent_ThermalExposure_ExternalBuilding,
                         HarmfulEvent_Detonation_ExternalBuilding;
-                        Harm_ThermalDamage_ExternalBuilding, Harm_Injury_Personell, Harm_Damage_Environment.
+                        Harm_ThermalDamage_ExternalBuilding, Harm_BlastTrauma_H2Cylinder,
+                        Harm_EnvironmentalDamage_ExternalBuilding.
 
 ================================================================================
 End of empirical hazard scenarios
