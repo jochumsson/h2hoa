@@ -21,10 +21,10 @@
   dcterms:source "ISO 15916:2015 - Basic considerations for the safety of hydrogen systems."@en ;
   owl:imports <https://w3id.org/jochumsson/ho61508> ;
   owl:imports <https://w3id.org/jochumsson/h2ho> ;
-  owl:versionInfo "1.1.0" ;
-  owl:versionIRI <https://w3id.org/jochumsson/h2hoa/1.1.0> ;
+  owl:versionInfo "1.1.1" ;
+  owl:versionIRI <https://w3id.org/jochumsson/h2hoa/1.1.1> ;
   dcterms:issued "2026-03-22T00:00:00"^^xsd:dateTime ;
-  dcterms:modified "2026-06-03T00:00:00"^^xsd:dateTime .
+  dcterms:modified "2026-09-09T00:00:00"^^xsd:dateTime .
 
 #################################################################
 # H2HOA - start of the ontology marker
@@ -1372,13 +1372,26 @@ h2hoa:HydrogenJet
       a owl:Restriction ;
       owl:onProperty ho61508:involves ;
       owl:someValuesFrom h2hoa:JetFireHazard ;
-      rdfs:comment "A HydrogenJet involves at least one JetFireHazard." ;
+      rdfs:comment "A HydrogenJet involves at least one JetFireHazard (application label of FlammabilityHazard for jet-fire scenarios)." ;
     ] ,
     [
       a owl:Restriction ;
       owl:onProperty ho61508:involves ;
-      owl:allValuesFrom h2hoa:JetFireHazard ;
-      rdfs:comment "A HydrogenJet involves only JetFireHazard." ;
+      owl:someValuesFrom h2ho:PressureHazard ;
+      rdfs:comment "A HydrogenJet involves at least one PressureHazard (compression required for a momentum-driven jet)." ;
+    ] ,
+    [
+      a owl:Restriction ;
+      owl:onProperty ho61508:involves ;
+      owl:allValuesFrom [
+        a owl:Class ;
+        owl:unionOf ( h2hoa:JetFireHazard h2ho:PressureHazard )
+      ] ;
+      rdfs:comment """
+DL: HydrogenJet ⊑ ∀ involves.(JetFireHazard ⊔ PressureHazard)
+A momentum-driven jet involves flammability (JetFireHazard label) and pressure;
+no other hazard types are involved in this situation type.
+""" ;
     ] .
 
 h2hoa:FlammableVaporCloud

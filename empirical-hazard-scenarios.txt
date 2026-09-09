@@ -23,7 +23,7 @@ Disclaimer
 
 Link to knowledge base (NYHKB)
   Each scenario has a stable ID (ES-*). Hazards, harmful events, and key
-  situations in nyhkb.ttl (version 1.2.2) reference these IDs in rdfs:comment
+  situations in nyhkb.ttl (version 1.2.3) reference these IDs in rdfs:comment
   (search: "Empirical scenario ID"). The KB decomposes one empirical row into
   several typed individuals; the index lists primary hazards only.
 

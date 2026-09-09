@@ -36,9 +36,9 @@
   dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
   dcterms:source "H2solo AB (2023-03-10). Risk assessment and explosion protection documentation LBE, Appendix E, property Ytterberga 2:5."@en ;
   owl:imports <https://w3id.org/jochumsson/h2hoa> ;
-  owl:versionInfo "1.2.2" ;
+  owl:versionInfo "1.2.3" ;
   dcterms:issued "2026-03-22T00:00:00"^^xsd:dateTime ;
-  dcterms:modified "2026-06-03T00:00:00"^^xsd:dateTime .
+  dcterms:modified "2026-09-09T00:00:00"^^xsd:dateTime .
 
 #################################################################
 # Physical locations (Appendix E, section 5, handling locations)
@@ -332,8 +332,20 @@ nyhkb:Hazard_JetFire_H2Cylinder a h2hoa:JetFireHazard ;
   ho61508:inheresIn nyhkb:HazardSource_H2Cylinder ;
   ho61508:manifestsIn nyhkb:HarmfulEvent_JetFire_H2CylinderRoom .
 
+nyhkb:Hazard_Pressure_TechnicalRoom a h2ho:PressureHazard ;
+  rdfs:label "Pressure hazard – technical room (pressurised release)"@en ;
+  rdfs:comment "Empirical scenario ID: ES-TR-01. See empirical-hazard-scenarios.txt. Pressure potential co-involved in hydrogen-jet situations after pressurised release from production equipment (~35 bar)." ;
+  dcterms:source "Appendix E, section 5.1.1; section 5.1.2.1"@en ;
+  ho61508:inheresIn nyhkb:HazardSource_Electrolyser .
+
+nyhkb:Hazard_Pressure_PipelineRoute a h2ho:PressureHazard ;
+  rdfs:label "Pressure hazard – piping route"@en ;
+  rdfs:comment "Empirical scenario ID: ES-PL-01. See empirical-hazard-scenarios.txt. Pressure potential co-involved in hydrogen-jet situations along pressurised piping." ;
+  dcterms:source "Appendix E, section 5.2.2.1"@en ;
+  ho61508:inheresIn nyhkb:HazardSource_H2Piping .
+
 nyhkb:Hazard_Pressure_Compressor a h2ho:PressureHazard ;
-  rdfs:comment "Empirical scenario ID: ES-EB-CR-03. See empirical-hazard-scenarios.txt." ;
+  rdfs:comment "Empirical scenario ID: ES-EB-CR-03. See empirical-hazard-scenarios.txt. Also co-involved in hydrogen-jet situations in the compressor room (ES-EB-CR-01)." ;
   rdfs:label "Pressure hazard - compressor"@en ;
   dcterms:source "Appendix E, section 5.3.1.1"@en ;
   ho61508:inheresIn nyhkb:HazardSource_Compressor ;
@@ -341,7 +353,7 @@ nyhkb:Hazard_Pressure_Compressor a h2ho:PressureHazard ;
 
 nyhkb:Hazard_Pressure_H2Cylinder a h2ho:PressureHazard ;
   rdfs:label "Pressure hazard – hydrogen cylinder"@en ;
-  rdfs:comment "Empirical scenario ID: ES-EB-ST-01. See empirical-hazard-scenarios.txt." ;
+  rdfs:comment "Empirical scenario ID: ES-EB-ST-01. See empirical-hazard-scenarios.txt. Also co-involved in hydrogen-jet situations after cylinder release." ;
   dcterms:source "Appendix E, section 5.3.2.1"@en ;
   ho61508:inheresIn nyhkb:HazardSource_H2Cylinder ;
   ho61508:manifestsIn nyhkb:HarmfulEvent_PressureExposure_H2CylinderRoom .
@@ -367,7 +379,7 @@ nyhkb:Hazard_Detonation_H2Cylinder a h2hoa:DetonationHazard ;
 nyhkb:Situation_HydrogenJet_TechnicalRoom a h2hoa:HydrogenJet ;
   rdfs:label "Hydrogen jet – technical room"@en ;
   dcterms:source "Appendix E, section 5.1.2.1"@en ;
-  ho61508:involves nyhkb:Hazard_JetFire_TechnicalRoom ;
+  ho61508:involves nyhkb:Hazard_JetFire_TechnicalRoom , nyhkb:Hazard_Pressure_TechnicalRoom ;
   ho61508:exposes nyhkb:ExposedRole_Person , nyhkb:ExposedRole_Property ;
   ho61508:enables nyhkb:Event_HotSurfaceIgnition_TechnicalRoom , nyhkb:Event_StaticSparkIgnition_TechnicalRoom .
 
@@ -396,7 +408,7 @@ nyhkb:Situation_EquipmentDamage_TechnicalRoom a h2hoa:DamagedEquipmentDegradatio
 nyhkb:Situation_HydrogenJet_PipelineRoute a h2hoa:HydrogenJet ;
   rdfs:label "Hydrogen jet – piping route"@en ;
   dcterms:source "Appendix E, section 5.2.2.1"@en ;
-  ho61508:involves nyhkb:Hazard_JetFire_PipelineRoute ;
+  ho61508:involves nyhkb:Hazard_JetFire_PipelineRoute , nyhkb:Hazard_Pressure_PipelineRoute ;
   ho61508:exposes nyhkb:ExposedRole_Person , nyhkb:ExposedRole_Property ;
   ho61508:enables nyhkb:Event_StaticSparkIgnition_PipelineRoute .
 
@@ -417,7 +429,7 @@ nyhkb:Situation_ExplosiveAtmosphere_PipeCulvert a h2hoa:DeflagrationCondition ;
 nyhkb:Situation_HydrogenJet_CompressorRoom a h2hoa:HydrogenJet ;
   rdfs:label "Hydrogen jet – compressor room"@en ;
   dcterms:source "Appendix E, section 5.3.2.1"@en ;
-  ho61508:involves nyhkb:Hazard_JetFire_CompressorRoom ;
+  ho61508:involves nyhkb:Hazard_JetFire_CompressorRoom , nyhkb:Hazard_Pressure_Compressor ;
   ho61508:exposes nyhkb:ExposedRole_Person , nyhkb:ExposedRole_Property ;
   ho61508:enables nyhkb:Event_FrictionIgnition_CompressorRoom .
 
@@ -446,7 +458,7 @@ nyhkb:Situation_HydrogenJet_H2CylinderRoom a h2hoa:HydrogenJet ;
   rdfs:label "Hydrogen jet – hydrogen cylinder room"@en ;
   rdfs:comment "Empirical scenario ID: ES-EB-ST-01, ES-EB-ST-02. See empirical-hazard-scenarios.txt." ;
   dcterms:source "Appendix E, section 5.3.2.1; section 5.3.2.2"@en ;
-  ho61508:involves nyhkb:Hazard_JetFire_H2Cylinder ;
+  ho61508:involves nyhkb:Hazard_JetFire_H2Cylinder , nyhkb:Hazard_Pressure_H2Cylinder ;
   ho61508:exposes nyhkb:ExposedRole_Person , nyhkb:ExposedRole_Property , nyhkb:ExposedRole_Environment ;
   ho61508:enables
     nyhkb:Event_StaticSparkIgnition_CompressorRoom ,

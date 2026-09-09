@@ -3,9 +3,11 @@ import argparse
 import os
 import subprocess
 import sys
-from typing import List, Optional
+import tempfile
+from typing import List, Optional, Sequence
 
 from rdflib import Graph, URIRef
+from rdflib.namespace import OWL
 
 
 def run_capture(cmd: List[str], label: str) -> subprocess.CompletedProcess:
@@ -30,6 +32,28 @@ def require_file(path: str, label: str) -> None:
     if not os.path.exists(path):
         print(f"ERROR: {label} not found: {path}", file=sys.stderr)
         sys.exit(1)
+
+
+def write_ontology_without_imports(
+    path_in: str, path_out: str, drop_import_iris: Sequence[str]
+) -> int:
+    """Copy an ontology file, removing selected owl:imports.
+
+    ROBOT merge follows owl:imports by default. NYHKB imports published H2HOA and
+    H2HOA imports published H2HO; when those are also passed as local --input files,
+    the remote copies can reintroduce outdated axioms and make the merge inconsistent.
+    Keep remote imports that are not supplied locally (e.g. HO61508).
+    """
+    g = Graph()
+    g.parse(path_in)
+    removed = 0
+    for iri in drop_import_iris:
+        triple = (None, OWL.imports, URIRef(iri))
+        before = len(list(g.triples(triple)))
+        g.remove(triple)
+        removed += before
+    g.serialize(destination=path_out, format="turtle")
+    return removed
 
 
 def materialize_inverse_properties(
@@ -112,6 +136,14 @@ def main() -> None:
 
     p.add_argument("--skip-reasoning", action="store_true", help="Skip reasoning")
     p.add_argument("--skip-materialize-inverses", action="store_true", help="Skip inverse property materialization")
+    p.add_argument(
+        "--follow-published-imports",
+        action="store_true",
+        help=(
+            "Do not strip redundant owl:imports of local H2HO/H2HOA. "
+            "Default strips them so unpublished local ontology edits are used."
+        ),
+    )
 
     args = p.parse_args()
 
@@ -121,88 +153,126 @@ def main() -> None:
     require_file(args.abox, "ABox")
     require_file(args.query, "SPARQL query")
 
-    merged_cmd = [
-        "java", "-jar", args.robot,
-        "merge",
-        "--input", args.h2ho,
-        "--input", args.tbox,
-        "--input", args.abox,
-        "--output", args.merged_out,
-    ]
-    run_or_die(merged_cmd, "MERGE (H2HO + H2HOA + NYHKB)")
+    h2ho_iri = "https://w3id.org/jochumsson/h2ho"
+    h2hoa_iri = "https://w3id.org/jochumsson/h2hoa"
+    merge_h2ho = args.h2ho
+    merge_tbox = args.tbox
+    merge_abox = args.abox
+    tmp_paths: List[str] = []
 
-    target = args.merged_out
+    try:
+        if not args.follow_published_imports:
+            tmp_dir = tempfile.mkdtemp(prefix="h2hoa-validate-")
+            merge_tbox = os.path.join(tmp_dir, "h2hoa-no-h2ho-import.ttl")
+            merge_abox = os.path.join(tmp_dir, "nyhkb-no-h2hoa-import.ttl")
+            tmp_paths.extend([merge_tbox, merge_abox])
 
-    if not args.skip_reasoning:
-        reason_cmd = [
+            removed_tbox = write_ontology_without_imports(
+                args.tbox, merge_tbox, [h2ho_iri]
+            )
+            removed_abox = write_ontology_without_imports(
+                args.abox, merge_abox, [h2hoa_iri]
+            )
+            print(
+                "\n--- PREPARE LOCAL MERGE INPUTS ---"
+                f"\nRemoved {removed_tbox} owl:imports of {h2ho_iri} from TBox copy"
+                f"\nRemoved {removed_abox} owl:imports of {h2hoa_iri} from ABox copy"
+                "\nLocal --h2ho/--tbox/--abox files are authoritative; HO61508 import retained."
+            )
+
+        merged_cmd = [
             "java", "-jar", args.robot,
-            "reason",
-            "--input", args.merged_out,
-            "--reasoner", args.reasoner,
-            "--axiom-generators", "ClassAssertion PropertyAssertion",
-            "-D", args.unsat_out,
-            "-vvv",
-            "--output", args.inferred_out,
+            "merge",
+            "--input", merge_h2ho,
+            "--input", merge_tbox,
+            "--input", merge_abox,
+            "--output", args.merged_out,
+        ]
+        run_or_die(merged_cmd, "MERGE (H2HO + H2HOA + NYHKB)")
+
+        target = args.merged_out
+
+        if not args.skip_reasoning:
+            reason_cmd = [
+                "java", "-jar", args.robot,
+                "reason",
+                "--input", args.merged_out,
+                "--reasoner", args.reasoner,
+                "--axiom-generators", "ClassAssertion PropertyAssertion",
+                "-D", args.unsat_out,
+                "-vvv",
+                "--output", args.inferred_out,
+            ]
+
+            cp = run_capture(reason_cmd, f"REASON ({args.reasoner})")
+
+            if cp.returncode != 0:
+                stderr_lower = (cp.stderr or "").lower()
+                stdout_lower = (cp.stdout or "").lower()
+
+                if "inconsistent" in stderr_lower or "inconsistent" in stdout_lower:
+                    print("\nOntology inconsistent. Generating explanation...", file=sys.stderr)
+
+                    explain_cmd = [
+                        "java", "-jar", args.robot,
+                        "explain",
+                        "--input", args.merged_out,
+                        "--reasoner", "elk",
+                        "-M", "inconsistency",
+                        "--explanation", args.explain_md,
+                    ]
+                    run_capture(explain_cmd, "EXPLAIN (INCONSISTENCY)")
+
+                elif "unsatisfiable" in stderr_lower or "unsatisfiable" in stdout_lower:
+                    print(
+                        f"\nOntology has unsatisfiable classes. "
+                        f"Debug module written to: {args.unsat_out}",
+                        file=sys.stderr,
+                    )
+
+                sys.exit(cp.returncode)
+
+            target = args.inferred_out
+        else:
+            print("\n--- SKIPPING REASONING ---")
+
+        if not args.skip_materialize_inverses:
+            subclass_source = args.merged_out if not args.skip_reasoning else None
+            materialize_inverse_properties(
+                target, args.materialized_out, subclass_source=subclass_source
+            )
+            target = args.materialized_out
+        else:
+            print("\n--- SKIPPING INVERSE MATERIALIZATION ---")
+
+        query_cmd = [
+            "java", "-jar", args.robot,
+            "query",
+            "--input", target,
+            "--query", args.query, args.query_out,
         ]
 
-        cp = run_capture(reason_cmd, f"REASON ({args.reasoner})")
+        cpq = run_capture(query_cmd, "QUERY")
+        if cpq.returncode != 0:
+            sys.exit(cpq.returncode)
 
-        if cp.returncode != 0:
-            stderr_lower = (cp.stderr or "").lower()
-            stdout_lower = (cp.stdout or "").lower()
+        if os.path.exists(args.query_out):
+            print("\n--- QUERY RESULTS ---")
+            with open(args.query_out, "r", encoding="utf-8") as f:
+                print(f.read())
 
-            if "inconsistent" in stderr_lower or "inconsistent" in stdout_lower:
-                print("\nOntology inconsistent. Generating explanation...", file=sys.stderr)
-
-                explain_cmd = [
-                    "java", "-jar", args.robot,
-                    "explain",
-                    "--input", args.merged_out,
-                    "--reasoner", "elk",
-                    "-M", "inconsistency",
-                    "--explanation", args.explain_md,
-                ]
-                run_capture(explain_cmd, "EXPLAIN (INCONSISTENCY)")
-
-            elif "unsatisfiable" in stderr_lower or "unsatisfiable" in stdout_lower:
-                print(
-                    f"\nOntology has unsatisfiable classes. "
-                    f"Debug module written to: {args.unsat_out}",
-                    file=sys.stderr,
-                )
-
-            sys.exit(cp.returncode)
-
-        target = args.inferred_out
-    else:
-        print("\n--- SKIPPING REASONING ---")
-
-    if not args.skip_materialize_inverses:
-        subclass_source = args.merged_out if not args.skip_reasoning else None
-        materialize_inverse_properties(
-            target, args.materialized_out, subclass_source=subclass_source
-        )
-        target = args.materialized_out
-    else:
-        print("\n--- SKIPPING INVERSE MATERIALIZATION ---")
-
-    query_cmd = [
-        "java", "-jar", args.robot,
-        "query",
-        "--input", target,
-        "--query", args.query, args.query_out,
-    ]
-
-    cpq = run_capture(query_cmd, "QUERY")
-    if cpq.returncode != 0:
-        sys.exit(cpq.returncode)
-
-    if os.path.exists(args.query_out):
-        print("\n--- QUERY RESULTS ---")
-        with open(args.query_out, "r", encoding="utf-8") as f:
-            print(f.read())
-
-    print("\nVALIDATION COMPLETE")
+        print("\nVALIDATION COMPLETE")
+    finally:
+        for path in tmp_paths:
+            try:
+                os.remove(path)
+            except OSError:
+                pass
+        if tmp_paths:
+            try:
+                os.rmdir(os.path.dirname(tmp_paths[0]))
+            except OSError:
+                pass
 
 
 if __name__ == "__main__":
